@@ -1,8 +1,8 @@
 * Basic Grammar
   PROG -> STMT-SEQ
-  STMT-SEQ -> STMT-SEQ STMT; | STMT;
+  STMT-SEQ -> STMT-SEQ STMT  | STMT
   STMT -> every ( EXPR ){ STMT-SEQ }
-  STMT -> ID = EXPR
+  STMT -> ID = EXPR;
   EXPR -> EXPR + FACTOR | FACTOR
-  T -> ( EXPR ) | ID | INT
+  FACTOR -> ( EXPR ) | ID | INT
   ID -> ID
