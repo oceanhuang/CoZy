@@ -5,14 +5,27 @@ tokens = (
    'LPAREN',
    'RPAREN',
    'EVERY',
+   'FALSE',
+   'TRUE',
+   'RBRACK',
+   'LBRACK',
+   'NAND',
 )
 
 # Regular expression rules for simple tokens
 t_LPAREN  = r'\('
 t_RPAREN  = r'\)'
+t_LBRACK  = r'\{'
+t_RBRACK  = r'\}'
 t_EVERY   = r'every'
+t_NAND    = r'nand'
 
 # A regular expression rule with some action code
+def t_TRUE(t):
+    r'true'
+    t.value = True
+    return t
+
 def t_FALSE(t):
     r'false'
     t.value = False
