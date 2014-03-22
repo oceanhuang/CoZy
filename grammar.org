@@ -2,6 +2,7 @@
   PROG -> STMT-SEQ
   STMT-SEQ -> STMT-SEQ STMT; | STMT;
   STMT -> every ( EXPR ){ STMT-SEQ }
+  STMT -> ID = EXPR
   EXPR -> EXPR + FACTOR | FACTOR
   T -> ( EXPR ) | ID | INT
   ID -> ID
