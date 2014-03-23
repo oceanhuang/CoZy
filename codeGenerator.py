@@ -1,5 +1,5 @@
+level = 0
 class codeGenerator(object):
-    
     def __init__(self, tree):
         # Keep track of scopes
         self.varScopes = [[]]
@@ -13,9 +13,10 @@ class codeGenerator(object):
     def dispatch(self, tree, flag=None):
         '''Dispatches based on type of node'''
         if isinstance(tree, list):
+            temp = ""
             for t in tree:
-                self.dispatch(t)
-            return 
+                temp += self.dispatch(t)
+            return temp
 
         method = getattr(self, "_"+tree.type)
         code = method(tree, flag)
@@ -30,8 +31,7 @@ class codeGenerator(object):
     def _stmt_assign(self, tree, flag=None):
         s1 = self.dispatch(tree.children)
         self.symbolsTable[tree.leaf] = s1
-        s2 = self.symbolsTable[tree.leaf]
-        print s1
+        s2 = tree.leaf + ' = ' + self.symbolsTable[tree.leaf]
         return s2
 
     def _plus(self, tree, flag=None):
@@ -40,11 +40,10 @@ class codeGenerator(object):
     
     def _expr(self, tree, flag=None):
         s = self.dispatch(tree.children)
-        print s
         return s
 
     def _factor(self, tree, flag=None):
-        return tree.leaf  
+        return str(tree.leaf)  
 
        
 

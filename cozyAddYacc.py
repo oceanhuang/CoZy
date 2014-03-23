@@ -5,7 +5,7 @@ from cozyAddLex import tokens
 from codeGenerator import *
 
 indent_level = 0
-class Node:
+class Node(object):
     def __init__(self, type, children=None, leaf=None):
         self.type = type
         if children:
