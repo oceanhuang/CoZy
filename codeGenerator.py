@@ -7,7 +7,6 @@ class codeGenerator(object):
         # Symbols table
         self.symbolsTable = {}
         # Keep track of indentation
-        self._indent = 0
         self.ret = self.dispatch(tree)
     
     def dispatch(self, tree, flag=None):
@@ -48,12 +47,9 @@ class codeGenerator(object):
         return str(tree.leaf)  
 
     def _every(self, tree, flag=None):
-        self._indent += 1
         s = "if " + self.dispatch(tree.children[0]) + " :\n"
         lines = self.dispatch(tree.children[1]).splitlines()
         for line in lines:
-            print " LINE: " +line
-            s+= "    " * self._indent + line + " INDENTATION: " + str(self._indent) + "\n"
-        self._indent -= 1
+            s+= "    " + line +"\n"
         return s
 
