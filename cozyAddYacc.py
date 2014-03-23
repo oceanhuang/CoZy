@@ -12,16 +12,19 @@ class Node:
         else:
             self.children = [ ]
         self.leaf = leaf
-        self.token = token
     
     #when you print a node, print the tree traversal of it
     def __str__(self):
-        return self.traverse(1)
+        return "\n" + self.traverse(1)
 
     def traverse(self, i):
-        s = self.type
+        temp = ""
+        if self.leaf:
+            temp = ": " + `self.leaf`
+        s = self.type + temp + "\n"
+        
         for children in self.children:
-            s += children.traverse(i+1)
+            s += "-"*(i-1) + ">" + children.traverse(i+1)
         return s
 
 def p_prof_stmtseq(p):
@@ -42,7 +45,7 @@ def p_stmt_every(p):
 
 def p_stmt_id(p):
     'stmt : ID EQUALS expr SEMICOLON'
-    p[0] = Node('stmt_assign', [p[1], p[3]])
+    p[0] = Node('stmt_assign', [p[3]], p[1])
 
 def p_expr_plus(p):
     'expr : expr PLUS factor'
@@ -55,7 +58,7 @@ def p_expr_factor(p):
 
 def p_factor_parenth(p):
     'factor : LPAREN expr RPAREN'
-    p[0] = Node('factor', [p[2]], [p[1], p[2]]) 
+    p[0] = Node('factor', [p[2]]) 
     #p[0] = '(' + p[2] + ')'
 
 def p_factor_INT(p):
@@ -76,7 +79,7 @@ def p_error(p):
 
 # Build the parser
 parser = yacc.yacc()
-
+    
 while True:
    try:
        s = raw_input(' > ')
