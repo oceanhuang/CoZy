@@ -1,4 +1,6 @@
 level = 0
+import time
+
 class codeGenerator(object):
     def __init__(self, tree):
         # Keep track of scopes

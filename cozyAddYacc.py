@@ -72,7 +72,14 @@ def p_factor_id(p):
     p[0] = Node('factor', [ ], p[1])
 
 def p_timeexpr_mon(p):
-    'timeexpr : MONDAY'
+    '''timeexpr : MONDAY
+                | TUESDAY
+                | WEDNESDAY
+                | THURSDAY
+                | FRIDAY
+                | SATURDAY
+                | SUNDAY
+    '''
     p[0] = Node('timeexpr', [ ], p[1])
 
 
