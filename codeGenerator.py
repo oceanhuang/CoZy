@@ -1,4 +1,5 @@
 import datetime
+
 class codeGenerator(object):
     def __init__(self, tree):
         # Keep track of scopes
