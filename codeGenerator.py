@@ -1,4 +1,4 @@
-level = 0
+import datetime
 class codeGenerator(object):
     def __init__(self, tree):
         # Keep track of scopes
@@ -47,7 +47,23 @@ class codeGenerator(object):
         return str(tree.leaf)  
 
     def _timeexpr(self, tree, flag=None):
-        return tree.leaf
+        s = "datetime.datetime.now().weekday() == "
+        if tree.leaf == "Monday":
+            s += "0"
+        elif tree.leaf == "Tuesday":
+            s += "1"
+        elif tree.leaf == "Wednesday":
+            s += "2"
+        elif tree.leaf == "Thursday":
+            s += "3"
+        elif tree.leaf == "Friday":
+            s += "4"
+        elif tree.leaf == "Saturday":
+            s += "5"
+        elif tree.leaf == "Sunday":
+            s += "6"
+        print s
+        return s
 
     def _every(self, tree, flag=None):
         s = "if " + self.dispatch(tree.children[0]) + " :\n"
