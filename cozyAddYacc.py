@@ -2,6 +2,7 @@ import ply.yacc as yacc
 
 # Get the token map from the lexer.  This is required.
 from cozyAddLex import tokens
+from codeGenerator import *
 
 indent_level = 0
 class Node:
@@ -63,12 +64,12 @@ def p_factor_parenth(p):
 
 def p_factor_INT(p):
     'factor : INT'
-    p[0] = Node('factor', [ ], p[1])
+    p[0] = Node('factor', [ ], `p[1]`)
     #p[0] = `p[1]`
 
 def p_factor_id(p):
     'factor : ID'
-    p[0] = Node('factor', [ ], p[1])
+    p[0] = Node('factor', [ ], `p[1]`)
 
 
 
@@ -87,4 +88,6 @@ while True:
        break
    if not s: continue
    result = parser.parse(s)
+   code = codeGenerator(result)
    print result
+   print code.ret
