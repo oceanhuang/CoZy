@@ -31,11 +31,13 @@ class codeGenerator(object):
     def _stmt_assign(self, tree, flag=None):
         s1 = self.dispatch(tree.children)
         self.symbolsTable[tree.leaf] = s1
-        s2 = tree.leaf + ' = ' + self.symbolsTable[tree.leaf]
+        s2 = tree.leaf + ' = ' + self.symbolsTable[tree.leaf] + "\n"
         return s2
-
+    def _stmtseq_stmt(self, tree, flag=None):
+        s = self.dispatch(tree.children[0]) + self.dispatch(tree.children[1])
+        return s
     def _plus(self, tree, flag=None):
-        s = self.dispatch(tree.children[0]) + '+' + self.dispatch(tree.children[1])
+        s = self.dispatch(tree.children[0]) + ' + ' + self.dispatch(tree.children[1])
         return s
     
     def _expr(self, tree, flag=None):
@@ -45,5 +47,13 @@ class codeGenerator(object):
     def _factor(self, tree, flag=None):
         return str(tree.leaf)  
 
-       
+    def _every(self, tree, flag=None):
+        self._indent += 1
+        s = "if " + self.dispatch(tree.children[0]) + " :\n"
+        lines = self.dispatch(tree.children[1]).splitlines()
+        for line in lines:
+            print " LINE: " +line
+            s+= "    " * self._indent + line + " INDENTATION: " + str(self._indent) + "\n"
+        self._indent -= 1
+        return s
 

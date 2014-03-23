@@ -1,1 +1,1 @@
-x=3;
+every (1) {test = 1;poop = 2 + 2; every (1 + 1){ a = 2; b = 4+a; c = 1 + 1;}} x = 2 + 2;

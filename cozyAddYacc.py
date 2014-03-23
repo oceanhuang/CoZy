@@ -38,7 +38,7 @@ def p_stmtseq_stmt(p):
 
 def p_stmtseq_stmtseq(p):
     'stmtseq : stmtseq stmt'
-    p[0] = Node("stmtseq-stmt", [p[1], p[2]])
+    p[0] = Node("stmtseq_stmt", [p[1], p[2]])
 
 def p_stmt_every(p):
     'stmt : EVERY LPAREN expr RPAREN LBRACK stmtseq RBRACK'
@@ -69,7 +69,7 @@ def p_factor_INT(p):
 
 def p_factor_id(p):
     'factor : ID'
-    p[0] = Node('factor', [ ], `p[1]`)
+    p[0] = Node('factor', [ ], p[1])
 
 
 
@@ -89,5 +89,5 @@ while True:
    if not s: continue
    result = parser.parse(s)
    code = codeGenerator(result)
-   print result
+##   print result
    print code.ret
