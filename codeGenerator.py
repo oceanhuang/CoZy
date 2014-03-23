@@ -46,6 +46,9 @@ class codeGenerator(object):
     def _factor(self, tree, flag=None):
         return str(tree.leaf)  
 
+    def _timeexpr(self, tree, flag=None):
+        return tree.leaf
+
     def _every(self, tree, flag=None):
         s = "if " + self.dispatch(tree.children[0]) + " :\n"
         lines = self.dispatch(tree.children[1]).splitlines()

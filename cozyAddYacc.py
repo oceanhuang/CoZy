@@ -41,7 +41,7 @@ def p_stmtseq_stmtseq(p):
     p[0] = Node("stmtseq_stmt", [p[1], p[2]])
 
 def p_stmt_every(p):
-    'stmt : EVERY LPAREN expr RPAREN LBRACK stmtseq RBRACK'
+    'stmt : EVERY LPAREN timeexpr RPAREN LBRACK stmtseq RBRACK'
     p[0] = Node('every', [p[3], p[6]])
 
 def p_stmt_id(p):
@@ -71,7 +71,9 @@ def p_factor_id(p):
     'factor : ID'
     p[0] = Node('factor', [ ], p[1])
 
-
+def p_timeexpr_mon(p):
+    'timeexpr : MONDAY'
+    p[0] = Node('timeexpr', [ ], p[1])
 
 
 # Error rule for syntax errors

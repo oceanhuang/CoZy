@@ -1,7 +1,8 @@
 * Basic Grammar
   PROG -> STMT-SEQ
   STMT-SEQ -> STMT-SEQ STMT  | STMT
-  STMT -> every ( EXPR ){ STMT-SEQ }
+  STMT -> every ( TIME_EXPR ){ STMT-SEQ }
   STMT -> id = EXPR;
   EXPR -> EXPR + FACTOR | FACTOR
   FACTOR -> ( EXPR ) | id | INT
+  TIME_EXPR -> MON | TUES | WED | ...

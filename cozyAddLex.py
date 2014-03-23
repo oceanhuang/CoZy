@@ -3,6 +3,7 @@ import ply.lex as lex
 # List of token names.   This is always required
 reserved = {
     'every' : 'EVERY',
+    'Monday' : 'MONDAY',
 }
 
 tokens = [
