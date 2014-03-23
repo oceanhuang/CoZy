@@ -29,6 +29,7 @@ t_RBRACK  = r'\}'
 t_PLUS    = r'\+'
 t_NAND    = r'nand'
 t_EQUALS  = r'='
+t_SEMICOLON = r';'
 
 # A regular expression rule with some action code
 def t_INT(t):
@@ -39,8 +40,6 @@ def t_INT(t):
 def t_ID(t):
     r'[a-zA-Z_][a-zA-Z_0-9]*'
     t.type = reserved.get(t.value, 'ID') #looks in reserved list, if can't find, assigns it to type ID 
-    if t.type == 'ID' : 
-        t.value = (t.value, symbol_lookup(t.value))
     return t
 
 def t_TRUE(t):
@@ -58,6 +57,7 @@ def t_newline(t):
     r'\n+'
     t.lexer.lineno += len(t.value)
 
+
 # A string containing ignored characters (spaces and tabs)
 t_ignore  = ' \t'
 
@@ -69,11 +69,8 @@ def t_error(t):
 # Build the lexer
 lexer = lex.lex()
 
-
 # Test it out
-data = '''
-x = 3 + 3
-'''
+data = 'x=3+3'
 
 # Give the lexer some input
 lexer.input(data)
