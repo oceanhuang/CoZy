@@ -16,3 +16,4 @@ TODO:
 - Generate correct code for "every" statement
 - scoping
 - type checking
+- print statement
