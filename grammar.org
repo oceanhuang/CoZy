@@ -13,3 +13,27 @@
   
   TIME_EXPR -> MON | TUES | WED | ...
   
+  
+  
+  
+------if, while, and comparison -------
+if_stmt: 'if' test ':' suite ('elif' test ':' suite)* ['else' ':' suite]
+while_stmt: 'while' test ':' suite ['else' ':' suite]
+test : comparison
+comparison : comparison PLUS comparison
+          | comparison MINUS comparison       
+          | comparison MULT comparison
+          | comparison DIV comparison
+          | comparison LT comparison
+          | comparison EQ comparison
+          | comparison GT comparison
+          | PLUS comparison
+          | MINUS comparison
+          | power
+suite: simple_stmt 
+    | NEWLINE INDENT stmt+ DEDENT
+simple_stmt : small_stmts NEWLINE
+            | small_stmts SEMICOLON NEWLINE
+small_stmts : small_stmts SEMICOLON small_stmt
+            | small_stmt
+small_stmt : expression1 | expression2 | expression3 | ...
