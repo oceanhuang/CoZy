@@ -27,6 +27,7 @@
    ASSIGNMENT-EXPRESSION -> ID *=* CONSTANT |
                             ID *=* ASSIGNMENT-EXPRESSION
 			    OR-EXPRESION
+			    
    OR-EXPRESSION -> AND-EXPRESSION |
                     OR-EXPRESSION *or* AND-EXPRESSION
  
