@@ -28,10 +28,10 @@
                             ID *=* ASSIGNMENT-EXPRESSION
 			    OR-EXPRESION
    OR-EXPRESSION -> AND-EXPRESSION |
-                    OR-EXPRESSION *||* AND-EXPRESSION
+                    OR-EXPRESSION *or* AND-EXPRESSION
  
    AND-EXPRESSION -> EQUAILITY-EXPRESSION | 
-                     AND-EXPRESSION *&&* EQUALITY-EXPRESSION
+                     AND-EXPRESSION *and* EQUALITY-EXPRESSION
  
    EQUALITY-EXPRESSION -> RELATIONAL-EXPRESSION | 
                           EQUALITY-EXPRESSION *==* RELATIONAL-EXPRESSION
@@ -62,6 +62,10 @@
 
    SELECTION-STATEMENT -> *if (* expression *) :\n* STATEMENT-LIST |
                           *if (* expression *) :\n* STATEMENT-LIST *else: * STATEMENT-LIST
+   
+   EVERY-STATEMENT -> *every* OR-EXPRESSION *: \n*
+   
+   ONCE-STATEMENT -> *once every* OR-EXPRESION *: \n*
    
    RETURN-STATEMENT -> *return* | *return expression*
    
