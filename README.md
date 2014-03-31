@@ -15,5 +15,9 @@ TODO:
 - logic expressions
 - Generate correct code for "every" statement
 - scoping
+- use tabs for scoping
 - type checking
 - print statement
+- error checking -> we handle syntax errors, using during or , in an if statement
+- preprocessing
+- real input/output
