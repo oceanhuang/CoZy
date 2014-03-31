@@ -10,6 +10,7 @@ Done:
 
 TODO:
 -----
+- functions
 - if/else/while/for
 - arithmetic expressions - DARON
 - logic expressions
