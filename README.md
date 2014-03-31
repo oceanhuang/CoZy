@@ -11,11 +11,11 @@ Done:
 TODO:
 -----
 - if/else/while/for
-- arithmetic expressions
+- arithmetic expressions - DARON
 - logic expressions
-- Generate correct code for "every" statement
+- Generate correct code for "every" statement 
 - scoping
-- use tabs for scoping
+- use tabs for scoping - OCEAN
 - print statement
 - error checking -> we handle syntax errors, using during or , in an if statement
 - preprocessing
