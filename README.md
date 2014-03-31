@@ -10,10 +10,15 @@ Done:
 
 TODO:
 -----
+- functions
 - if/else/while/for
-- arithmetic expressions
+- arithmetic expressions - DARON
 - logic expressions
-- Generate correct code for "every" statement
+- Generate correct code for "every" statement 
 - scoping
-- type checking
+- use tabs for scoping - OCEAN
 - print statement
+- error checking -> we handle syntax errors, using during or , in an if statement
+- preprocessing
+- real input/output
+- change continous/now in lrm, language tutorial
