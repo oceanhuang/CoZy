@@ -21,3 +21,4 @@ TODO:
 - error checking -> we handle syntax errors, using during or , in an if statement
 - preprocessing
 - real input/output
+- change continous/now in lrm, language tutorial
