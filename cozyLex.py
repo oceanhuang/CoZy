@@ -59,18 +59,17 @@ def t_error(t):
 # Build the lexer
 lexer = lex.lex()
 
-# Test it out
-data = """
-x=3+3;
-y = 2 + "every";
-z = Tuesday;
-"""
-
+# Uncomment this lines to test
+# Put CODE HERE TO TEST LEXER
+# data = """
+# x=3+3;
+# y = 2 + "every";
+# z = Tuesday;
+# """
 # Give the lexer some input
-lexer.input(data)
-
+#lexer.input(data)
 # Tokenize
-while True:
-    tok = lexer.token()
-    if not tok: break      # No more input
-    print tok
+# while True:
+#     tok = lexer.token()
+#     if not tok: break      # No more input
+#     print tok

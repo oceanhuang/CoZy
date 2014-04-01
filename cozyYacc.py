@@ -130,13 +130,18 @@ every(0){
     x = 20;
     x = x + 2;
 }
-"""
-## Prints the AST
-result = parser.parse(s)
-print result
 
-## Prints the actual program
+"""
+result = parser.parse(s)
+
+## Prints the AST
+# print result
+
 code = codeGenerator(result)
-print code.ret
+## Prints the actual program
+# print code.ret
+
+## Makes the output file
 f = open("out.py", 'w')
 f.write(code.ret)
+print 'Done!\nCheck "out.py"'
