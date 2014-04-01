@@ -1,5 +1,5 @@
 import datetime
-
+everys = 0
 class codeGenerator(object):
     def __init__(self, tree):
         # Keep track of scopes
@@ -8,7 +8,9 @@ class codeGenerator(object):
         # Symbols table
         self.symbolsTable = {}
         # Variable to store the code
-        self.ret = self.dispatch(tree)
+        self.ret = "every_list = []\n" + self.dispatch(tree)
+        # Keeps track of the number of every's
+
     
     def dispatch(self, tree, flag=None):
         '''Dispatches based on type of node'''
@@ -60,11 +62,17 @@ class codeGenerator(object):
             return tree.leaf
                 
     def _every_statement(self, tree, flag=None):
+        global everys
+        everys = everys + 1
         
-        s = "if " + self.dispatch(tree.children[0]) + " :\n"
+        s = "def every" + str(everys) + "() :\n"
+        global every_list        
         lines = self.dispatch(tree.children[1]).splitlines()
         for line in lines:
             s+= "    " + line +"\n"
+        s +=  "def condition" + str(everys) + "():\n    if " + self.dispatch(tree.children[0])
+        s += " : return True\n"
+        s += "every_list.append({ 'func' : 'every" + str(everys) + "', 'condition' : 'condition" + str(everys) + "' })"
         return s
 
 
