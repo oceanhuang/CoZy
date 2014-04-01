@@ -63,16 +63,21 @@ class codeGenerator(object):
                 
     def _every_statement(self, tree, flag=None):
         global everys
+        global every_list        
         everys = everys + 1
         
-        s = "def every" + str(everys) + "() :\n"
-        global every_list        
+        s = "\ndef every" + str(everys) + "() :\n"
+        s += "    print 'executing every" + str(everys) + "'\n"
+
         lines = self.dispatch(tree.children[1]).splitlines()
         for line in lines:
             s+= "    " + line +"\n"
-        s +=  "def condition" + str(everys) + "():\n    if " + self.dispatch(tree.children[0])
-        s += " : return True\n"
-        s += "every_list.append({ 'func' : 'every" + str(everys) + "', 'condition' : 'condition" + str(everys) + "' })"
+
+        s += "def condition" + str(everys) + "():\n"
+        s += "    print 'checking" + str(everys) + "'\n"
+        s += "    if " + self.dispatch(tree.children[0]) + ": return True\n"
+        s += "every_list.append({'func' : 'every" + str(everys)
+        s += "', 'condition' : 'condition" + str(everys) + "'})"
         return s
 
 
