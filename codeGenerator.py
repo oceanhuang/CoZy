@@ -7,7 +7,7 @@ class codeGenerator(object):
         self.scopeDepth = 0
         # Symbols table
         self.symbolsTable = {}
-        # Keep track of indentation
+        # Variable to store the code
         self.ret = self.dispatch(tree)
     
     def dispatch(self, tree, flag=None):
@@ -22,30 +22,51 @@ class codeGenerator(object):
         code = method(tree, flag)
         return code
 
-    def _stmtseq(self, tree, flag=None):
+    def _program(self, tree, flag=None):
         return self.dispatch(tree.children)
 
-    def _stmt(self, tree, flag=None):
+    def _external_declaration(self, tree, flag=None):
         return self.dispatch(tree.children)
 
-    def _stmt_assign(self, tree, flag=None):
-        s1 = self.dispatch(tree.children)
-        self.symbolsTable[tree.leaf] = s1
-        s2 = tree.leaf + ' = ' + self.symbolsTable[tree.leaf] + "\n"
-        return s2
-    def _stmtseq_stmt(self, tree, flag=None):
-        s = self.dispatch(tree.children[0]) + self.dispatch(tree.children[1])
-        return s
-    def _plus(self, tree, flag=None):
-        s = self.dispatch(tree.children[0]) + ' + ' + self.dispatch(tree.children[1])
-        return s
-    
-    def _expr(self, tree, flag=None):
-        s = self.dispatch(tree.children)
+    # very basic function definition
+    def _function_definition(self, tree, flag=None):
+        s = "def " + tree.children[0] + "() :\n"
+        print tree.children[2]
+        lines = self.dispatch(tree.children[2]).splitlines()
+        for line in lines:
+            s+= "    " + line +"\n"
         return s
 
-    def _factor(self, tree, flag=None):
-        return str(tree.leaf)  
+    def _statement_list(self, tree, flag=None):
+        return self.dispatch(tree.children)
+
+    def _statement(self, tree, flag=None):
+        return self.dispatch(tree.children) + "\n"
+
+    def _assignment_statement(self, tree, flag=None):
+        return tree.leaf + " = " + self.dispatch(tree.children[0])
+
+    def _additive_expression(self, tree, flag=None):
+        
+        if len(tree.children) == 1:
+            return self.dispatch(tree.children[0])
+        else:
+            return self.dispatch(tree.children[0]) + " " + tree.children[2] + " " + self.dispatch(tree.children[1])
+            
+    def _primary_expression(self, tree, flag=None):
+        if tree.leaf == None:
+            return "( " + self.dispatch(tree.children[0]) + " )"
+        else:
+            return tree.leaf
+                
+    def _every_statement(self, tree, flag=None):
+        
+        s = "if " + self.dispatch(tree.children[0]) + " :\n"
+        lines = self.dispatch(tree.children[1]).splitlines()
+        for line in lines:
+            s+= "    " + line +"\n"
+        return s
+
 
     def _timeexpr(self, tree, flag=None):
         s = "datetime.datetime.now().weekday() == "
@@ -64,12 +85,5 @@ class codeGenerator(object):
         elif tree.leaf == "Sunday":
             s += "6"
         print s
-        return s
-
-    def _every(self, tree, flag=None):
-        s = "if " + self.dispatch(tree.children[0]) + " :\n"
-        lines = self.dispatch(tree.children[1]).splitlines()
-        for line in lines:
-            s+= "    " + line +"\n"
         return s
 

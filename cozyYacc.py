@@ -27,9 +27,11 @@ class Node(object):
         if self.leaf:
             temp = ": " + `self.leaf`
         s = self.type + temp + "\n"
-        
         for children in self.children:
-            s += "-"*(i-1) + ">" + children.traverse(i+1)
+            if isinstance(children, Node):
+                s += "-"*(i-1) + ">" + children.traverse(i+1)
+            else:
+                s += "-"*(i-1) + ">" + children
         return s
 
 def p_program(p):
@@ -51,7 +53,7 @@ def p_external_declaration(p):
 def p_function_definition(p):
     'function_definition : DEF ID LPAREN RPAREN LBRACK statement_list RBRACK'
 
-    p[0] = Node("function_definition", [p[2], p[4], p[7]]);
+    p[0] = Node("function_definition", [p[2], p[4], p[6]]);
 
 def p_statement_list(p):
     """ statement_list : statement
@@ -76,10 +78,7 @@ def p_assignment_statement(p):
                              | ID EQUALS assignment_statement
     """
     
-    if len(p) == 4:
-        p[0] = Node("assignment_statement", [p[1], p[3]])
-    else:
-        p[0] = Node("assignment_statement", [p[1]])
+    p[0] = Node("assignment_statement", [p[3]], p[1])
 # Change to continue sequence in grammar i.e. multiplicative_expression, etc
 def p_additive_expresion(p):
     """ additive_expression : primary_expression
@@ -97,10 +96,10 @@ def p_primary_expression(p):
                            | ID
                            | LPAREN additive_expression RPAREN
     """
-    if not isinstance(p[1], basestring) and not isinstance(p[1], int):
-        p[0] = Node('primary_expression', [p[1]])
-    else:
+    if len(p) == 2:
         p[0] = Node('primary_expression', [], p[1])
+    else:
+        p[0] = Node('primary_expression', [p[1]])
 
 def p_every_statement(p):
     """ every_statement : EVERY LPAREN additive_expression RPAREN LBRACK statement_list RBRACK """
@@ -114,13 +113,28 @@ def p_error(p):
 # Build the parser
 parser = yacc.yacc()
     
-while True:
-   try:
-       s = raw_input(' > ')
-   except EOFError:
-       break
-   if not s: continue
-   result = parser.parse(s)
-   code = codeGenerator(result)
-   print result
-   print code.ret
+
+## Put code to test here
+s = """
+x = 3 + 4;
+y = x = 3;
+def test_test(){
+    poop = poop + poop;
+    x = 3 - 3;
+}
+every(1){ 
+    y = 10;
+    y = y - 100;
+    every(2){
+        x = 20;
+        x = x + 2;
+    }
+}
+"""
+## Prints the AST
+result = parser.parse(s)
+print result
+
+## Prints the actual program
+code = codeGenerator(result)
+print code.ret
