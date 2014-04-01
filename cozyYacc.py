@@ -125,10 +125,10 @@ def test_test(){
 every(1){ 
     y = 10;
     y = y - 100;
-    every(2){
-        x = 20;
-        x = x + 2;
-    }
+}
+every(2){
+    x = 20;
+    x = x + 2;
 }
 """
 ## Prints the AST
@@ -138,3 +138,5 @@ print result
 ## Prints the actual program
 code = codeGenerator(result)
 print code.ret
+f = open("out.py", 'w')
+f.write(code.ret)
