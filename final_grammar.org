@@ -12,21 +12,17 @@
                     STATEMEN-LIST STATEMENT *\n*
 
 
-  STATEMENT -> EXPRESSION-STATEMENT |
-               COMPOUND-STATEMENT | 
+  STATEMENT -> ASSIGNMENT-STATEMENT |
 	       SELECTION-STATEMENT |
 	       ITERATION-STATEMENT |
 	       EVERY-STATEMENT |
 	       ONCE-STATEMENT
 	       RETURN-STATEMENT
 
-   EXPRESSION-STATEMENT -> EXPRESSION
 
-   EXPRESSION -> ASSIGNMENT-EXPRESSION
-
-   ASSIGNMENT-EXPRESSION -> ID *=* CONSTANT |
-                            ID *=* ASSIGNMENT-EXPRESSION
-			    OR-EXPRESION
+   ASSIGNMENT-STATEMENT -> ID *=* CONSTANT |
+                           ID *=* ASSIGNMENT-STATEMENT
+			   OR-EXPRESION
 			    
    OR-EXPRESSION -> AND-EXPRESSION |
                     OR-EXPRESSION *or* AND-EXPRESSION
@@ -55,7 +51,10 @@
    FUNCTION-EXPRESSION -> PRIMARY-EXPRESSION |
                           ID *(* PARAMETER-LIST-START *)*
 
-   PRIMARY-EXPRESSION -> CONSTANT | ID | *[* PARAMETER-LIST *]* | ( OR-EXPRESSION )
+   PRIMARY-EXPRESSION -> CONSTANT |
+                         ID |
+                         *[* PARAMETER-LIST *]* |
+                         ( OR-EXPRESSION )
 
    LIST-OPERATION-EXPRESSION -> ID *[* OR-EXPRESSION *]*
 
@@ -65,10 +64,10 @@
    PARAMETER-LIST -> PARAMETER-LIST | 
                      PARAMETER-LIST *,* OR-EXPRESSION
 
-   ITERATION-STATEMENT -> *while (* expression *) :\n* STATEMENT-LIST
+   ITERATION-STATEMENT -> *while (* OR-EXPRESSION *) :\n* STATEMENT-LIST
 
-   SELECTION-STATEMENT -> *if (* expression *) :\n* STATEMENT-LIST |
-                          *if (* expression *) :\n* STATEMENT-LIST *else: * STATEMENT-LIST
+   SELECTION-STATEMENT -> *if (* OR-EXPRESSION *) :\n* STATEMENT-LIST |
+                          *if (* OR-EXPRESSION *) :\n* STATEMENT-LIST *else: * STATEMENT-LIST
    
    EVERY-STATEMENT -> *every* OR-EXPRESSION *: \n*
    
