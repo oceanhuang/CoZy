@@ -11,6 +11,14 @@ reserved = {
     # 'Saturday' : 'SATURDAY',
     # 'Sunday' : 'SUNDAY',
     'def' : 'DEF',
+    'or' : 'OR',
+    'and' : 'AND',
+    'if' : 'IF',
+    'else' : 'ELSE',
+    #'elif' : 'ELSEIF',
+    'while' : 'WHILE',
+    #'for' : 'FOR',
+    'print' : 'PRINT'
 }
 
 tokens = [
@@ -23,7 +31,13 @@ tokens = [
     'MINUS',
     'ID',
     'SEMICOLON',
+    'COLON',
     'CONSTANT',
+    'MULTIPLY',
+    'DIVIDE',
+    'EQUIV',
+    'NONEQUIV',
+    'RELOP',
 ] + list(reserved.values())
 
 # Regular expression rules for simple tokens
@@ -35,7 +49,15 @@ t_EQUALS    = r'='
 t_PLUS      = r'\+'
 t_MINUS     = r'\-'
 t_SEMICOLON = r';'
-t_CONSTANT  = r'[0-9]+|((\'|\").*?(\'|\"))'
+t_COLON     = r':'
+#t_CONSTANT  = r'[0-9]+|((\'|\").*?(\'|\"))'
+t_CONSTANT  = r'[0-9]*\.?[0-9]+|((\'|\").*?(\'|\"))'
+t_MULTIPLY  = r'\*'
+t_DIVIDE    = r'/'
+t_EQUIV     = r'(==)'
+t_NONEQUIV  = r'(!=)'
+t_RELOP     = r'(<=)|(>=)|(<)|(>)'
+
 # A regular expression rule with some action code
 
 def t_ID(t):
@@ -61,15 +83,25 @@ lexer = lex.lex()
 
 # Uncomment this lines to test
 # Put CODE HERE TO TEST LEXER
-# data = """
-# x=3+3;
-# y = 2 + "every";
-# z = Tuesday;
-# """
+data = """
+x=3+3;
+y = 2 + "every";
+#z = Tuesday;
+a = 3 * 4;
+b = 7 != 2;
+b = 7 <= 2;
+b = 7 >= 2;
+if (x == 3):
+{
+    a = 3/4;
+}
+print(2.0);
+x = .790
+"""
 # Give the lexer some input
-#lexer.input(data)
+lexer.input(data)
 # Tokenize
-# while True:
-#     tok = lexer.token()
-#     if not tok: break      # No more input
-#     print tok
+while True:
+    tok = lexer.token()
+    if not tok: break      # No more input
+    print tok
