@@ -80,7 +80,7 @@ class codeGenerator(object):
         return s
 
 
-    def _timeexpr(self, tree, flag=None):
+    def _day_expression(self, tree, flag=None):
         s = "datetime.datetime.now().weekday() == "
         if tree.leaf == "Monday":
             s += "0"

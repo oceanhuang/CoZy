@@ -3,13 +3,13 @@ import ply.lex as lex
 # List of token names.   This is always required
 reserved = {
     'every' : 'EVERY',
-    # 'Monday' : 'MONDAY',
-    # 'Tuesday': 'TUESDAY',
-    # 'Wednesday' : 'WEDNESDAY',
-    # 'Thursday' : 'THURSDAY',
-    # 'Friday' : 'FRIDAY',
-    # 'Saturday' : 'SATURDAY',
-    # 'Sunday' : 'SUNDAY',
+    'Monday' : 'MONDAY',
+    'Tuesday': 'TUESDAY',
+    'Wednesday' : 'WEDNESDAY',
+    'Thursday' : 'THURSDAY',
+    'Friday' : 'FRIDAY',
+    'Saturday' : 'SATURDAY',
+    'Sunday' : 'SUNDAY',
     'def' : 'DEF',
 }
 

@@ -101,6 +101,17 @@ def p_primary_expression(p):
     else:
         p[0] = Node('primary_expression', [p[1]])
 
+def p_primary_expression_days(p):
+    """ primary_expression : MONDAY
+                           | TUESDAY
+                           | WEDNESDAY
+                           | THURSDAY
+                           | FRIDAY
+                           | SATURDAY
+                           | SUNDAY
+    """
+    p[0] = Node('day_expression', [], p[1])
+
 def p_every_statement(p):
     """ every_statement : EVERY LPAREN additive_expression RPAREN LBRACK statement_list RBRACK """
     p[0] = Node("every_statement", [p[3], p[6]])
@@ -122,11 +133,11 @@ def test_test(){
     poop = poop + poop;
     x = 3 - 3;
 }
-every(1){ 
+every(Tuesday){ 
     y = 10;
     y = y - 100;
 }
-every(0){
+every(Wednesday){
     x = 20;
     x = x + 2;
 }
