@@ -51,9 +51,32 @@ def p_external_declaration(p):
 
 # Needs to include parameter_list
 def p_function_definition(p):
-    'function_definition : DEF ID LPAREN RPAREN LBRACK statement_list RBRACK'
+    'function_definition : DEF ID LPAREN function_param_list RPAREN LBRACK statement_list RBRACK'
 
-    p[0] = Node("function_definition", [p[2], p[4], p[6]]);
+    p[0] = Node("function_definition", [p[2], p[4], p[7]]);
+
+def p_function_param_list(p):
+    'function_param_list : function_param' #need to handle empty string
+    if len(p)==2:
+        p[0] = Node("function_param_list", [p[1]])
+    else:
+        p[0] = Node("function_param_list", [])
+
+
+def p_function_param(p):
+    '''function_param : ID 
+                    | function_param COMMA function_param_end
+    '''
+    if len(p)==2:
+        p[0] = Node('function_param', [], p[1])
+    else:
+        p[0] = Node('function_param', [p[1], p[3]])
+
+def p_function_param_end(p):
+    'function_param_end : ID'
+    p[0] = Node('function_param_end', [], p[1])
+
+
 
 def p_statement_list(p):
     """ statement_list : statement
@@ -189,9 +212,9 @@ parser = yacc.yacc()
 
 ## Put code to test here
 s = """
-print(3 <= 2);
-print(3);
-print(3 + 2 / 3 * 8.0);
+def poop(x,y,z){
+y=2; 
+}
 """
 result = parser.parse(s)
 

@@ -38,6 +38,7 @@ tokens = [
     'EQUIV',
     'NONEQUIV',
     'RELOP',
+    'COMMA',
 ] + list(reserved.values())
 
 # Regular expression rules for simple tokens
@@ -57,7 +58,7 @@ t_DIVIDE    = r'/'
 t_EQUIV     = r'(==)'
 t_NONEQUIV  = r'(!=)'
 t_RELOP     = r'(<=)|(>=)|(<)|(>)'
-
+t_COMMA     = r'(,)'
 # A regular expression rule with some action code
 
 def t_ID(t):
@@ -81,27 +82,17 @@ def t_error(t):
 # Build the lexer
 lexer = lex.lex()
 
-# Uncomment this lines to test
-# Put CODE HERE TO TEST LEXER
-data = """
-x=3+3;
-y = 2 + "every";
-#z = Tuesday;
-a = 3 * 4;
-b = 7 != 2;
-b = 7 <= 2;
-b = 7 >= 2;
-if (x == 3):
-{
-    a = 3/4;
-}
-print(2.0);
-x = .790
-"""
-# Give the lexer some input
-lexer.input(data)
-# Tokenize
-while True:
-    tok = lexer.token()
-    if not tok: break      # No more input
-    print tok
+## Uncomment this lines to test
+## Put CODE HERE TO TEST LEXER
+#data = """
+#def poop(x) {
+#y=2
+#}
+#"""
+### Give the lexer some input
+#lexer.input(data)
+### Tokenize
+#while True:
+#    tok = lexer.token()
+#    if not tok: break      # No more input
+#    print tok

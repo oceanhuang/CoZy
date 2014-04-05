@@ -32,11 +32,27 @@ class codeGenerator(object):
 
     # very basic function definition
     def _function_definition(self, tree, flag=None):
-        s = "def " + tree.children[0] + "() :\n"
+        s = "def " + tree.children[0] + "(" + self.dispatch(tree.children[1])+") :\n"
         lines = self.dispatch(tree.children[2]).splitlines()
         for line in lines:
             s+= "    " + line +"\n"
         return s
+
+    def _function_param_list(self, tree, flag=None):
+        if len(tree.children)==0:
+            return ''
+        else:
+            return self.dispatch(tree.children[0])
+
+    def _function_param(self, tree, flag=None):
+        if tree.leaf==None:
+           return  self.dispatch(tree.children[0]) + "," + self.dispatch(tree.children[1])
+        else:
+           return tree.leaf
+
+    def _function_param_end(self, tree, flag=None):
+        return tree.leaf
+
 
     def _statement_list(self, tree, flag=None):
         return self.dispatch(tree.children)
