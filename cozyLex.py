@@ -210,7 +210,7 @@ def indentation_filter(tokens):
     
 # The top-level filter adds an ENDMARKER, if requested.
 # Python's grammar uses it.
-def filter(lexer, add_endmarker = True):
+def filter(lexer, add_endmarker = False):
     token = None
     tokens = iter(lexer.token, None)
     tokens = track_tokens_filter(lexer, tokens)
@@ -228,7 +228,7 @@ class CoZyLexer(object):
     def __init__(self, debug=0, optimize=0, lextab='lextab', reflags=0):
         self.lexer = lex.lex(debug=debug, optimize=optimize, lextab=lextab, reflags=reflags)
         self.token_stream = None
-    def input(self, s, add_endmarker=True):
+    def input(self, s, add_endmarker=False):
         self.lexer.paren_count = 0
         self.lexer.input(s)
         self.token_stream = filter(self.lexer, add_endmarker)
@@ -239,29 +239,36 @@ class CoZyLexer(object):
             return None
 
 
-
-# Build the lexer
-# lexer = lex.lex()
-
-lexer = CoZyLexer()
-
-# Uncomment this lines to test
 # Put CODE HERE TO TEST LEXER
-data = """
-x=3+3;
-if x=6:
-    a=9;
-    b=7;
-y = 2 + "every";
-z = Tuesday;
-"""
-# Give the lexer some input
-lexer.input(data)
+if __name__ == '__main__':
 
-# Tokenize
-while True:
-    tok = lexer.token()
-    if not tok: break      # No more input
-    elif not hasattr(tok, 'line') and not hasattr(tok, 'lexpos'):
-        print tok.type
-    else: print tok
+    # Build the lexer
+    lexer = CoZyLexer()
+
+    # code
+    data = """
+x = 3;
+
+def test_test():
+    poop = poop + poop;
+    x = 3 - 3;
+"""
+#     data = """
+# x=3+3;
+# if x=6:
+#     a=9;
+#     b=7;
+# y = 2 + "every";
+# z = Tuesday;
+#     """
+
+    # Give the lexer some input
+    lexer.input(data)
+
+    # Check tokens
+    while True:
+        tok = lexer.token()
+        if not tok: break      # No more input
+        elif not hasattr(tok, 'line') and not hasattr(tok, 'lexpos'):
+            print tok.type
+        else: print tok
