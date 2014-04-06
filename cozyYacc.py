@@ -1,7 +1,8 @@
 import ply.yacc as yacc
+from compiler import ast, misc
 
 # Get the token map from the lexer.  This is required.
-from cozyLex import tokens
+from cozyLex import *
 from codeGenerator import *
 
 class Node(object):
@@ -51,9 +52,9 @@ def p_external_declaration(p):
 
 # Needs to include parameter_list
 def p_function_definition(p):
-    'function_definition : DEF ID LPAREN RPAREN LBRACK statement_list RBRACK'
+    'function_definition : DEF ID LPAREN RPAREN COLON NEWLINE INDENT statement_list DEDENT'
 
-    p[0] = Node("function_definition", [p[2], p[4], p[6]]);
+    p[0] = Node("function_definition", [p[2], p[8]]);
 
 def p_statement_list(p):
     """ statement_list : statement
@@ -66,7 +67,7 @@ def p_statement_list(p):
 
 # Add types of statements here, e.g. selection, iteration, etc!
 def p_statement(p):
-    """ statement : assignment_statement  SEMICOLON
+    """ statement : assignment_statement SEMICOLON NEWLINE
                   | every_statement
     """
     p[0] = Node("statement", [p[1]])
@@ -76,6 +77,7 @@ def p_statement(p):
 def p_assignment_statement(p):
     """ assignment_statement : ID EQUALS additive_expression 
                              | ID EQUALS assignment_statement
+                             | ID EQUALS primary_expression
     """
     
     p[0] = Node("assignment_statement", [p[3]], p[1])
@@ -110,36 +112,49 @@ def p_error(p):
     print "Syntax error in input!"
     print p
 
+# wrap default parser into CoZy parser
+class CoZyParser(object):
+    def __init__(self, lexer = None):
+        if lexer is None:
+            lexer = CoZyLexer()
+        self.lexer = lexer
+        self.parser = yacc.yacc()
+
+    def parse(self, code):
+        self.lexer.input(code)
+        result = self.parser.parse(lexer = self.lexer)
+        print result
+        return result
+        # return ast.Module(None, result)
+
 # Build the parser
-parser = yacc.yacc()
-    
+parser = CoZyParser()
 
 ## Put code to test here
 s = """
-x = 3 + 4;
-y = x = 3;
-def test_test(){
-    poop = poop + poop;
-    x = 3 - 3;
-}
-every(1){ 
-    y = 10;
-    y = y - 100;
-}
-every(0){
-    x = 20;
-    x = x + 2;
-}
-
+x = 3;
+def fun():
+    y=5;
+    c=6+7;
+    z=c+y;
 """
+# every(1){ 
+#     y = 10;
+#     y = y - 100;
+# }
+# every(0){
+#     x = 20;
+#     x = x + 2;
+# }
+
 result = parser.parse(s)
 
-## Prints the AST
+# ## Prints the AST
 # print result
 
 code = codeGenerator(result)
-## Prints the actual program
-# print code.ret
+# Prints the actual program
+print code.ret
 
 ## Makes the output file
 f = open("out.py", 'w')
