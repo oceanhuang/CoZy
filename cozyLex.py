@@ -2,7 +2,7 @@ import ply.lex as lex
 
 # List of token names.   This is always required
 reserved = {
-    'every' : 'EVERY',
+    # Days
     'Monday' : 'MONDAY',
     'Tuesday': 'TUESDAY',
     'Wednesday' : 'WEDNESDAY',
@@ -10,7 +10,23 @@ reserved = {
     'Friday' : 'FRIDAY',
     'Saturday' : 'SATURDAY',
     'Sunday' : 'SUNDAY',
+    # Months
+    'January': 'JANUARY',
+    'February': 'FEBRUARY',
+    'March': 'MARCH',
+    'April': 'APRIL',
+    'May': 'MAY',
+    'June': 'JUNE',
+    'July': 'JULY',
+    'August': 'AUGUST',
+    'September': 'SEPTEMBER',
+    'October': 'OCTOBER',
+    'November': 'NOVEMBER',
+    'December': 'DECEMBER',
+    # Other
+    'every' : 'EVERY',
     'def' : 'DEF',
+    'to' : 'TO',
 }
 
 tokens = [
@@ -24,6 +40,10 @@ tokens = [
     'ID',
     'SEMICOLON',
     'CONSTANT',
+    'DATE',
+    'TIME',
+    'DATETIME',
+    'TEMPERATURE',
 ] + list(reserved.values())
 
 # Regular expression rules for simple tokens
@@ -35,8 +55,25 @@ t_EQUALS    = r'='
 t_PLUS      = r'\+'
 t_MINUS     = r'\-'
 t_SEMICOLON = r';'
-t_CONSTANT  = r'[0-9]+|((\'|\").*?(\'|\"))'
-# A regular expression rule with some action code
+
+def t_DATETIME(t):
+    r'[0-3]?[0-9]/[01]?[0-9]/[0-9][0-9][0-9][0-9][ ][01]?[0-9]:[0-5][0-9][ ]((AM)|(PM))'
+    return t
+
+def t_DATE(t):
+    r'[0-3]?[0-9]/[01]?[0-9]/[0-9][0-9][0-9][0-9]'
+    return t
+def t_TEMPERATURE(t):
+    r'[0-9]+[ ]C|F|K'
+    return t
+
+def t_TIME(t):
+    r'[01]?[0-9]:[0-5][0-9][ ]((AM)|(PM))'
+    return t
+
+def t_CONSTANT(t):
+    r'[0-9]+|((\'|\").*?(\'|\"))'
+    return t
 
 def t_ID(t):
     r'[a-zA-Z_][a-zA-Z_0-9]*'
@@ -61,15 +98,19 @@ lexer = lex.lex()
 
 # Uncomment this lines to test
 # Put CODE HERE TO TEST LEXER
-# data = """
-# x=3+3;
-# y = 2 + "every";
-# z = Tuesday;
-# """
+data = """
+x=3+3;
+y = 2 + "every";
+z = Tuesday;
+y = 10:30 PM;
+x = 17 C;
+date = 01/12/1991;
+datetime = 12/12/2005 04:50 PM;
+"""
 # Give the lexer some input
-#lexer.input(data)
+lexer.input(data)
 # Tokenize
-# while True:
-#     tok = lexer.token()
-#     if not tok: break      # No more input
-#     print tok
+while True:
+    tok = lexer.token()
+    if not tok: break      # No more input
+    print tok
