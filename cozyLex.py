@@ -28,6 +28,14 @@ reserved = {
     'every' : 'EVERY',
     'def' : 'DEF',
     'to' : 'TO',
+    'or' : 'OR',
+    'and' : 'AND',
+    'if' : 'IF',
+    'else' : 'ELSE',
+    #'elif' : 'ELSEIF',
+    'while' : 'WHILE',
+    #'for' : 'FOR',
+    'print' : 'PRINT'
 }
 
 tokens = [
@@ -40,11 +48,18 @@ tokens = [
     'MINUS',
     'ID',
     'SEMICOLON',
+    'COLON',
     'CONSTANT',
     'DATE',
     'TIME',
     'DATETIME',
     'TEMPERATURE',
+    'MULTIPLY',
+    'DIVIDE',
+    'EQUIV',
+    'NONEQUIV',
+    'RELOP',
+    'COMMA',
 ] + list(reserved.values())
 
 # Regular expression rules for simple tokens
@@ -56,6 +71,14 @@ t_EQUALS    = r'='
 t_PLUS      = r'\+'
 t_MINUS     = r'\-'
 t_SEMICOLON = r';'
+t_COLON     = r':'
+t_MULTIPLY  = r'\*'
+t_DIVIDE    = r'/'
+t_EQUIV     = r'(==)'
+t_NONEQUIV  = r'(!=)'
+t_RELOP     = r'(<=)|(>=)|(<)|(>)'
+t_COMMA     = r'(,)'
+# A regular expression rule with some action code
 
 def t_DATETIME(t):
     r'[0-3]?[0-9]/[01]?[0-9]/[0-9][0-9][0-9][0-9][ ][01]?[0-9]:[0-5][0-9][ ]((AM)|(PM))'
@@ -73,7 +96,7 @@ def t_TIME(t):
     return t
 
 def t_CONSTANT(t):
-    r'[0-9]+|((\'|\").*?(\'|\"))'
+    r'[0-9]*\.?[0-9]+|((\'|\").*?(\'|\"))'
     return t
 
 def t_ID(t):
@@ -99,19 +122,33 @@ lexer = lex.lex()
 
 # Uncomment this lines to test
 # Put CODE HERE TO TEST LEXER
-data = """
-x=3+3;
-y = 2 + "every";
-z = Tuesday;
-y = 10:30 PM;
-x = 17 C;
-date = 01/12/1991;
-datetime = 12/12/2005 04:50 PM;
+if __name__ == '__main__':
+
+    data = """
+def poop(x,h,z) {
+    y = 2+2;
+    h = 4/5;
+    r = 5.5;
+    z;
+}
+
+while(x <= 2):
+{
+x = x + 1;
+}
+if(a and b):
+{
+z = 2 + 3 * 7/2;
+}
+else:
+{
+print("poop");
+}
 """
-# Give the lexer some input
-# lexer.input(data)
-# Tokenize
-# while True:
-#     tok = lexer.token()
-#     if not tok: break      # No more input
-#     print tok
+    # Give the lexer some input
+    lexer.input(data)
+    # Tokenize
+    while True:
+        tok = lexer.token()
+        if not tok: break      # No more input
+        print tok

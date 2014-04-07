@@ -33,11 +33,27 @@ class codeGenerator(object):
 
     # very basic function definition
     def _function_definition(self, tree, flag=None):
-        s = "def " + tree.children[0] + "() :\n"
+        s = "def " + tree.children[0] + "(" + self.dispatch(tree.children[1])+") :\n"
         lines = self.dispatch(tree.children[2]).splitlines()
         for line in lines:
             s+= "    " + line +"\n"
         return s
+
+    def _function_param_list(self, tree, flag=None):
+        if len(tree.children)==0:
+            return ''
+        else:
+            return self.dispatch(tree.children[0])
+
+    def _function_param(self, tree, flag=None):
+        if tree.leaf==None:
+           return  self.dispatch(tree.children[0]) + "," + self.dispatch(tree.children[1])
+        else:
+           return tree.leaf
+
+    def _function_param_end(self, tree, flag=None):
+        return tree.leaf
+
 
     def _statement_list(self, tree, flag=None):
         return self.dispatch(tree.children)
@@ -48,10 +64,45 @@ class codeGenerator(object):
     def _assignment_statement(self, tree, flag=None):
         return tree.leaf + " = " + self.dispatch(tree.children[0])
 
+    def _or_expression(self, tree, flag=None):
+        
+        if len(tree.children) == 1:
+            return self.dispatch(tree.children[0])
+        else:
+            return self.dispatch(tree.children[0]) + " " + tree.children[2] + " " + self.dispatch(tree.children[1])  
+
+    def _and_expression(self, tree, flag=None):
+        
+        if len(tree.children) == 1:
+            return self.dispatch(tree.children[0])
+        else:
+            return self.dispatch(tree.children[0]) + " " + tree.children[2] + " " + self.dispatch(tree.children[1])  
+
+    def _equality_expression(self, tree, flag=None):
+        
+        if len(tree.children) == 1:
+            return self.dispatch(tree.children[0])
+        else:
+            return self.dispatch(tree.children[0]) + " " + tree.children[2] + " " + self.dispatch(tree.children[1])  
+
+    def _relational_expression(self, tree, flag=None):
+        
+        if len(tree.children) == 1:
+            return self.dispatch(tree.children[0])
+        else:
+            return self.dispatch(tree.children[0]) + " " + tree.children[2] + " " + self.dispatch(tree.children[1])  
+
     def _additive_expression(self, tree, flag=None):
         
         if len(tree.children) == 1:
             return self.dispatch(tree.children[0])
+        else:
+            return self.dispatch(tree.children[0]) + " " + tree.children[2] + " " + self.dispatch(tree.children[1])  
+
+    def _multiplicative_expression(self, tree, flag=None):
+        
+        if len(tree.children) == 1:
+            return self.dispatch(tree.children[0]) 
         else:
             return self.dispatch(tree.children[0]) + " " + tree.children[2] + " " + self.dispatch(tree.children[1])
             
@@ -80,6 +131,25 @@ class codeGenerator(object):
         s += "', 'condition' : 'condition" + str(everys) + "'})"
         return s
 
+    def _iteration_statement(self, tree, flag=None):
+        s = "while(" + self.dispatch(tree.children[0]) + "):\n"
+        s += "\t" + self.dispatch(tree.children[1])
+        return s
+
+    def _selection_statement(self, tree, flag=None):
+        if len(tree.children) == 2:
+            s = "if(" + self.dispatch(tree.children[0]) + "):\n"
+            s += "\t" + self.dispatch(tree.children[1])
+            return s
+        else:
+            s = "if(" + self.dispatch(tree.children[0]) + "):\n"
+            s += "\t" + self.dispatch(tree.children[1])
+            s += "else:\n"
+            s += "\t" + self.dispatch(tree.children[2])
+            return s
+    def _print_statement(self, tree, flag=None):
+        s = "print " + self.dispatch(tree.children[0])
+        return s
 
     def _day_expression(self, tree, flag=None):
         s = "datetime.datetime.now().weekday() == "

@@ -1,0 +1,27 @@
+x=3+3;
+y = 2 + "every";
+z = Tuesday;
+y = 10:30 PM;
+x = 17 C;
+date = 01/12/1991;
+datetime = 12/12/2005 04:50 PM;
+
+def poop(x,h,z) {
+    y = 2+2;
+    h = 4/5;
+    r = 5.5;
+    z;
+}
+
+while(x <= 2):
+{
+x = x + 1;
+}
+if(a and b):
+{
+z = 2 + 3 * 7/2;
+}
+else:
+{
+print("poop");
+}
