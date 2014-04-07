@@ -35,6 +35,7 @@ class codeGenerator(object):
     def _function_definition(self, tree, flag=None):
         s = "def " + tree.children[0] + "(" + self.dispatch(tree.children[1])+") :\n"
         lines = self.dispatch(tree.children[2]).splitlines()
+
         for line in lines:
             s+= "    " + line +"\n"
         return s
