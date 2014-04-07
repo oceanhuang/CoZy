@@ -6,7 +6,7 @@ from codeGenerator import *
 
 class Node(object):
     """ Node class. Used to build the AST. Each node has a type,
-    children and a leaf. If it has a leaf it has *no* children.
+    children and a leaf.
     """
     # Function to initialize the node, needs type, the rest is
     # optional.
@@ -112,6 +112,35 @@ def p_primary_expression_days(p):
     """
     p[0] = Node('day_expression', [], p[1])
 
+def p_primary_expression_months(p):
+    """ primary_expression : JANUARY
+                           | FEBRUARY
+                           | MARCH
+                           | APRIL
+                           | MAY
+                           | JUNE
+                           | JULY
+                           | AUGUST
+                           | SEPTEMBER
+                           | OCTOBER
+                           | NOVEMBER
+                           | DECEMBER
+    """
+    p[0] = Node('month_expression', [], p[1])
+def p_primary_expression_date_time(p):
+    """ primary_expression : DATETIME """
+    p[0] = Node('date_time_expression', [], p[1])
+def p_primary_expression_date(p):
+    """ primary_expression : DATE """
+    p[0] = Node('date_expression', [], p[1])
+def p_primary_expression_temperature(p):
+    """ primary_expression : TEMPERATURE """
+    p[0] = Node('temperature_expression', [], p[1])
+def p_primary_expression_time(p):
+    """ primary_expression : TIME """
+    p[0] = Node('time_expression', [], p[1])
+
+
 def p_every_statement(p):
     """ every_statement : EVERY LPAREN additive_expression RPAREN LBRACK statement_list RBRACK """
     p[0] = Node("every_statement", [p[3], p[6]])
@@ -127,21 +156,11 @@ parser = yacc.yacc()
 
 ## Put code to test here
 s = """
-x = 3 + 4;
-y = x = 3;
-def test_test(){
-    poop = poop + poop;
-    x = 3 - 3;
-}
-every(Tuesday){ 
-    y = 10;
-    y = y - 100;
-}
-every(Wednesday){
-    x = 20;
-    x = x + 2;
-}
-
+x=3+3;
+y = 2 + "every";
+z = Tuesday;
+y = April;
+datetime = 12/12/2005 04:50 PM;
 """
 result = parser.parse(s)
 
@@ -154,5 +173,6 @@ code = codeGenerator(result)
 
 ## Makes the output file
 f = open("out.py", 'w')
+print code.ret
 f.write(code.ret)
 print 'Done!\nCheck "out.py"'

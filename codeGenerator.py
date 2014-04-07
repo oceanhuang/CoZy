@@ -1,4 +1,5 @@
 import datetime
+import re
 everys = 0
 class codeGenerator(object):
     def __init__(self, tree):
@@ -96,6 +97,47 @@ class codeGenerator(object):
             s += "5"
         elif tree.leaf == "Sunday":
             s += "6"
-        print s
+
+        return s
+    
+    def _month_expression(self, tree, flag=None):
+        s = "datetime.datetime.now().month() == "
+        if tree.leaf == "January":
+            s+= "0"
+        elif tree.leaf == 'February':
+            s+= "1"
+        elif tree.leaf == 'March':
+            s+= "2"
+        elif tree.leaf == 'April':
+            s+= "3"
+        elif tree.leaf == 'May':
+            s+= "4"
+        elif tree.leaf == 'June':
+            s+= "5"
+        elif tree.leaf == 'July':
+            s+= "6"
+        elif tree.leaf == 'August':
+            s+= "7"
+        elif tree.leaf == 'September':
+            s+= "8"
+        elif tree.leaf == 'October':
+            s+= "9"
+        elif tree.leaf == 'November':
+            s+= "10"
+        elif tree.leaf == 'December':
+            s+= "11"
+        else:
+            s+= "12"
         return s
 
+    def _date_time_expression(self, tree, flag=None):
+        p = re.compile(r'([0-3]?[0-9])/([01]?[0-9])/([0-9][0-9][0-9][0-9])[ ]([01]?[0-9]):([0-5][0-9][ ])((AM)|(PM))')
+        match = p.search(tree.leaf)
+        day = int(match.group(1))
+        month = int(match.group(2))
+        year = int(match.group(3))
+        hour = int(match.group(4))
+        minute = int(match.group(5))
+        print "Day: "
+        print day
+        return ""

@@ -1,4 +1,5 @@
 import ply.lex as lex
+import re
 
 # List of token names.   This is always required
 reserved = {
@@ -108,9 +109,9 @@ date = 01/12/1991;
 datetime = 12/12/2005 04:50 PM;
 """
 # Give the lexer some input
-lexer.input(data)
+# lexer.input(data)
 # Tokenize
-while True:
-    tok = lexer.token()
-    if not tok: break      # No more input
-    print tok
+# while True:
+#     tok = lexer.token()
+#     if not tok: break      # No more input
+#     print tok
