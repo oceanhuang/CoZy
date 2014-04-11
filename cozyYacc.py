@@ -165,16 +165,19 @@ def p_multiplicative_expresion(p):
     else:
         p[0] = Node("multiplicative_expression", [p[1], p[3], p[2]])
 
-# Change to include arrays
+# Change to include arrays... ALSO!! does "NOT" belong here...... also code generator needs to handle not
 def p_primary_expression(p):
     """ primary_expression : CONSTANT
                            | ID
-                           | LPAREN additive_expression RPAREN
+                           | LPAREN or_expression RPAREN
+                           | NOT LPAREN or_expression RPAREN
     """
     if len(p) == 2:
         p[0] = Node('primary_expression', [], p[1])
+    elif len(p) == 4:
+        p[0] = Node('primary_expression', [p[2]])
     else:
-        p[0] = Node('primary_expression', [p[1]])
+        p[0] = Node('primary_expression', [p[3]])
 
 def p_primary_expression_days(p):
     """ primary_expression : MONDAY
@@ -283,6 +286,7 @@ for i in 1 to 30:
 {
 x = 17;
 }
+a = not(true or false);
 """
 result = parser.parse(s)
 

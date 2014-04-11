@@ -36,7 +36,8 @@ reserved = {
     'while' : 'WHILE',
     'for' : 'FOR',
     'in' : 'IN', 
-    'print' : 'PRINT'
+    'print' : 'PRINT',
+    'not' : 'NOT'
 }
 
 tokens = [
@@ -61,6 +62,7 @@ tokens = [
     'NONEQUIV',
     'RELOP',
     'COMMA',
+    'BOOLEAN',
 ] + list(reserved.values())
 
 # Regular expression rules for simple tokens
@@ -79,6 +81,7 @@ t_EQUIV     = r'(==)'
 t_NONEQUIV  = r'(!=)'
 t_RELOP     = r'(<=)|(>=)|(<)|(>)'
 t_COMMA     = r'(,)'
+t_BOOLEAN   = r'true|false'
 # A regular expression rule with some action code
 
 def t_DATETIME(t):
