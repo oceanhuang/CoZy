@@ -18,7 +18,9 @@
 	       EVERY-STATEMENT |
 	       ONCE-STATEMENT  |
 	       RETURN-STATEMENT *;* |
-           PRINT-STATEMENT *;*
+               PRINT-STATEMENT *;* |
+               FOR-STATEMENT
+          
 
 
    ASSIGNMENT-STATEMENT -> ID *=* OR-EXPRESSION |  //code didn't work with ID = CONSTANT
@@ -74,6 +76,11 @@
 
    SELECTION-STATEMENT -> *if (* OR-EXPRESSION *) :\n* STATEMENT-LIST |
                           *if (* OR-EXPRESSION *) :\n* STATEMENT-LIST *else: * STATEMENT-LIST
+   
+   PRINT-STATEMENT -> *print (* OR-EXPRESSION *)*
+   
+   FOR-STATEMENT -> *for* ID *in* OR-EXPRESSION *to* OR-EXPRESSION *: \n* STATEMENT-LIST |
+   		    *for* ID *in* LIST *: \n* STATEMENT-LIST
    
    EVERY-STATEMENT -> *every* OR-EXPRESSION *: \n*
    
