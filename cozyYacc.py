@@ -94,6 +94,7 @@ def p_statement(p):
                   | iteration_statement
                   | selection_statement
                   | print_statement SEMICOLON
+                  | for_statement
     """
     p[0] = Node("statement", [p[1]])
 
@@ -243,6 +244,12 @@ def p_print_statement(p):
     """
     p[0] = Node("print_statement", [p[3]])
 
+#need to add foreach/ also confused about the grammar
+def p_for_statement(p):
+    """ for_statement : FOR primary_expression IN or_expression TO or_expression COLON LBRACK statement_list RBRACK
+    """
+    p[0] = Node("for_statement", [p[2], p[4], p[6], p[9]])
+
 # Error rule for syntax errors
 def p_error(p):
     print "Syntax error in input!"
@@ -272,6 +279,10 @@ else:
 {
 print("poop");
 }
+for i in 1 to 30:
+{
+x = 17;
+}
 """
 result = parser.parse(s)
 
@@ -283,6 +294,6 @@ code = codeGenerator(result)
 print code.ret
 
 ## Makes the output file
-f = open("out.py", 'w')
-f.write(code.ret)
-print 'Done!\nCheck "out.py"'
+#f = open("out.py", 'w')
+#f.write(code.ret)
+#print 'Done!\nCheck "out.py"'

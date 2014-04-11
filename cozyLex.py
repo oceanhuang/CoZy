@@ -34,7 +34,8 @@ reserved = {
     'else' : 'ELSE',
     #'elif' : 'ELSEIF',
     'while' : 'WHILE',
-    #'for' : 'FOR',
+    'for' : 'FOR',
+    'in' : 'IN', 
     'print' : 'PRINT'
 }
 
@@ -143,6 +144,10 @@ z = 2 + 3 * 7/2;
 else:
 {
 print("poop");
+}
+for i in 1 to 30:
+{
+x = i; 
 }
 """
     # Give the lexer some input
