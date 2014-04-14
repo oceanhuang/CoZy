@@ -89,11 +89,11 @@ def p_statement_list(p):
 
 # Add types of statements here, e.g. selection, iteration, etc!
 def p_statement(p):
-    """ statement : assignment_statement SEMICOLON NEWLINE
+    """ statement : assignment_statement NEWLINE
                   | every_statement
                   | iteration_statement
                   | selection_statement
-                  | print_statement SEMICOLON
+                  | print_statement NEWLINE
     """
     p[0] = Node("statement", [p[1]])
 
@@ -153,7 +153,6 @@ def p_additive_expresion(p):
         p[0] = Node("additive_expression", [p[1], p[3], p[2]])
 
 # Change to continue sequence in grammar i.e. function_expression, etc
-#also something is wrong because you can't do 7 + 3 *4
 def p_multiplicative_expresion(p):
     """ multiplicative_expression : primary_expression
                              | multiplicative_expression MULTIPLY primary_expression
@@ -239,7 +238,7 @@ def p_selection_statement(p):
         p[0] = Node("selection_statement", [p[3], p[8], p[14]]) #i dont know if this is even right
 
 def p_print_statement(p):
-    """ print_statement : PRINT LPAREN or_expression RPAREN SEMICOLON NEWLINE
+    """ print_statement : PRINT LPAREN or_expression RPAREN
     """
     p[0] = Node("print_statement", [p[3]])
 
@@ -270,28 +269,28 @@ parser = CoZyParser()
 
 ## Put code to test here
 s = """
-z=1;
+z=1
 
 while (z < 2):
-    z = z+1;
+    z = z+1
 
 if (a and b):
-    z = 5;
+    z = 5
 else:
-    z = 6;
+    print("hi")
 """
  
 
 result = parser.parse(s)
 
 # ## Prints the AST
-# print result
+print result
 
 code = codeGenerator(result)
 # Prints the actual program
 print code.ret
 
 ## Makes the output file
-f = open("out.py", 'w')
-f.write(code.ret)
-print 'Done!\nCheck "out.py"'
+#f = open("out.py", 'w')
+#f.write(code.ret)
+#print 'Done!\nCheck "out.py"'
