@@ -56,7 +56,8 @@
    PRIMARY-EXPRESSION -> CONSTANT |
                          ID |
                          *[* PARAMETER-LIST *]* |
-                         ( OR-EXPRESSION )
+                         ( OR-EXPRESSION ) |
+                         TEMPERATURE
 
    LIST-OPERATION-EXPRESSION -> ID *[* OR-EXPRESSION *]*
 
@@ -90,7 +91,7 @@
    
 
   
-   /* Temperature grammar */
+   *Temperature grammar*
    TEMPERATURE -> TEMPERATURE *+* TEMPERATURE_PRIM | 
                   TEMPERATURE *-* TEMPERATURE_PRIM | 
                   TEMPERATURE_PRIM
