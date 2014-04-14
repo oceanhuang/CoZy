@@ -24,7 +24,6 @@ TODO:
 - real input/output
 - change continous/now in lrm, language tutorial
 - Days of week -> Maybe change lexer or parse. Need to discus
-
 - Change LRM/Language Tutorial to reflect elimination of NOW/LOOP - Hannah
 - Clean github repo - Gio
 - Have something to take in input from sensor (depending on equipment arrival) - Daron/Ocean
