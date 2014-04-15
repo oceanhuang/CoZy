@@ -260,15 +260,17 @@ class CoZyParser(object):
     def parse(self, code):
         self.lexer.input(code)
         result = self.parser.parse(lexer = self.lexer)
-        print result
+        # print result
         return result
         # return ast.Module(None, result)
 
-# Build the parser
-parser = CoZyParser()
+if __name__ == '__main__':
 
-## Put code to test here
-s = """
+    # Build the parser
+    parser = CoZyParser()
+
+    ## Put code to test here
+    s = """
 z=1
 
 while (z < 2):
@@ -278,19 +280,19 @@ if (a and b):
     z = 5
 else:
     print("hi")
-"""
- 
+    """
+     
 
-result = parser.parse(s)
+    result = parser.parse(s)
 
-# ## Prints the AST
-print result
+    # ## Prints the AST
+    print result
 
-code = codeGenerator(result)
-# Prints the actual program
-print code.ret
+    code = codeGenerator(result)
+    # Prints the actual program
+    print code.ret
 
-## Makes the output file
-#f = open("out.py", 'w')
-#f.write(code.ret)
-#print 'Done!\nCheck "out.py"'
+    ## Makes the output file
+    #f = open("out.py", 'w')
+    #f.write(code.ret)
+    #print 'Done!\nCheck "out.py"'
