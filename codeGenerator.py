@@ -9,7 +9,8 @@ class codeGenerator(object):
         # Symbols table
         self.symbolsTable = {}
         # Variable to store the code
-        self.ret = "every_list = []\n" + self.dispatch(tree)
+        self.ret = "import datetime\n" + self.dispatch(tree)
+        # "every_list = []\n" + 
         # Keeps track of the number of every's
 
     
