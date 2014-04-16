@@ -1,4 +1,8 @@
 '''
+Run this test by going to the top directory of this project and running:
+
+python -m test.testCoZy
+
 To add new CoZy codes, just follow the examples below.
 
 CoZyTester does the following:
@@ -60,6 +64,8 @@ myTester.run_code(s, None)
 s = '''
 z = 4
 while (z > 2):
+    if(z > 5):
+        z = 2
     z = z-1
 ret = z
 '''
@@ -70,6 +76,7 @@ s= '''
 z = 4
 if (z > 5):
     print("z > 5")
+
 else:
     ret = z
 '''
