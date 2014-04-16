@@ -88,7 +88,7 @@ def t_DATE(t):
     r'[0-3]?[0-9]/[01]?[0-9]/[0-9][0-9][0-9][0-9]'
     return t
 def t_TEMPERATURE(t):
-    r'[0-9]+[ ]C|F|K'
+    r'[0-9]+[ ]*[C|F|K]'
     return t
 
 def t_TIME(t):

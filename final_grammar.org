@@ -90,7 +90,8 @@
    
 
   
-   /* Temperature grammar */
+   *Temperature grammar*
+
    TEMPERATURE -> TEMPERATURE *+* TEMPERATURE_PRIM | 
                   TEMPERATURE *-* TEMPERATURE_PRIM | 
                   TEMPERATURE_PRIM
