@@ -265,7 +265,7 @@ result = parser.parse(s)
 ## Prints the AST
 print result
 
-code = semanticAnalyzer(result)
+code = codeGenerator(result)
 ## Prints the actual program
 print code.ret
 
