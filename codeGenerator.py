@@ -135,7 +135,10 @@ class codeGenerator(object):
 
     def _iteration_statement(self, tree, flag=None):
         s = "while(" + self.dispatch(tree.children[0]) + "):\n"
-        s += "\t" + self.dispatch(tree.children[1])
+        lines = self.dispatch(tree.children[1]).splitlines()
+
+        for line in lines:
+            s+= "    " + line +"\n"
         return s
 
     def _selection_statement(self, tree, flag=None):
