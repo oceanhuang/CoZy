@@ -10,17 +10,11 @@ Done:
 
 TODO:
 -----
-<<<<<<< HEAD
+
 - functions - Daron
 - if/else/while/for - Hannah
 - arithmetic expressions - Hannah
 - logic expressions - Hannah
-=======
-- functions
-- if/else/while/for
-- arithmetic expressions - DARON
-- logic expressions
->>>>>>> daron
 - Generate correct code for "every" statement -> Nathan
 - scoping -> Gio
 - use tabs for scoping - OCEAN
@@ -30,10 +24,6 @@ TODO:
 - real input/output
 - change continous/now in lrm, language tutorial
 - Days of week -> Maybe change lexer or parse. Need to discus
-<<<<<<< HEAD
 - Change LRM/Language Tutorial to reflect elimination of NOW/LOOP - Hannah
 - Clean github repo - Gio
 - Have something to take in input from sensor (depending on equipment arrival) - Daron/Ocean
-
-=======
->>>>>>> daron

@@ -219,3 +219,8 @@ class codeGenerator(object):
         print "Day: "
         print day
         return ""
+
+    def _temperature_expression(self, tree, flag=None):
+        return tree.leaf
+
+

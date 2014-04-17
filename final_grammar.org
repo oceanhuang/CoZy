@@ -12,17 +12,19 @@
                     STATEMEN-LIST STATEMENT *\n*
 
 
-  STATEMENT -> ASSIGNMENT-STATEMENT |
+  STATEMENT -> ASSIGNMENT-STATEMENT *;*|
 	       SELECTION-STATEMENT |
 	       ITERATION-STATEMENT |
 	       EVERY-STATEMENT |
-	       ONCE-STATEMENT
-	       RETURN-STATEMENT
+	       ONCE-STATEMENT  |
+	       RETURN-STATEMENT *;* |
+               PRINT-STATEMENT *;* |
+               FOR-STATEMENT
+          
 
 
-   ASSIGNMENT-STATEMENT -> ID *=* CONSTANT |
-                           ID *=* ASSIGNMENT-STATEMENT
-			   OR-EXPRESION
+   ASSIGNMENT-STATEMENT -> ID *=* OR-EXPRESSION |  //code didn't work with ID = CONSTANT
+                           ID *=* ASSIGNMENT-STATEMENT OR-EXPRESION
 			    
    OR-EXPRESSION -> AND-EXPRESSION |
                     OR-EXPRESSION *or* AND-EXPRESSION
@@ -41,20 +43,27 @@
                             RELATIONAL-EXPRESSION *>=* ADDITIVE-EXPRESSION
 
    ADDITIVE-EXPRESSION -> MULTIPLICATIVE-EXPRESSION |
-                          ADDITIVE-EXPRESSION *+* MULTIPLICATIVE-EXPRESSION
+                          ADDITIVE-EXPRESSION *+* MULTIPLICATIVE-EXPRESSION |
                           ADDITIVE-EXPRESSION *-* MULTIPLICATIVE-EXPRESSION
 
-   MULTIPLICATIVE-EXPRESSION -> FUCNTION-EXPRESSION |
-                                MULTIPLICATIVE-EXPRESSION *** PRIMARY-EXPRESSION
-				MULTIPLICATIVE-EXPRESSION */* PRIMARY-EXPRESSION
+   MULTIPLICATIVE-EXPRESSION -> FUNCTION-EXPRESSION |
+                                MULTIPLICATIVE-EXPRESSION *** FUNCTION-EXPRESSION |
+                				MULTIPLICATIVE-EXPRESSION */* FUNCTION-EXPRESSION
 
-   //FUNCTION-EXPRESSION -> PRIMARY-EXPRESSION |
-                          ID *(* PARAMETER-LIST-START *)* //deprecated
+   FUNCTION-EXPRESSION -> PRIMARY-EXPRESSION |
+                          ID *(* PARAMETER-LIST-START *)*
 
    PRIMARY-EXPRESSION -> CONSTANT |
                          ID |
                          *[* PARAMETER-LIST *]* |
-                         ( OR-EXPRESSION )
+                         ( OR-EXPRESSION ) |
+                         TEMPERATURE |
+                         DATE |
+                         DATETIME |
+                         TIME |
+                         MONTH |
+                         DAY 
+
 
    LIST-OPERATION-EXPRESSION -> ID *[* OR-EXPRESSION *]*
 
@@ -75,11 +84,50 @@
    SELECTION-STATEMENT -> *if (* OR-EXPRESSION *) :\n* STATEMENT-LIST |
                           *if (* OR-EXPRESSION *) :\n* STATEMENT-LIST *else: * STATEMENT-LIST
    
+   PRINT-STATEMENT -> *print (* OR-EXPRESSION *)*
+   
+   FOR-STATEMENT -> *for* ID *in* OR-EXPRESSION *to* OR-EXPRESSION *: \n* STATEMENT-LIST |
+   		    *for* ID *in* LIST *: \n* STATEMENT-LIST
+   
    EVERY-STATEMENT -> *every* OR-EXPRESSION *: \n*
    
    ONCE-STATEMENT -> *once every* OR-EXPRESION *: \n*
    
    RETURN-STATEMENT -> *return* | *return expression*
+  
+   MONTH ->  JANUARY
+           | FEBRUARY
+           | MARCH
+           | APRIL
+           | MAY
+           | JUNE
+           | JULY
+           | AUGUST
+           | SEPTEMBER
+           | OCTOBER
+           | NOVEMBER
+           | DECEMBER
    
+   DAY -> MONDAY
+           | TUESDAY
+           | WEDNESDAY
+           | THURSDAY
+           | FRIDAY
+           | SATURDAY
+           | SUNDAY
 
-   
+
+
+
+   Might Not actually need this
+   ----------------------------
+   *Temperature grammar*
+   TEMPERATURE -> TEMPERATURE *+* TEMPERATURE_PRIM | 
+                  TEMPERATURE *-* TEMPERATURE_PRIM | 
+                  TEMPERATURE_PRIM
+
+   TEMPERATURE_PRIM -> *temp_constant* |
+                       *temp_constant* *** CONSTANT |
+                       *temp_constant* */* CONSTANT |
+                       CONSTANT *** *temp_constant*
+
