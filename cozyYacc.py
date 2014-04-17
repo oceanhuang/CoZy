@@ -232,7 +232,8 @@ def p_selection_statement(p):
     """ selection_statement : IF LPAREN or_expression RPAREN COLON NEWLINE INDENT statement_list DEDENT
                             | IF LPAREN or_expression RPAREN COLON NEWLINE INDENT statement_list DEDENT ELSE COLON NEWLINE INDENT statement_list DEDENT
     """
-    if len(p) == 9:
+    print len(p)
+    if len(p) == 10:
         p[0] = Node("selection_statement", [p[3], p[8]])
     else:
         p[0] = Node("selection_statement", [p[3], p[8], p[14]]) #i dont know if this is even right
