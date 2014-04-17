@@ -131,6 +131,9 @@ def t_error(t):
     print "Illegal character '%s'" % t.value[0]
     t.lexer.skip(1)
 
+# the following methods: track_tokens_filter(), _new_token(), DEDENT(), INDENT(), indentation_filter(), filter(), and CoZyLexer() are from:
+# http://www.dalkescientific.com/writings/diary/GardenSnake.py
+# 
 # Python's syntax has three INDENT states
 #  0) no colon hence no need to indent
 #  1) "if 1: go()" - simple statements have a COLON but no need for an indent
