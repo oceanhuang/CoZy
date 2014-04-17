@@ -21,21 +21,20 @@ run_code:
     else:
         prints the variable 'ret'
 '''
+import sys
+sys.path.append("..")
 
-
-from cozyLex import *
-from codeGenerator import *
-from cozyYacc import *
+import cozyLex, cozyYacc, codeGenerator
 
 class CoZyTester:
     def __init__(self):
         # Build the parser
-        self.parser = CoZyParser()
+        self.parser = cozyYacc.CoZyParser()
 
 
     def run_code(self, code_str, output):
         result = self.parser.parse(code_str)
-        code = codeGenerator(result).ret
+        code = codeGenerator.codeGenerator(result).ret
         print code
         # print locals()
         exec code in locals()
@@ -64,10 +63,15 @@ myTester.run_code(s, None)
 s = '''
 z = 4
 while (z > 2):
-    if(z > 5):
-        z = 2
     z = z-1
-ret = z
+    k = 5
+    if (k == 5):
+        k = k+1
+        k = k-1
+    else:
+        k = k-1
+        k = k+1
+ret = z    
 '''
 myTester.run_code(s, 2)
 
