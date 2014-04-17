@@ -144,13 +144,20 @@ class codeGenerator(object):
     def _selection_statement(self, tree, flag=None):
         if len(tree.children) == 2:
             s = "if(" + self.dispatch(tree.children[0]) + "):\n"
-            s += "\t" + self.dispatch(tree.children[1])
+            lines = self.dispatch(tree.children[1]).splitlines()
+            for line in lines:
+                s+= "    " + line +"\n"
             return s
         else:
             s = "if(" + self.dispatch(tree.children[0]) + "):\n"
-            s += "\t" + self.dispatch(tree.children[1])
+            lines = self.dispatch(tree.children[1]).splitlines()
+            for line in lines:
+                s+= "    " + line +"\n"
             s += "else:\n"
-            s += "\t" + self.dispatch(tree.children[2])
+            lines = self.dispatch(tree.children[2]).splitlines()
+
+            for line in lines:
+                s+= "    " + line +"\n"
             return s
     def _print_statement(self, tree, flag=None):
         s = "print " + self.dispatch(tree.children[0])
