@@ -307,18 +307,11 @@ if __name__ == '__main__':
 
     # code
     data = """
-def poop():
-    y = 2+2;
-    h = 4/5;
-    r = 5.5;
-
-while (x <= 2):
-    x = x + 1;
-
-if (a and b):
-    z = 2 + 3 * 7/2;
-else:
-    print("poop");        
+z = 4
+while (z > 2):
+    z = z-1
+    if(z > 5):
+        z = 2       
 """
 #     data = """
 # x=3+3;

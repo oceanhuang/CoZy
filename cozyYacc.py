@@ -271,16 +271,11 @@ if __name__ == '__main__':
 
     ## Put code to test here
     s = """
-z=1
-
-while (z < 2):
-    z = z+1
-
-if (a and b):
-    z = 5
-else:
-    print("hi")
-    """
+z = 4
+while (z > 2):
+    z = z-1
+    k = 5
+"""
      
 
     result = parser.parse(s)
