@@ -9,7 +9,8 @@ class codeGenerator(object):
         # Symbols table
         self.symbolsTable = {}
         # Variable to store the code
-        self.ret = "every_list = []\n" + self.dispatch(tree)
+        self.ret = "import datetime\n" + self.dispatch(tree)
+        # "every_list = []\n" + 
         # Keeps track of the number of every's
 
     
@@ -35,6 +36,7 @@ class codeGenerator(object):
     def _function_definition(self, tree, flag=None):
         s = "def " + tree.children[0] + "(" + self.dispatch(tree.children[1])+") :\n"
         lines = self.dispatch(tree.children[2]).splitlines()
+
         for line in lines:
             s+= "    " + line +"\n"
         return s
@@ -134,19 +136,29 @@ class codeGenerator(object):
 
     def _iteration_statement(self, tree, flag=None):
         s = "while(" + self.dispatch(tree.children[0]) + "):\n"
-        s += "\t" + self.dispatch(tree.children[1])
+        lines = self.dispatch(tree.children[1]).splitlines()
+
+        for line in lines:
+            s+= "    " + line +"\n"
         return s
 
     def _selection_statement(self, tree, flag=None):
         if len(tree.children) == 2:
             s = "if(" + self.dispatch(tree.children[0]) + "):\n"
-            s += "\t" + self.dispatch(tree.children[1])
+            lines = self.dispatch(tree.children[1]).splitlines()
+            for line in lines:
+                s+= "    " + line +"\n"
             return s
         else:
             s = "if(" + self.dispatch(tree.children[0]) + "):\n"
-            s += "\t" + self.dispatch(tree.children[1])
+            lines = self.dispatch(tree.children[1]).splitlines()
+            for line in lines:
+                s+= "    " + line +"\n"
             s += "else:\n"
-            s += "\t" + self.dispatch(tree.children[2])
+            lines = self.dispatch(tree.children[2]).splitlines()
+
+            for line in lines:
+                s+= "    " + line +"\n"
             return s
 
     def _print_statement(self, tree, flag=None):
@@ -156,7 +168,10 @@ class codeGenerator(object):
     def _for_statement(self, tree, flag=None):
         #for iterator in a range
         s = "for " + self.dispatch(tree.children[0]) + " in range( " + self.dispatch(tree.children[1]) + " , " + self.dispatch(tree.children[2]) + " + 1 ) : \n"
-        s += "\t" + self.dispatch(tree.children[3])
+        lines = self.dispatch(tree.children[3]).splitlines()
+
+        for line in lines:
+            s+= "    " + line +"\n"
         return s
     
     def _day_expression(self, tree, flag=None):

@@ -1,7 +1,8 @@
 import ply.yacc as yacc
+from compiler import ast, misc
 
 # Get the token map from the lexer.  This is required.
-from cozyLex import tokens
+from cozyLex import *
 from codeGenerator import *
 
 class Node(object):
@@ -51,9 +52,10 @@ def p_external_declaration(p):
 
 # Needs to include parameter_list
 def p_function_definition(p):
-    'function_definition : DEF ID LPAREN function_param_list RPAREN LBRACK statement_list RBRACK'
 
-    p[0] = Node("function_definition", [p[2], p[4], p[7]]);
+    'function_definition : DEF ID LPAREN function_param_list RPAREN COLON NEWLINE INDENT statement_list DEDENT'
+
+    p[0] = Node("function_definition", [p[2], p[4], p[9]]);
 
 def p_function_param_list(p):
     'function_param_list : function_param' #need to handle empty string
@@ -76,8 +78,6 @@ def p_function_param_end(p):
     'function_param_end : ID'
     p[0] = Node('function_param_end', [], p[1])
 
-
-
 def p_statement_list(p):
     """ statement_list : statement
                        | statement_list statement
@@ -89,12 +89,13 @@ def p_statement_list(p):
 
 # Add types of statements here, e.g. selection, iteration, etc!
 def p_statement(p):
-    """ statement : assignment_statement SEMICOLON
+    """ statement : assignment_statement NEWLINE
                   | every_statement
                   | iteration_statement
                   | selection_statement
                   | print_statement SEMICOLON
                   | for_statement
+                  | print_statement NEWLINE
     """
     p[0] = Node("statement", [p[1]])
 
@@ -154,7 +155,6 @@ def p_additive_expresion(p):
         p[0] = Node("additive_expression", [p[1], p[3], p[2]])
 
 # Change to continue sequence in grammar i.e. function_expression, etc
-#also something is wrong because you can't do 7 + 3 *4
 def p_multiplicative_expresion(p):
     """ multiplicative_expression : primary_expression
                              | multiplicative_expression MULTIPLY primary_expression
@@ -223,24 +223,24 @@ def p_primary_expression_time(p):
     p[0] = Node('time_expression', [], p[1])
 
 def p_every_statement(p):
-    """ every_statement : EVERY LPAREN additive_expression RPAREN LBRACK statement_list RBRACK """
+    """ every_statement : EVERY LPAREN additive_expression RPAREN INDENT statement_list DEDENT """
     p[0] = Node("every_statement", [p[3], p[6]])
 
 #fix this when tabs and newlines happen
 def p_iteration_statement(p):
-    """ iteration_statement : WHILE LPAREN or_expression RPAREN COLON LBRACK statement_list RBRACK
+    """ iteration_statement : WHILE LPAREN or_expression RPAREN COLON NEWLINE INDENT statement_list DEDENT
     """
-    p[0] = Node("iteration_statement", [p[3], p[7]])
+    p[0] = Node("iteration_statement", [p[3], p[8]])
 
 #need to add elif
 def p_selection_statement(p):
-    """ selection_statement : IF LPAREN or_expression RPAREN COLON LBRACK statement_list RBRACK
-                            | IF LPAREN or_expression RPAREN COLON LBRACK statement_list RBRACK ELSE COLON LBRACK statement_list RBRACK 
+    """ selection_statement : IF LPAREN or_expression RPAREN COLON NEWLINE INDENT statement_list DEDENT
+                            | IF LPAREN or_expression RPAREN COLON NEWLINE INDENT statement_list DEDENT ELSE COLON NEWLINE INDENT statement_list DEDENT
     """
-    if len(p) == 9:
-        p[0] = Node("selection_statement", [p[3], p[7]])
+    if len(p) == 10:
+        p[0] = Node("selection_statement", [p[3], p[8]])
     else:
-        p[0] = Node("selection_statement", [p[3], p[7], p[12]]) #i dont know if this is even right
+        p[0] = Node("selection_statement", [p[3], p[8], p[14]]) #i dont know if this is even right
 
 def p_print_statement(p):
     """ print_statement : PRINT LPAREN or_expression RPAREN
@@ -249,41 +249,56 @@ def p_print_statement(p):
 
 #need to add foreach/ also confused about the grammar
 def p_for_statement(p):
-    """ for_statement : FOR primary_expression IN or_expression TO or_expression COLON LBRACK statement_list RBRACK
+    """ for_statement : FOR primary_expression IN or_expression TO or_expression COLON NEWLINE INDENT statement_list DEDENT
     """
-    p[0] = Node("for_statement", [p[2], p[4], p[6], p[9]])
+    p[0] = Node("for_statement", [p[2], p[4], p[6], p[10]])
 
 # Error rule for syntax errors
 def p_error(p):
     print "Syntax error in input!"
-    print p
+    if not hasattr(p, 'line') and not hasattr(p, 'lexpos'):
+        print p.type
+    else: print p
 
-# Build the parser
-parser = yacc.yacc()
-    
+# wrap default parser into CoZy parser
+class CoZyParser(object):
+    def __init__(self, lexer = None):
+        if lexer is None:
+            lexer = CoZyLexer()
+        self.lexer = lexer
+        self.parser = yacc.yacc()
 
-## Put code to test here
-s = """
-def poop(x,h,z) {
-y = 60F;
-x = 2+2;
-}
-for i in 1 to 30:
-{
-x = 17;
-}
-a = not(true or false);
+    def parse(self, code):
+        self.lexer.input(code)
+        result = self.parser.parse(lexer = self.lexer)
+        # print result
+        return result
+        # return ast.Module(None, result)
+
+if __name__ == '__main__':
+
+    # Build the parser
+    parser = CoZyParser()
+
+    ## Put code to test here
+    s = """
+z = 4
+while (z > 2):
+    z = z-1
+    k = 5
 """
-result = parser.parse(s)
+     
 
-## Prints the AST
-print result
+    result = parser.parse(s)
 
-code = codeGenerator(result)
-## Prints the actual program
-print code.ret
+    # ## Prints the AST
+    print result
 
-## Makes the output file
-#f = open("out.py", 'w')
-#f.write(code.ret)
-#print 'Done!\nCheck "out.py"'
+    code = codeGenerator(result)
+    # Prints the actual program
+    print code.ret
+
+    ## Makes the output file
+    #f = open("out.py", 'w')
+    #f.write(code.ret)
+    #print 'Done!\nCheck "out.py"'
