@@ -3,7 +3,6 @@ import ply.yacc as yacc
 # Get the token map from the lexer.  This is required.
 from cozyLex import tokens
 from codeGenerator import *
-from semanticAnalyzer import *
 
 class Node(object):
     """ Node class. Used to build the AST. Each node has a type,
@@ -255,9 +254,32 @@ parser = yacc.yacc()
 
 ## Put code to test here
 s = """
+x=3+3;
+y = 2 + "every";
+z = Tuesday;
+y = 10:30 PM;
+x = 17 C;
+date = 01/12/1991;
+datetime = 12/12/2005 04:50 PM;
+
 def poop(x,h,z) {
-y = 60F;
-x = 2+2;
+    y = 2+2;
+    h = 4/5;
+    r = 5.5;
+    z;
+}
+
+while x <= 2 :
+{
+x = x + 1;
+}
+if a and b :
+{
+z = 2 + 3 * 7/2;
+}
+else:
+{
+print "poop" ;
 }
 """
 result = parser.parse(s)

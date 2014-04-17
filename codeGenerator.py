@@ -132,17 +132,17 @@ class codeGenerator(object):
         return s
 
     def _iteration_statement(self, tree, flag=None):
-        s = "while(" + self.dispatch(tree.children[0]) + "):\n"
+        s = "while " + self.dispatch(tree.children[0]) + " :\n"
         s += "\t" + self.dispatch(tree.children[1])
         return s
 
     def _selection_statement(self, tree, flag=None):
         if len(tree.children) == 2:
-            s = "if(" + self.dispatch(tree.children[0]) + "):\n"
+            s = "if " + self.dispatch(tree.children[0]) + " :\n"
             s += "\t" + self.dispatch(tree.children[1])
             return s
         else:
-            s = "if(" + self.dispatch(tree.children[0]) + "):\n"
+            s = "if " + self.dispatch(tree.children[0]) + " :\n"
             s += "\t" + self.dispatch(tree.children[1])
             s += "else:\n"
             s += "\t" + self.dispatch(tree.children[2])
