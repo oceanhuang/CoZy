@@ -105,7 +105,8 @@ class codeGenerator(object):
             return self.dispatch(tree.children[0]) 
         else:
             return self.dispatch(tree.children[0]) + " " + tree.children[2] + " " + self.dispatch(tree.children[1])
-            
+
+    #this needs to be fixed        
     def _primary_expression(self, tree, flag=None):
         if tree.leaf == None:
             return "( " + self.dispatch(tree.children[0]) + " )"
@@ -147,10 +148,17 @@ class codeGenerator(object):
             s += "else:\n"
             s += "\t" + self.dispatch(tree.children[2])
             return s
+
     def _print_statement(self, tree, flag=None):
         s = "print " + self.dispatch(tree.children[0])
         return s
 
+    def _for_statement(self, tree, flag=None):
+        #for iterator in a range
+        s = "for " + self.dispatch(tree.children[0]) + " in range( " + self.dispatch(tree.children[1]) + " , " + self.dispatch(tree.children[2]) + " + 1 ) : \n"
+        s += "\t" + self.dispatch(tree.children[3])
+        return s
+    
     def _day_expression(self, tree, flag=None):
         s = "datetime.datetime.now().weekday() == "
         if tree.leaf == "Monday":

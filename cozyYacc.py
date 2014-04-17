@@ -94,6 +94,7 @@ def p_statement(p):
                   | iteration_statement
                   | selection_statement
                   | print_statement SEMICOLON
+                  | for_statement
     """
     p[0] = Node("statement", [p[1]])
 
@@ -164,16 +165,19 @@ def p_multiplicative_expresion(p):
     else:
         p[0] = Node("multiplicative_expression", [p[1], p[3], p[2]])
 
-# Change to include arrays
+# Change to include arrays... ALSO!! does "NOT" belong here...... also code generator needs to handle not
 def p_primary_expression(p):
     """ primary_expression : CONSTANT
                            | ID
-                           | LPAREN additive_expression RPAREN
+                           | LPAREN or_expression RPAREN
+                           | NOT LPAREN or_expression RPAREN
     """
     if len(p) == 2:
         p[0] = Node('primary_expression', [], p[1])
+    elif len(p) == 4:
+        p[0] = Node('primary_expression', [p[2]])
     else:
-        p[0] = Node('primary_expression', [p[1]])
+        p[0] = Node('primary_expression', [p[3]])
 
 def p_primary_expression_days(p):
     """ primary_expression : MONDAY
@@ -243,6 +247,12 @@ def p_print_statement(p):
     """
     p[0] = Node("print_statement", [p[2]])
 
+#need to add foreach/ also confused about the grammar
+def p_for_statement(p):
+    """ for_statement : FOR primary_expression IN or_expression TO or_expression COLON LBRACK statement_list RBRACK
+    """
+    p[0] = Node("for_statement", [p[2], p[4], p[6], p[9]])
+
 # Error rule for syntax errors
 def p_error(p):
     print "Syntax error in input!"
@@ -281,6 +291,11 @@ else:
 {
 print "poop" ;
 }
+for i in 1 to 30:
+{
+x = 17;
+}
+a = not(true or false);
 """
 result = parser.parse(s)
 
@@ -292,6 +307,6 @@ code = codeGenerator(result)
 print code.ret
 
 ## Makes the output file
-f = open("out.py", 'w')
-f.write(code.ret)
-print 'Done!\nCheck "out.py"'
+#f = open("out.py", 'w')
+#f.write(code.ret)
+#print 'Done!\nCheck "out.py"'

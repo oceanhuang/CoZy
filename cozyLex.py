@@ -34,8 +34,10 @@ reserved = {
     'else' : 'ELSE',
     #'elif' : 'ELSEIF',
     'while' : 'WHILE',
-    #'for' : 'FOR',
-    'print' : 'PRINT'
+    'for' : 'FOR',
+    'in' : 'IN', 
+    'print' : 'PRINT',
+    'not' : 'NOT'
 }
 
 tokens = [
@@ -60,6 +62,7 @@ tokens = [
     'NONEQUIV',
     'RELOP',
     'COMMA',
+    'BOOLEAN',
 ] + list(reserved.values())
 
 # Regular expression rules for simple tokens
@@ -78,6 +81,7 @@ t_EQUIV     = r'(==)'
 t_NONEQUIV  = r'(!=)'
 t_RELOP     = r'(<=)|(>=)|(<)|(>)'
 t_COMMA     = r'(,)'
+t_BOOLEAN   = r'true|false'
 # A regular expression rule with some action code
 
 def t_DATETIME(t):
@@ -143,6 +147,10 @@ z = 2 + 3 * 7/2;
 else:
 {
 print("poop");
+}
+for i in 1 to 30:
+{
+x = i; 
 }
 """
     # Give the lexer some input
