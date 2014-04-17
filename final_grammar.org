@@ -57,7 +57,13 @@
                          ID |
                          *[* PARAMETER-LIST *]* |
                          ( OR-EXPRESSION ) |
-                         TEMPERATURE
+                         TEMPERATURE |
+                         DATE |
+                         DATETIME |
+                         TIME |
+                         MONTH |
+                         DAY 
+
 
    LIST-OPERATION-EXPRESSION -> ID *[* OR-EXPRESSION *]*
 
@@ -88,9 +94,33 @@
    ONCE-STATEMENT -> *once every* OR-EXPRESION *: \n*
    
    RETURN-STATEMENT -> *return* | *return expression*
-   
-
   
+   MONTH ->  JANUARY
+           | FEBRUARY
+           | MARCH
+           | APRIL
+           | MAY
+           | JUNE
+           | JULY
+           | AUGUST
+           | SEPTEMBER
+           | OCTOBER
+           | NOVEMBER
+           | DECEMBER
+   
+   DAY -> MONDAY
+           | TUESDAY
+           | WEDNESDAY
+           | THURSDAY
+           | FRIDAY
+           | SATURDAY
+           | SUNDAY
+
+
+
+
+   Might Not actually need this
+   ----------------------------
    *Temperature grammar*
    TEMPERATURE -> TEMPERATURE *+* TEMPERATURE_PRIM | 
                   TEMPERATURE *-* TEMPERATURE_PRIM | 
