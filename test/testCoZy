@@ -13,15 +13,15 @@ def poop(x,h,z) {
     z;
 }
 
-while(x <= 2):
+while x <= 2:
 {
 x = x + 1;
 }
-if(a and b):
+if a and b :
 {
 z = 2 + 3 * 7/2;
 }
 else:
 {
-print("poop");
+print "poop";
 }
