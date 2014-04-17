@@ -3,7 +3,6 @@ import ply.yacc as yacc
 # Get the token map from the lexer.  This is required.
 from cozyLex import tokens
 from codeGenerator import *
-from semanticAnalyzer import *
 
 class Node(object):
     """ Node class. Used to build the AST. Each node has a type,
