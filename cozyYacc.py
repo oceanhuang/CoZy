@@ -286,6 +286,9 @@ z = 4
 while (z > 2):
     z = z-1
     k = 5
+
+def poop(x,z):
+    x = 2
 """
      
 

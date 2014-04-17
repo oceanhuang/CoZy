@@ -95,3 +95,11 @@ for i in 1 to 30:
 ret = x
 '''
 myTester.run_code(s, 31)
+
+#test for function def
+s='''
+def poop(x):
+    x = 2+2
+
+'''
+myTester.run_code(s, 4)
