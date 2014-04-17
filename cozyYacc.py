@@ -220,29 +220,29 @@ def p_primary_expression_time(p):
     p[0] = Node('time_expression', [], p[1])
 
 def p_every_statement(p):
-    """ every_statement : EVERY LPAREN additive_expression RPAREN LBRACK statement_list RBRACK """
-    p[0] = Node("every_statement", [p[3], p[6]])
+    """ every_statement : EVERY additive_expression LBRACK statement_list RBRACK """
+    p[0] = Node("every_statement", [p[2], p[4]])
 
 #fix this when tabs and newlines happen
 def p_iteration_statement(p):
-    """ iteration_statement : WHILE LPAREN or_expression RPAREN COLON LBRACK statement_list RBRACK
+    """ iteration_statement : WHILE or_expression COLON LBRACK statement_list RBRACK
     """
-    p[0] = Node("iteration_statement", [p[3], p[7]])
+    p[0] = Node("iteration_statement", [p[2], p[5]])
 
 #need to add elif
 def p_selection_statement(p):
-    """ selection_statement : IF LPAREN or_expression RPAREN COLON LBRACK statement_list RBRACK
-                            | IF LPAREN or_expression RPAREN COLON LBRACK statement_list RBRACK ELSE COLON LBRACK statement_list RBRACK 
+    """ selection_statement : IF or_expression COLON LBRACK statement_list RBRACK
+                            | IF or_expression COLON LBRACK statement_list RBRACK ELSE COLON LBRACK statement_list RBRACK 
     """
     if len(p) == 9:
-        p[0] = Node("selection_statement", [p[3], p[7]])
+        p[0] = Node("selection_statement", [p[2], p[5]])
     else:
-        p[0] = Node("selection_statement", [p[3], p[7], p[12]]) #i dont know if this is even right
+        p[0] = Node("selection_statement", [p[2], p[5], p[10]]) #i dont know if this is even right
 
 def p_print_statement(p):
-    """ print_statement : PRINT LPAREN or_expression RPAREN
+    """ print_statement : PRINT or_expression
     """
-    p[0] = Node("print_statement", [p[3]])
+    p[0] = Node("print_statement", [p[2]])
 
 # Error rule for syntax errors
 def p_error(p):
