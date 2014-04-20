@@ -282,13 +282,7 @@ if __name__ == '__main__':
 
     ## Put code to test here
     s = """
-z = 4
-while (z > 2):
-    z = z-1
-    k = 5
-
-def poop(x,z):
-    x = 2
+bday = 16/07/1991 10:00 PM
 """
      
 
@@ -299,9 +293,9 @@ def poop(x,z):
 
     code = codeGenerator(result)
     # Prints the actual program
-    print code.ret
+#    print code.ret
 
     ## Makes the output file
-    #f = open("out.py", 'w')
-    #f.write(code.ret)
-    #print 'Done!\nCheck "out.py"'
+    f = open("out.py", 'w')
+    f.write(code.ret)
+    print 'Done!\nCheck "out.py"'

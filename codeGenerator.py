@@ -226,16 +226,22 @@ class codeGenerator(object):
     def _date_time_expression(self, tree, flag=None):
         p = re.compile(r'([0-3]?[0-9])/([01]?[0-9])/([0-9][0-9][0-9][0-9])[ ]([01]?[0-9]):([0-5][0-9][ ])((AM)|(PM))')
         match = p.search(tree.leaf)
-        day = int(match.group(1))
-        month = int(match.group(2))
-        year = int(match.group(3))
-        hour = int(match.group(4))
-        minute = int(match.group(5))
+        day = str(int(match.group(1)))
+        month = str(int(match.group(2)))
+        year = str(int(match.group(3)))
+        hour = str(int(match.group(4)))
+        minute = str(int(match.group(5)))
         print "Day: "
         print day
-        return ""
+        print "Month: "
+        print month
+        print "Year: "
+        print year
+        print "Hour: "
+        print hour
+        print "Minute: "
+        print minute
+        return "datetime.datetime(" + year + ", " + month + ", " + day + ", " + hour + ", " + minute + ")"
 
     def _temperature_expression(self, tree, flag=None):
         return tree.leaf
-
-
