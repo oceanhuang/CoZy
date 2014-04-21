@@ -125,12 +125,18 @@ class codeGenerator(object):
         else:
             return self.dispatch(tree.children[0]) + " " + tree.children[2] + " " + self.dispatch(tree.children[1])
 
-    #this needs to be fixed        
+    #this needs to be fixed
     def _primary_expression(self, tree, flag=None):
-        if tree.leaf == []:
+        if tree.leaf == None:
+            return "( " + self.dispatch(tree.children[0]) + " )"
+        else:
+            return tree.leaf
+
+    def _list_id_expression(self, tree, flag=None):
+        if tree.leaf == None:
             return self.dispatch(tree.children[0])
         else:
-            return "( " + self.dispatch(tree.children[0]) + " )"
+            return tree.leaf
                             
     def _every_statement(self, tree, flag=None):
         global everys
@@ -183,14 +189,13 @@ class codeGenerator(object):
         return s
 
 
-
-    def _intermediary_constant(self, tree, flag=None):
-        return tree.leaf
-
     def _intermediary_id(self, tree, flag=None):
         return tree.leaf
 
-    def _id_improved(self, tree, flag=None):
+    def _id_id(self, tree, flag=None):
+        return tree.leaf
+    
+    def _id_list(self, tree, flag=None):
         return self.dispatch(tree.children[0])
 
 

@@ -216,44 +216,35 @@ def p_multiplicative_expresion(p):
 # Change to include arrays... ALSO!! does "NOT" belong here...... also code generator needs to handle not
 #Also, what's with or_expression only having parentheses around it? Should I do the same with list?
 def p_primary_expression(p):
-    """ primary_expression : intermediary_constant
-                           | id_improved
-                           | list_start
+    """ primary_expression : CONSTANT
                            | LPAREN or_expression RPAREN
                            | NOT LPAREN or_expression RPAREN
     """
     if len(p) == 2:
-        #p[0] = Node('primary_expression', [], p[1])
-        p[0] = Node('primary_expression', [p[1]], [])
+        p[0] = Node('primary_expression', [], p[1])
     elif len(p) == 4:
         p[0] = Node('primary_expression', [p[2]])
     else:
         p[0] = Node('primary_expression', [p[3]])
 
 
-
-        
-#THESE INTERMEDIARY THINGS ARE TO SORT OUT THE PROBLEM OF HAVING A RULE THAT GOES TO A TERMINAL AND A NONTERMINAL
-def p_intermediary_id(p):
-    """ intermediary_id : ID
+def p_primary_expression_list_id(p):
+    """ primary_expression : id_improved
+                           | list_start
     """
-    p[0] = Node('intermediary_id', [], p[1])
+    p[0] = Node('list_id_expression', [p[1]])
 
 
-def p_intermediary_constant(p):
-    """ intermediary_constant : CONSTANT
+def p_id_id(p):
+    """ id_improved : ID
     """
-    p[0] = Node('intermediary_constant', [], p[1])
-
+    p[0] = Node('id_id', [], p[1])
     
-def p_id_improved(p):
-    """ id_improved : intermediary_id
-                    | list_index
+def p_id_list(p):
+    """ id_improved : list_index
     """
-    p[0] = Node('id_improved', [p[1]])
+    p[0] = Node('id_list', [p[1]])
 
-
-    
 
 
 def p_primary_expression_days(p):
@@ -357,12 +348,14 @@ if __name__ == '__main__':
     # Build the parser
     parser = CoZyParser()
     """
-
+a = [3,4, 2, 3+5, 3>6]
+b = a[]
     """
     ## Put code to test here
     s = """
+q = []
+a = [2,2]
 a = [3,4, 2, 3+5, 3>6]
-b = a[]
 a[b[3]][b] = 3
 c = a*3
 z = 4
