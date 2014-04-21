@@ -100,6 +100,31 @@ myTester.run_code(s, 31)
 s='''
 def poop(x):
     x = 2+2
-
+ret = None
 '''
-myTester.run_code(s, 4)
+myTester.run_code(s, None)
+
+# test every
+s='''
+print '5'
+ret = 5
+every (Monday):
+    print ('5')
+'''
+myTester.run_code(s, 5)
+
+# test datetime
+s='''
+ret = 21/7/1991 10:00 PM
+ret = 2:00 PM
+ret = 19/12/1991
+'''
+myTester.run_code(s, None)
+
+# test temp
+s='''
+ret = 70 K
+ret = 50 C
+ret = 80 F
+'''
+myTester.run_code(s, None)

@@ -96,7 +96,7 @@ def t_DATE(t):
     r'[0-3]?[0-9]/[01]?[0-9]/[0-9][0-9][0-9][0-9]'
     return t
 def t_TEMPERATURE(t):
-    r'[0-9]+[ ]*[C|F|K]'
+    r'[0-9]+[ ]*[CFK]'
     return t
 
 def t_TIME(t):
@@ -308,14 +308,11 @@ if __name__ == '__main__':
 
     # Build the lexer
     lexer = CoZyLexer()
-
     # code
     data = """
-z = 4
-while (z > 2):
-    z = z-1
-    if(z > 5):
-        z = 2       
+bday = 10:00 PM
+every (Monday):
+    print '5'
 """
 #     data = """
 # x=3+3;
