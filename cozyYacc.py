@@ -282,7 +282,7 @@ if __name__ == '__main__':
 
     ## Put code to test here
     s = """
-bday = 16 C
+bday = 09:30 PM
 """
      
 

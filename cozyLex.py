@@ -310,7 +310,7 @@ if __name__ == '__main__':
     lexer = CoZyLexer()
     # code
     data = """
-bday = 16/07/1991 10:00 PM
+bday = 10:00 PM
 """
 #     data = """
 # x=3+3;

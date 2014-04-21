@@ -254,17 +254,35 @@ class codeGenerator(object):
         year = str(int(match.group(3)))
         hour = str(int(match.group(4)))
         minute = str(int(match.group(5)))
-        print "Day: "
-        print day
-        print "Month: "
-        print month
-        print "Year: "
-        print year
-        print "Hour: "
-        print hour
-        print "Minute: "
-        print minute
+        # print "Day: "
+        # print day
+        # print "Month: "
+        # print month
+        # print "Year: "
+        # print year
+        # print "Hour: "
+        # print hour
+        # print "Minute: "
+        # print minute
         return "datetime.datetime(" + year + ", " + month + ", " + day + ", " + hour + ", " + minute + ")"
+
+    def _time_expression(self, tree, flag=None):
+        p = re.compile(r'([01]?[0-9]):([0-5][0-9])[ ]((AM)|(PM))')
+        match = p.search(tree.leaf)
+        hour = int(match.group(1))
+        minute = str(int(match.group(2)))
+        time_of_day = match.group(3)
+        print "Hour: " + str(hour)
+        print "Minute: " + minute
+        print "Time of Day: '" + time_of_day + "'"
+        if time_of_day == "PM":
+            hour += 12
+        print "Hour: " + str(hour)
+        print "Minute: " + minute
+        print "Time of Day: '" + time_of_day + "'"
+        return "datetime.time(" + str(hour) + ", " + minute +")" 
+
+
 
     def _temperature_expression(self, tree, flag=None):
         p = re.compile(r'([0-9]+)[ ]*([CFK])')
@@ -272,3 +290,4 @@ class codeGenerator(object):
         number = str(int(match.group(1)))
         temp_type = match.group(2)
         return "Temperature(" + number + ", '" + temp_type + "')"
+    
