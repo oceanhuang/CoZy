@@ -1,6 +1,30 @@
 import datetime
 import re
 everys = 0
+temp_def ='''
+class Temperature:
+    def __init__(self, number, tempType):
+        if tempType == 'K':
+            self.KTemp = number
+            self.CTemp = number + 273.15
+            self.FTemp = 5.0/9.0*(number - 32.0) + 273.15
+        elif tempType == 'C':
+            self.KTemp = number + 273.15
+            self.CTemp = number
+            self.FTemp = 9.0/5.0*number + 32.0      
+        elif tempType == 'F':
+            self.KTemp = 5.0/9.0*(number - 32.0) + 273.15
+            self.CTemp = 5.0/9.0*(number -32.0)
+            self.FTemp = number
+    def getCelsius(self):
+        return self.CTemp
+    def getFarenheit(self):
+        return self.FTemp
+    def getKelvin(self):
+        return self.KTemp
+
+'''
+
 class codeGenerator(object):
     def __init__(self, tree):
         # Keep track of scopes
@@ -9,8 +33,8 @@ class codeGenerator(object):
         # Symbols table
         self.symbolsTable = {}
         # Variable to store the code
-        self.ret = "import datetime\n" + self.dispatch(tree)
-        # "every_list = []\n" + 
+        self.ret = "import datetime\n" + "every_list = []\n" + temp_def + self.dispatch(tree)
+        # 
         # Keeps track of the number of every's
 
     
@@ -263,16 +287,52 @@ class codeGenerator(object):
     def _date_time_expression(self, tree, flag=None):
         p = re.compile(r'([0-3]?[0-9])/([01]?[0-9])/([0-9][0-9][0-9][0-9])[ ]([01]?[0-9]):([0-5][0-9][ ])((AM)|(PM))')
         match = p.search(tree.leaf)
-        day = int(match.group(1))
-        month = int(match.group(2))
-        year = int(match.group(3))
-        hour = int(match.group(4))
-        minute = int(match.group(5))
-        print "Day: "
-        print day
-        return ""
+        day = str(int(match.group(1)))
+        month = str(int(match.group(2)))
+        year = str(int(match.group(3)))
+        hour = str(int(match.group(4)))
+        minute = str(int(match.group(5)))
+        # print "Day: "
+        # print day
+        # print "Month: "
+        # print month
+        # print "Year: "
+        # print year
+        # print "Hour: "
+        # print hour
+        # print "Minute: "
+        # print minute
+        return "datetime.datetime(" + year + ", " + month + ", " + day + ", " + hour + ", " + minute + ")"
+
+    def _time_expression(self, tree, flag=None):
+        p = re.compile(r'([01]?[0-9]):([0-5][0-9])[ ]((AM)|(PM))')
+        match = p.search(tree.leaf)
+        hour = int(match.group(1))
+        minute = str(int(match.group(2)))
+        time_of_day = match.group(3)
+        print "Hour: " + str(hour)
+        print "Minute: " + minute
+        print "Time of Day: '" + time_of_day + "'"
+        if time_of_day == "PM":
+            hour += 12
+        print "Hour: " + str(hour)
+        print "Minute: " + minute
+        print "Time of Day: '" + time_of_day + "'"
+        return "datetime.time(" + str(hour) + ", " + minute +")" 
+
+    def _date_expression(self, tree, flag=None):
+        p = re.compile(r'([0-3]?[0-9])/([01]?[0-9])/([0-9][0-9][0-9][0-9])')
+        match = p.search(tree.leaf)
+        day = str(int(match.group(1)))
+        month = str(int(match.group(2)))
+        year = str(int(match.group(3)))
+        return "datetime.date(" + year + ", " + month + ", " + day + ")"
+
 
     def _temperature_expression(self, tree, flag=None):
-        return tree.leaf
-
-
+        p = re.compile(r'([0-9]+)[ ]*([CFK])')
+        match = p.search(tree.leaf)
+        number = str(int(match.group(1)))
+        temp_type = match.group(2)
+        return "Temperature(" + number + ", '" + temp_type + "')"
+    

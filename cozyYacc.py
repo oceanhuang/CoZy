@@ -291,8 +291,8 @@ def p_primary_expression_time(p):
     p[0] = Node('time_expression', [], p[1])
 
 def p_every_statement(p):
-    """ every_statement : EVERY LPAREN additive_expression RPAREN INDENT statement_list DEDENT """
-    p[0] = Node("every_statement", [p[3], p[6]])
+    """ every_statement : EVERY LPAREN primary_expression RPAREN COLON NEWLINE INDENT statement_list DEDENT """
+    p[0] = Node("every_statement", [p[3], p[8]])
 
 #fix this when tabs and newlines happen
 def p_iteration_statement(p):
@@ -353,19 +353,10 @@ b = a[]
     """
     ## Put code to test here
     s = """
-q = []
-a = [2,2]
-a = [3,4, 2, 3+5, 3>6]
-a[b[3]][b] = 3
-c = a*3
-z = 4
-while (z > 2):
-    z = z-1
-    k = 5
-
-def poop(x,z):
-    x = 2
-"""
+bday = 16/07/1991
+every (Monday):
+    print ('5')
+ """
      
 
     result = parser.parse(s)
@@ -375,9 +366,9 @@ def poop(x,z):
 
     code = codeGenerator(result)
     # Prints the actual program
-    print code.ret
+#    print code.ret
 
     ## Makes the output file
-    #f = open("out.py", 'w')
-    #f.write(code.ret)
-    #print 'Done!\nCheck "out.py"'
+    f = open("out.py", 'w')
+    f.write(code.ret)
+    print 'Done!\nCheck "out.py"'
