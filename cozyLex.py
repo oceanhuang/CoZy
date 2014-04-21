@@ -45,6 +45,8 @@ tokens = [
     'RPAREN',
     'RBRACK',
     'LBRACK',
+    'RBRACE',
+    'LBRACE',
     'EQUALS',
     'PLUS',
     'MINUS',
@@ -74,6 +76,8 @@ t_LPAREN    = r'\('
 t_RPAREN    = r'\)'
 t_LBRACK    = r'\{'
 t_RBRACK    = r'\}'
+t_LBRACE    = r'\['
+t_RBRACE    = r'\]'
 t_EQUALS    = r'='
 t_PLUS      = r'\+'
 t_MINUS     = r'\-'
@@ -311,6 +315,7 @@ if __name__ == '__main__':
 
     # code
     data = """
+a = []
 z = 4
 while (z > 2):
     z = z-1

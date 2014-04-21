@@ -50,6 +50,12 @@ ret=3+3
 myTester.run_code(s, 6)
 
 s = '''
+ret = [3, 4, 1>6]
+'''
+myTester.run_code(s,[3,4,False])
+
+
+s = '''
 ret = 'hello ' + "world"
 '''
 myTester.run_code(s, 'hello world')

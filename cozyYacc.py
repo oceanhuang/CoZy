@@ -100,12 +100,60 @@ def p_statement(p):
     p[0] = Node("statement", [p[1]])
 
 # is this correct?? need to fix according to grammar...
+#The way it's making the node doesn't really make sense, does it? Seems like it would ignore the or_expression in the second case
 def p_assignment_statement(p):
-    """ assignment_statement : ID EQUALS or_expression
-                             | ID EQUALS assignment_statement or_expression
+    """ assignment_statement : id_improved EQUALS or_expression
+                             | id_improved EQUALS assignment_statement or_expression
     """
     
-    p[0] = Node("assignment_statement", [p[3]], p[1])
+    p[0] = Node("assignment_statement", [p[3], p[1]])
+    #p[0] = Node("assignment_statement", [p[3]], p[1])
+
+def p_list_index(p):
+    '''list_index : id_improved LBRACE additive_expression RBRACE'''
+    p[0] = Node("list_index", [p[1], p[3]])
+    
+
+def p_list_start(p):
+    '''list_start : LBRACE RBRACE
+                     | LBRACE list_expression RBRACE
+    '''
+    if len(p)==3:
+        p[0] = Node("list_start")
+    else:
+        p[0] = Node("list_start", [p[2]])
+
+def p_list_expression(p):
+    
+    '''list_expression : or_expression
+                            | list_expression COMMA or_expression
+    '''
+    if len(p) == 2:
+        p[0] = Node("list_expression", [p[1]])
+    else:
+        p[0] = Node("list_expression", [p[1], p[3]])
+
+
+def p_function_param_list(p):
+    'function_param_list : function_param' #need to handle empty string
+    if len(p)==2:
+        p[0] = Node("function_param_list", [p[1]])
+    else:
+        p[0] = Node("function_param_list", [])
+        
+def p_function_param(p):
+    '''function_param : ID 
+                    | function_param COMMA function_param_end
+    '''
+    if len(p)==2:
+        p[0] = Node('function_param', [], p[1])
+    else:
+        p[0] = Node('function_param', [p[1], p[3]])
+
+def p_function_param_end(p):
+    'function_param_end : ID'
+    p[0] = Node('function_param_end', [], p[1])
+
 
 def p_or_expresion(p):
     """ or_expression : and_expression
@@ -166,18 +214,47 @@ def p_multiplicative_expresion(p):
         p[0] = Node("multiplicative_expression", [p[1], p[3], p[2]])
 
 # Change to include arrays... ALSO!! does "NOT" belong here...... also code generator needs to handle not
+#Also, what's with or_expression only having parentheses around it? Should I do the same with list?
 def p_primary_expression(p):
-    """ primary_expression : CONSTANT
-                           | ID
+    """ primary_expression : intermediary_constant
+                           | id_improved
+                           | list_start
                            | LPAREN or_expression RPAREN
                            | NOT LPAREN or_expression RPAREN
     """
     if len(p) == 2:
-        p[0] = Node('primary_expression', [], p[1])
+        #p[0] = Node('primary_expression', [], p[1])
+        p[0] = Node('primary_expression', [p[1]], [])
     elif len(p) == 4:
         p[0] = Node('primary_expression', [p[2]])
     else:
         p[0] = Node('primary_expression', [p[3]])
+
+
+
+        
+#THESE INTERMEDIARY THINGS ARE TO SORT OUT THE PROBLEM OF HAVING A RULE THAT GOES TO A TERMINAL AND A NONTERMINAL
+def p_intermediary_id(p):
+    """ intermediary_id : ID
+    """
+    p[0] = Node('intermediary_id', [], p[1])
+
+
+def p_intermediary_constant(p):
+    """ intermediary_constant : CONSTANT
+    """
+    p[0] = Node('intermediary_constant', [], p[1])
+
+    
+def p_id_improved(p):
+    """ id_improved : intermediary_id
+                    | list_index
+    """
+    p[0] = Node('id_improved', [p[1]])
+
+
+    
+
 
 def p_primary_expression_days(p):
     """ primary_expression : MONDAY
@@ -279,9 +356,15 @@ if __name__ == '__main__':
 
     # Build the parser
     parser = CoZyParser()
+    """
 
+    """
     ## Put code to test here
     s = """
+a = [3,4, 2, 3+5, 3>6]
+b = a[]
+a[b[3]][b] = 3
+c = a*3
 z = 4
 while (z > 2):
     z = z-1

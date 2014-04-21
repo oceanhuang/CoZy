@@ -24,8 +24,10 @@
 
 
    ASSIGNMENT-STATEMENT -> ID *=* OR-EXPRESSION |  //code didn't work with ID = CONSTANT
-                           ID *=* ASSIGNMENT-STATEMENT OR-EXPRESION
-			    
+                           ID *=* ASSIGNMENT-STATEMENT OR-EXPRESION |
+						   ID *=* LIST-EXPRESSION
+   
+
    OR-EXPRESSION -> AND-EXPRESSION |
                     OR-EXPRESSION *or* AND-EXPRESSION
  
@@ -55,6 +57,7 @@
 
    PRIMARY-EXPRESSION -> CONSTANT |
                          ID |
+						 LIST |
                          *[* PARAMETER-LIST *]* |
                          ( OR-EXPRESSION ) |
                          TEMPERATURE |
@@ -66,7 +69,18 @@
 
 
    LIST-OPERATION-EXPRESSION -> ID *[* OR-EXPRESSION *]*
+   #what is this?
+   
+   LIST-INDEX -> ID*[*ADDITIVE-EXPRESSION*]*
+   
+   LIST-START -> *[* \epsilon *]* |
+						   *[* LIST-EXPRESSION *]*
+						 
+   LIST-EXPRESSION -> LIST-EXPRESSION | 
+                     LIST-EXPRESSION *,* OR-EXPRESSION
 
+
+   
    PARAMETER-LIST-START -> \epsilon |
                            PARAMETER-LIST
 

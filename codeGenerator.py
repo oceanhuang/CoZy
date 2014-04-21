@@ -56,7 +56,23 @@ class codeGenerator(object):
     def _function_param_end(self, tree, flag=None):
         return tree.leaf
 
+    def _list_start(self, tree, flag=None):
+        if len(tree.children)==0:
+            return "[]"
+        else:
+            return "[" + self.dispatch(tree.children[0]) + "]"
+    
+    def _list_expression(self, tree, flag=None):
+        if len(tree.children) == 1:
+            return self.dispatch(tree.children[0])
+        else:
+            return self.dispatch(tree.children[0]) + ", " + self.dispatch(tree.children[1])
+        
+    def _list_index(self, tree, flag=None):
+        return self.dispatch(tree.children[0]) + "[" + self.dispatch(tree.children[1]) + "]"
 
+    
+    
     def _statement_list(self, tree, flag=None):
         return self.dispatch(tree.children)
 
@@ -64,8 +80,9 @@ class codeGenerator(object):
         return self.dispatch(tree.children) + "\n"
 
     def _assignment_statement(self, tree, flag=None):
-        return tree.leaf + " = " + self.dispatch(tree.children[0])
-
+        return self.dispatch(tree.children[1]) + " = " + self.dispatch(tree.children[0])
+        #return tree.leaf + " = " + self.dispatch(tree.children[0])
+        
     def _or_expression(self, tree, flag=None):
         
         if len(tree.children) == 1:
@@ -110,11 +127,11 @@ class codeGenerator(object):
 
     #this needs to be fixed        
     def _primary_expression(self, tree, flag=None):
-        if tree.leaf == None:
-            return "( " + self.dispatch(tree.children[0]) + " )"
+        if tree.leaf == []:
+            return self.dispatch(tree.children[0])
         else:
-            return tree.leaf
-                
+            return "( " + self.dispatch(tree.children[0]) + " )"
+                            
     def _every_statement(self, tree, flag=None):
         global everys
         global every_list        
@@ -164,6 +181,21 @@ class codeGenerator(object):
     def _print_statement(self, tree, flag=None):
         s = "print " + self.dispatch(tree.children[0])
         return s
+
+
+
+    def _intermediary_constant(self, tree, flag=None):
+        return tree.leaf
+
+    def _intermediary_id(self, tree, flag=None):
+        return tree.leaf
+
+    def _id_improved(self, tree, flag=None):
+        return self.dispatch(tree.children[0])
+
+
+
+
 
     def _for_statement(self, tree, flag=None):
         #for iterator in a range
