@@ -1,6 +1,29 @@
 import datetime
 import re
-everys = 0
+temp_def ='''
+class Temperature:
+    def __init__(self, number, tempType):
+        if tempType == 'K':
+            self.KTemp = number
+            self.CTemp = number + 273.15
+            self.FTemp = 5.0/9.0*(number - 32.0) + 273.15
+        elif tempType == 'C':
+            self.KTemp = number + 273.15
+            self.CTemp = number
+            self.FTemp = 9.0/5.0*number + 32.0      
+        elif tempType == 'F':
+            self.KTemp = 5.0/9.0*(number - 32.0) + 273.15
+            self.CTemp = 5.0/9.0*(number -32.0)
+            self.FTemp = number
+    def getCelsius(self):
+        return self.CTemp
+    def getFarenheit(self):
+        return self.FTemp
+    def getKelvin(self):
+        return self.KTemp
+
+'''
+
 class codeGenerator(object):
     def __init__(self, tree):
         # Keep track of scopes
@@ -9,7 +32,7 @@ class codeGenerator(object):
         # Symbols table
         self.symbolsTable = {}
         # Variable to store the code
-        self.ret = "import datetime\n" + self.dispatch(tree)
+        self.ret = "import datetime\n" + temp_def + self.dispatch(tree)
         # "every_list = []\n" + 
         # Keeps track of the number of every's
 
@@ -244,4 +267,8 @@ class codeGenerator(object):
         return "datetime.datetime(" + year + ", " + month + ", " + day + ", " + hour + ", " + minute + ")"
 
     def _temperature_expression(self, tree, flag=None):
-        return tree.leaf
+        p = re.compile(r'([0-9]+)[ ]*([CFK])')
+        match = p.search(tree.leaf)
+        number = str(int(match.group(1)))
+        temp_type = match.group(2)
+        return "Temperature(" + number + ", '" + temp_type + "')"
