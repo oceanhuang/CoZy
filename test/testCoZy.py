@@ -100,6 +100,15 @@ myTester.run_code(s, 31)
 s='''
 def poop(x):
     x = 2+2
-
+ret = None
 '''
-myTester.run_code(s, 4)
+myTester.run_code(s, None)
+
+# test every
+s='''
+print '5'
+ret = 5
+every (Monday):
+    print ('5')
+'''
+myTester.run_code(s, 5)

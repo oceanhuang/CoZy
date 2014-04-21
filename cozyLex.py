@@ -311,6 +311,8 @@ if __name__ == '__main__':
     # code
     data = """
 bday = 10:00 PM
+every (Monday):
+    print '5'
 """
 #     data = """
 # x=3+3;

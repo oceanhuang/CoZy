@@ -223,8 +223,8 @@ def p_primary_expression_time(p):
     p[0] = Node('time_expression', [], p[1])
 
 def p_every_statement(p):
-    """ every_statement : EVERY LPAREN additive_expression RPAREN INDENT statement_list DEDENT """
-    p[0] = Node("every_statement", [p[3], p[6]])
+    """ every_statement : EVERY LPAREN primary_expression RPAREN COLON NEWLINE INDENT statement_list DEDENT """
+    p[0] = Node("every_statement", [p[3], p[8]])
 
 #fix this when tabs and newlines happen
 def p_iteration_statement(p):
@@ -283,6 +283,8 @@ if __name__ == '__main__':
     ## Put code to test here
     s = """
 bday = 16/07/1991
+every (Monday):
+    print ('5')
  """
      
 

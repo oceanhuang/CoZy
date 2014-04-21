@@ -1,5 +1,6 @@
 import datetime
 import re
+everys = 0
 temp_def ='''
 class Temperature:
     def __init__(self, number, tempType):
@@ -32,8 +33,8 @@ class codeGenerator(object):
         # Symbols table
         self.symbolsTable = {}
         # Variable to store the code
-        self.ret = "import datetime\n" + temp_def + self.dispatch(tree)
-        # "every_list = []\n" + 
+        self.ret = "import datetime\n" + "every_list = []\n" + temp_def + self.dispatch(tree)
+        # 
         # Keeps track of the number of every's
 
     
