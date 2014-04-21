@@ -282,8 +282,8 @@ if __name__ == '__main__':
 
     ## Put code to test here
     s = """
-bday = 09:30 PM
-"""
+bday = 16/07/1991
+ """
      
 
     result = parser.parse(s)

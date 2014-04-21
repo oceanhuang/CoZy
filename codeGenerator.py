@@ -282,6 +282,13 @@ class codeGenerator(object):
         print "Time of Day: '" + time_of_day + "'"
         return "datetime.time(" + str(hour) + ", " + minute +")" 
 
+    def _date_expression(self, tree, flag=None):
+        p = re.compile(r'([0-3]?[0-9])/([01]?[0-9])/([0-9][0-9][0-9][0-9])')
+        match = p.search(tree.leaf)
+        day = str(int(match.group(1)))
+        month = str(int(match.group(2)))
+        year = str(int(match.group(3)))
+        return "datetime.date(" + year + ", " + month + ", " + day + ")"
 
 
     def _temperature_expression(self, tree, flag=None):
