@@ -231,14 +231,19 @@ def p_during_or_expression(p):
         p[0] = Node("during_or_expression", [p[1]])
     else:
         p[0] = Node("during_or_expression", [p[1],p[3]])
-    
+
+#can do something like(TUESDAY, JANUARY DURING WEDNESDAY) DURING 4:30 PM TO 5:30 PM
 def p_during_and_expression(p):
     """ during_and_expression : primary_expression
-                        | primary_expression DURING primary_expression"""
+                        | during_and_expression DURING primary_expression
+                        | LPAREN during_or_expression RPAREN DURING during_and_expression"""
     if len(p) == 2:
         p[0] = Node("during_and_expression", [p[1]])
-    else:
+    elif len(p) == 4:
         p[0] = Node("during_and_expression", [p[1],p[3]])
+    else:
+        p[0] = Node("during_and_expression", [p[2],p[5]]) #need to write the code gen for this case
+
 
 def p_every_statement(p):
 #    """ every_statement : EVERY LPAREN primary_expression RPAREN COLON NEWLINE INDENT statement_list DEDENT """
@@ -317,6 +322,8 @@ once every (January during Monday):
     print ("hello world")
 once every (January during Monday, February during Friday):
     print ("hello world")
+every ((January during Monday, February during Friday) during Wednesday):
+    print ("hello world")
     
  """
      
@@ -326,9 +333,9 @@ once every (January during Monday, February during Friday):
     # ## Prints the AST
     print result
 
-    code = codeGenerator(result)
+    #code = codeGenerator(result)
     # Prints the actual program
-    print code.ret
+    #print code.ret
 
     ## Makes the output file
     #f = open("out.py", 'w')
