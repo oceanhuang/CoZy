@@ -143,15 +143,14 @@ class codeGenerator(object):
         if len(tree.children) == 1:
             return self.dispatch(tree.children[0])
         if len(tree.children) == 2:
-            return "(( " + self.dispatch(tree.children[0]) + ") or (" + self.dispatch(tree.children[1]) + "))"
+            return "((" + self.dispatch(tree.children[0]) + ") or (" + self.dispatch(tree.children[1]) + "))"
       
-
 
     def _during_and_expression(self, tree, flag=None):
         if len(tree.children) == 1:
             return self.dispatch(tree.children[0])
         if len(tree.children) == 2:
-            return "(( " + self.dispatch(tree.children[0]) + ") and (" + self.dispatch(tree.children[1]) + "))"
+            return "((" + self.dispatch(tree.children[0]) + ") and (" + self.dispatch(tree.children[1]) + "))"
       
                
     def _every_statement(self, tree, flag=None):

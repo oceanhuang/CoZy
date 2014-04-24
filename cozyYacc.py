@@ -333,9 +333,9 @@ every ((January during Monday, February during Friday) during Wednesday):
     # ## Prints the AST
     print result
 
-    #code = codeGenerator(result)
+    code = codeGenerator(result)
     # Prints the actual program
-    #print code.ret
+    print code.ret
 
     ## Makes the output file
     #f = open("out.py", 'w')
