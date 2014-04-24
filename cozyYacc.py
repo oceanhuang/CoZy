@@ -314,8 +314,10 @@ if __name__ == '__main__':
 bday = 16/07/1991
 every (Monday):
     print ('5')
+i = 0
 while (i < 7):
     print ("okay")
+    i = i + 1
 every (January):
     print ("hello world")
 once every (January during Monday):
@@ -338,6 +340,6 @@ every ((January during Monday, February during Friday) during Wednesday):
     print code.ret
 
     ## Makes the output file
-    #f = open("out.py", 'w')
-    #f.write(code.ret)
-    #print 'Done!\nCheck "out.py"'
+    f = open("out.py", 'w')
+    f.write(code.ret)
+    print 'Done!\nCheck "out.py"'

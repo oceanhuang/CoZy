@@ -106,7 +106,7 @@ myTester.run_code(s, None)
 
 # test every
 s='''
-print '5'
+print ('5')
 ret = 5
 every (Monday):
     print ('5')
@@ -115,10 +115,34 @@ myTester.run_code(s, 5)
 
 #test once every
 s='''
-print '5'
+print ('5')
 ret = 5
 once every (Monday):
     print ('5')
+'''
+myTester.run_code(s, 5)
+
+#test during 1
+s = '''
+ret = 5
+once every (January during Monday):
+    print ("hello world")
+'''
+myTester.run_code(s, 5)
+
+#test during 2
+s = '''
+ret = 5
+once every (January during Monday, February during Friday):
+    print ("hello world")
+'''
+myTester.run_code(s, 5)
+
+#test during 3
+s = '''
+ret = 5
+every ((January during Monday, February during Friday) during Wednesday):
+    print ("hello world")
 '''
 myTester.run_code(s, 5)
 
