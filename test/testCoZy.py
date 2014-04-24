@@ -32,10 +32,10 @@ class CoZyTester:
         self.parser = cozyYacc.CoZyParser()
 
 
-    def run_code(self, code_str, output):
+    def run_code(self, code_str, output, debug=False):
         result = self.parser.parse(code_str)
         code = codeGenerator.codeGenerator(result).ret
-        print code
+        if debug: print code
         # print locals()
         exec code in locals()
         if output == None: print locals()['ret']
