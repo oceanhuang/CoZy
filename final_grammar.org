@@ -99,7 +99,7 @@
    
    DURING-AND-EXPRESSION -> PRIMARY-EXPRESSION |
    			DURING-AND-EXPRESSION *during* PRIMARY-EXPRESSION |
-   			//add more here
+   			*(* DURING-OR-EXPRESSION *)* *during* DURING-AND-EXPRESSION
    
    RETURN-STATEMENT -> *return* | *return expression*
   
