@@ -292,8 +292,9 @@ every (Monday):
     print ('5')
 while (i < 7):
     print ("okay")
-every (Tuesday):
+once every (Tuesday):
     print ("hello world")
+    
  """
      
 

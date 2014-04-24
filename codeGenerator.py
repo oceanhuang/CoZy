@@ -158,6 +158,30 @@ class codeGenerator(object):
         s += "', 'condition' : 'condition" + str(everys) + "'})"
         return s
 
+    def _once_every_statement(self, tree, flag=None):
+        global everys
+        global every_list        
+        everys = everys + 1
+        
+        s = "\ndef every" + str(everys) + "() :\n"
+        s += "    print 'executing once every" + str(everys) + "'\n"
+
+        lines = self.dispatch(tree.children[1]).splitlines()
+        for line in lines:
+            s+= "    " + line +"\n"
+
+        s += "def condition" + str(everys) + "():\n"
+        s += "    print 'checking" + str(everys) + "'\n"
+        s += "    global happened" + str(everys) + " = False\n"
+        s += "    if " + self.dispatch(tree.children[0]) + " and happened" + str(everys) + " == False"+ ":\n"
+        s += "        happened" + str(everys) + " = True\n"
+        s += "        return True\n"
+        s += "    if not(" + self.dispatch(tree.children[0]) + "):\n"
+        s += "        happened" + str(everys) + " = False\n"
+        s += "every_list.append({'func' : 'every" + str(everys)
+        s += "', 'condition' : 'condition" + str(everys) + "'})"
+        return s
+
     def _iteration_statement(self, tree, flag=None):
         s = "while(" + self.dispatch(tree.children[0]) + "):\n"
         lines = self.dispatch(tree.children[1]).splitlines()
