@@ -113,6 +113,15 @@ every (Monday):
 '''
 myTester.run_code(s, 5)
 
+#test once every
+s='''
+print '5'
+ret = 5
+once every (Monday):
+    print ('5')
+'''
+myTester.run_code(s, 5)
+
 # test datetime
 s='''
 ret = 21/7/1991 10:00 PM
