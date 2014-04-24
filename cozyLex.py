@@ -37,7 +37,8 @@ reserved = {
     'for' : 'FOR',
     'in' : 'IN', 
     'print' : 'PRINT',
-    'not' : 'NOT'
+    'not' : 'NOT',
+    'once' : 'ONCE'
 }
 
 tokens = [
@@ -310,10 +311,10 @@ if __name__ == '__main__':
     lexer = CoZyLexer()
     # code
     data = """
-bday = 10:00 PM
-every (Monday):
-    print '5'
-"""
+    bday = 10:00 PM
+    every (Monday):
+        print '5'
+    """
 #     data = """
 # x=3+3;
 # if x=6:

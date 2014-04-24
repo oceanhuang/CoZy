@@ -91,6 +91,7 @@ def p_statement_list(p):
 def p_statement(p):
     """ statement : assignment_statement NEWLINE
                   | every_statement
+                  | once_every_statement
                   | iteration_statement
                   | selection_statement
                   | print_statement SEMICOLON
@@ -226,6 +227,10 @@ def p_every_statement(p):
     """ every_statement : EVERY LPAREN primary_expression RPAREN COLON NEWLINE INDENT statement_list DEDENT """
     p[0] = Node("every_statement", [p[3], p[8]])
 
+def p_once_every_statement(p):
+    """ once_every_statement : ONCE EVERY LPAREN primary_expression RPAREN COLON NEWLINE INDENT statement_list DEDENT """
+    p[0] = Node("once_every_statement", [p[4], p[9]])
+
 #fix this when tabs and newlines happen
 def p_iteration_statement(p):
     """ iteration_statement : WHILE LPAREN or_expression RPAREN COLON NEWLINE INDENT statement_list DEDENT
@@ -285,6 +290,10 @@ if __name__ == '__main__':
 bday = 16/07/1991
 every (Monday):
     print ('5')
+while (i < 7):
+    print ("okay")
+every (Tuesday):
+    print ("hello world")
  """
      
 
@@ -295,7 +304,7 @@ every (Monday):
 
     code = codeGenerator(result)
     # Prints the actual program
-#    print code.ret
+    print code.ret
 
     ## Makes the output file
     f = open("out.py", 'w')
