@@ -166,7 +166,7 @@ def p_multiplicative_expresion(p):
     else:
         p[0] = Node("multiplicative_expression", [p[1], p[3], p[2]])
 
-# Change to include arrays... ALSO!! does "NOT" belong here...... also code generator needs to handle not
+# needs to be fixed (move not)...... also code generator needs to handle not
 def p_primary_expression(p):
     """ primary_expression : CONSTANT
                            | ID
@@ -178,7 +178,7 @@ def p_primary_expression(p):
     elif len(p) == 4:
         p[0] = Node('primary_expression', [p[2]])
     else:
-        p[0] = Node('primary_expression', [p[3]])
+        p[0] = Node('primary_expression', [p[3]]) #has not in it
 
 def p_primary_expression_days(p):
     """ primary_expression : MONDAY
@@ -223,12 +223,23 @@ def p_primary_expression_time(p):
     """ primary_expression : TIME """
     p[0] = Node('time_expression', [], p[1])
 
+#this is a very basic during... still working on the grammar
+def p_during_expression(p):
+    """ during_expression : primary_expression
+                        | primary_expression DURING primary_expression"""
+    if len(p) == 2:
+        p[0] = Node("during_expression", [p[1]])
+    else:
+        p[0] = Node("during_expression", [p[1],p[3]])
+
 def p_every_statement(p):
-    """ every_statement : EVERY LPAREN primary_expression RPAREN COLON NEWLINE INDENT statement_list DEDENT """
+#    """ every_statement : EVERY LPAREN primary_expression RPAREN COLON NEWLINE INDENT statement_list DEDENT """
+    """ every_statement : EVERY LPAREN during_expression RPAREN COLON NEWLINE INDENT statement_list DEDENT """
     p[0] = Node("every_statement", [p[3], p[8]])
 
 def p_once_every_statement(p):
-    """ once_every_statement : ONCE EVERY LPAREN primary_expression RPAREN COLON NEWLINE INDENT statement_list DEDENT """
+#    """ once_every_statement : ONCE EVERY LPAREN primary_expression RPAREN COLON NEWLINE INDENT statement_list DEDENT """
+    """ once_every_statement : ONCE EVERY LPAREN during_expression RPAREN COLON NEWLINE INDENT statement_list DEDENT """
     p[0] = Node("once_every_statement", [p[4], p[9]])
 
 #fix this when tabs and newlines happen
@@ -292,7 +303,7 @@ every (Monday):
     print ('5')
 while (i < 7):
     print ("okay")
-once every (Tuesday):
+once every (January during Monday):
     print ("hello world")
     
  """
@@ -308,6 +319,6 @@ once every (Tuesday):
     print code.ret
 
     ## Makes the output file
-    f = open("out.py", 'w')
-    f.write(code.ret)
-    print 'Done!\nCheck "out.py"'
+    #f = open("out.py", 'w')
+    #f.write(code.ret)
+    #print 'Done!\nCheck "out.py"'

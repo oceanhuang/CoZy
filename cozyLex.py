@@ -38,7 +38,8 @@ reserved = {
     'in' : 'IN', 
     'print' : 'PRINT',
     'not' : 'NOT',
-    'once' : 'ONCE'
+    'once' : 'ONCE',
+    'during' : 'DURING'
 }
 
 tokens = [
