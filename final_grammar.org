@@ -95,7 +95,7 @@
    ONCE-STATEMENT -> *once every* DURING-EXPRESION *: \n*
    
    DURING-EXPRESSION -> PRIMARY-EXPRESSION |
-   			*during* PRIMARY-EXPRESSION |
+   			PRIMARY-EXPRESSION *during* PRIMARY-EXPRESSION |
    			//add more here
    
    RETURN-STATEMENT -> *return* | *return expression*
