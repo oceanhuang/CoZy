@@ -289,7 +289,10 @@ if __name__ == '__main__':
 a = 60 F + 50F + 30F
 d = 35/2/1991 10:00 PM
 c = 10:00 AM
- """
+
+e = 60 F + 20 F * January
+f = 1:00 PM
+"""
      
 
     result = parser.parse(s)

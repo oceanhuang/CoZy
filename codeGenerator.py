@@ -152,10 +152,10 @@ class codeGenerator(object):
             type1 = operand1[0]
             type2 = operand2[0]
 
-            if(type1 != type2):
+            if type1 != type2:
                 exit("TypeError! " + type1 + " is not of type " +type2)
             else:
-                if type1 == "DAY" or type1 == "MONTH":
+                if type1=="DAY" or type1=="MONTH" or type=="DATE" or type=="TIME" or type=="DATETIME":
                     exit("TypeError! Cannot add " + type1 + " types together")
 
                 return type1, str(operand1[1]) + " " + tree.children[2] + " " + str(operand2[1]) 
@@ -169,6 +169,19 @@ class codeGenerator(object):
             operand2 = self.dispatch(tree.children[1])
             type1 = operand1[0]
             type2 = operand2[0]
+            
+            if type1 != type2:
+                #allow NUM * TEMP and TEMP * NUM
+                if type1=="NUM" and (type2=="F" or type2=="C" or type2=="K"):
+                    return type2, str(operand1[1]) + " " + tree.children[2] + " " + str(operand2[1])
+                elif (type1=="F" or type1=="C" or type2=="K") and type2=="NUM":
+                    return type1, str(operand1[1]) + " " + tree.children[2] + " " + str(operand2[1])
+                
+                exit("TypeError! " + type1 + " is not of type " +type2)
+
+            else:
+                if type1=="DAY" or type1=="MONTH" or type=="DATE" or type=="TIME" or type=="DATETIME":
+                    exit("TypeError! Cannot multiply " + type1 + " types together")
 
             return self.dispatch(tree.children[0]) + " " + tree.children[2] + " " + self.dispatch(tree.children[1])
 
