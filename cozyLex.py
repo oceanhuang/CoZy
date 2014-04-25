@@ -24,6 +24,21 @@ reserved = {
     'October': 'OCTOBER',
     'November': 'NOVEMBER',
     'December': 'DECEMBER',
+    #types
+    'number' : 'TNUMBER',
+    'temperature' : 'TTEMPERATURE',
+    'time' : 'TTIME',
+    'datetime' : 'TDATETIME',
+    'boolean' : 'TBOOLEAN',
+    'day' : 'TDAY',
+    'month' : 'TMONTH',
+    'date' : 'TDATE',
+    'dayrange' : 'TDAYRANGE',
+    'monthrange' : 'TMONTHRANGE',
+    'daterange' : 'TDATERANGE',
+    'timerange' : 'TTIMERANGE',
+    'string' : 'TSTRING',
+    'list' : 'TLIST', 
     # Other
     'every' : 'EVERY',
     'def' : 'DEF',
@@ -37,7 +52,10 @@ reserved = {
     'for' : 'FOR',
     'in' : 'IN', 
     'print' : 'PRINT',
-    'not' : 'NOT'
+    'not' : 'NOT',
+    'true' : 'TRUE',
+    'false' : 'FALSE',
+
 }
 
 tokens = [
@@ -65,8 +83,7 @@ tokens = [
     'DEDENT',
     'WS',
     'NEWLINE',
-    'COMMA',
-    'BOOLEAN',
+    'COMMA'
 ] + list(reserved.values())
 
 # Regular expression rules for simple tokens
@@ -85,7 +102,7 @@ t_EQUIV     = r'(==)'
 t_NONEQUIV  = r'(!=)'
 t_RELOP     = r'(<=)|(>=)|(<)|(>)'
 t_COMMA     = r'(,)'
-t_BOOLEAN   = r'true|false'
+   
 # A regular expression rule with some action code
 
 def t_DATETIME(t):
@@ -310,9 +327,8 @@ if __name__ == '__main__':
     lexer = CoZyLexer()
     # code
     data = """
-bday = 10:00 PM
-every (Monday):
-    print '5'
+def foo(day x):
+    print (x)
 """
 #     data = """
 # x=3+3;

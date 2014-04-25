@@ -50,34 +50,49 @@ def p_external_declaration(p):
     """
     p[0] = Node("external_declaration", [p[1]])
 
-# Needs to include parameter_list
+# these are for defining functions, not executing them
 def p_function_definition(p):
 
-    'function_definition : DEF ID LPAREN function_param_list RPAREN COLON NEWLINE INDENT statement_list DEDENT'
+    """function_definition : DEF ID LPAREN function_param_list RPAREN COLON NEWLINE INDENT statement_list DEDENT
+                            | DEF ID LPAREN RPAREN COLON NEWLINE INDENT statement_list DEDENT"""
 
-    p[0] = Node("function_definition", [p[2], p[4], p[9]]);
+    if len(p) == 11:
+        p[0] = Node("function_definition", [p[2], p[4], p[9]]);
+    else:
+        p[0] = Node("function_definition", [p[2], p[8]])
 
+#list of parameters or just one        
 def p_function_param_list(p):
-    'function_param_list : function_param' #need to handle empty string
+    """function_param_list : function_param 
+                    | function_param_list COMMA function_param
+    """
     if len(p)==2:
-        p[0] = Node("function_param_list", [p[1]])
+        p[0] = Node('function_param_list', [p[1]]) 
     else:
-        p[0] = Node("function_param_list", [])
+        p[0] = Node('function_param_list', [p[1], p[3]])
 
-
+#the parameter's type and the id
 def p_function_param(p):
-    '''function_param : ID 
-                    | function_param COMMA function_param_end
-    '''
-    if len(p)==2:
-        p[0] = Node('function_param', [], p[1])
-    else:
-        p[0] = Node('function_param', [p[1], p[3]])
+    """function_param : type_expression ID"""
+    p[0] = Node('function_param', [p[1], p[2]])
 
-def p_function_param_end(p):
-    'function_param_end : ID'
-    p[0] = Node('function_param_end', [], p[1])
-
+def p_type_expression(p):
+    """type_expression : TNUMBER
+                    | TTEMPERATURE
+                    | TTIME
+                    | TDATETIME
+                    | TBOOLEAN
+                    | TDAY
+                    | TMONTH
+                    | TDATE
+                    | TDAYRANGE
+                    | TMONTHRANGE
+                    | TDATERANGE
+                    | TTIMERANGE
+                    | TSTRING
+                    | TLIST"""
+    p[0] = Node('type_expression', [], p[1])
+    
 def p_statement_list(p):
     """ statement_list : statement
                        | statement_list statement
@@ -285,6 +300,8 @@ if __name__ == '__main__':
 bday = 16/07/1991
 every (Monday):
     print ('5')
+def foo( day x ):
+    print ('hello')
  """
      
 
@@ -293,11 +310,11 @@ every (Monday):
     # ## Prints the AST
     print result
 
-    code = codeGenerator(result)
+#    code = codeGenerator(result)
     # Prints the actual program
 #    print code.ret
 
     ## Makes the output file
-    f = open("out.py", 'w')
-    f.write(code.ret)
-    print 'Done!\nCheck "out.py"'
+#    f = open("out.py", 'w')
+#    f.write(code.ret)
+#    print 'Done!\nCheck "out.py"'
