@@ -286,7 +286,9 @@ if __name__ == '__main__':
 
     ## Put code to test here
     s = """
-a = 60 F + 50F + 30 
+a = 60 F + 50F + 30F
+d = 35/2/1991 10:00 PM
+c = 10:00 AM
  """
      
 

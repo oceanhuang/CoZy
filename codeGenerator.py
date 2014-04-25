@@ -41,7 +41,7 @@ class codeGenerator(object):
     #temporary exit function when exceptions are raised
     def exit(self, exit_msg):
         print exit_msg
-        sys.exit()
+        #sys.exit()
 
     
     def dispatch(self, tree, flag=None):
@@ -99,8 +99,18 @@ class codeGenerator(object):
             if arg[0] == "F" or arg[0] == "C" or arg[0] == "K":
                 self.symbolTable[tree.leaf] = [arg[0], arg[1]]
                 arg = "Temperature(" + str(arg[1]) + ", '" + arg[0] + "')"
-                print self.symbolTable
+            elif arg[0] == "DATETIME":
+                self.symbolTable[tree.leaf] = [arg[0], arg[1]]
+                arg = "datetime.datetime(" + str(arg[1].get('year')) + ", " + str(arg[1].get('month')) + ", " + str(arg[1].get('day')) + ", " + str(arg[1].get('hour')) + ", " + str(arg[1].get('minute')) + ")"
+            elif arg[0] == "DATE":
+                self.symbolTable[tree.leaf] = [arg[0], arg[1]]
+                arg = "datetime.date(" + str(arg[1].get('year')) + ", " + str(arg[1].get('month')) + ", " + str(arg[1].get('day')) + ")" 
+            elif arg[0] == "TIME":
+                self.symbolTable[tree.leaf] = [arg[0], arg[1]]
+                arg = "datetime.time(" + str(arg[1].get('hour')) + ", " + str(arg[1].get('minute')) +")"
 
+
+        print self.symbolTable
         if type(arg) is not str: arg = str(arg)
         return tree.leaf + " = " + arg
 
@@ -145,6 +155,9 @@ class codeGenerator(object):
             if(type1 != type2):
                 exit("TypeError! " + type1 + " is not of type " +type2)
             else:
+                if type1 == "DAY" or type1 == "MONTH":
+                    exit("TypeError! Cannot add " + type1 + " types together")
+
                 return type1, str(operand1[1]) + " " + tree.children[2] + " " + str(operand2[1]) 
 
     def _multiplicative_expression(self, tree, flag=None):
@@ -245,7 +258,7 @@ class codeGenerator(object):
         elif tree.leaf == "Sunday":
             s += "6"
 
-        return s
+        return "DAY", s
     
     def _month_expression(self, tree, flag=None):
         s = "datetime.datetime.now().month() == "
@@ -275,51 +288,76 @@ class codeGenerator(object):
             s+= "11"
         else:
             s+= "12"
-        return s
+        return "MONTH", s
 
     def _date_time_expression(self, tree, flag=None):
         p = re.compile(r'([0-3]?[0-9])/([01]?[0-9])/([0-9][0-9][0-9][0-9])[ ]([01]?[0-9]):([0-5][0-9][ ])((AM)|(PM))')
         match = p.search(tree.leaf)
-        day = str(int(match.group(1)))
-        month = str(int(match.group(2)))
-        year = str(int(match.group(3)))
-        hour = str(int(match.group(4)))
-        minute = str(int(match.group(5)))
-        # print "Day: "
-        # print day
-        # print "Month: "
-        # print month
-        # print "Year: "
-        # print year
-        # print "Hour: "
-        # print hour
-        # print "Minute: "
-        # print minute
-        return "datetime.datetime(" + year + ", " + month + ", " + day + ", " + hour + ", " + minute + ")"
+        day = int(match.group(1))
+        month = int(match.group(2))
+        year = int(match.group(3))
+        hour = int(match.group(4))
+        minute = int(match.group(5))
+        
+        #check for valid time entries
+        #if day > 31 or day < 1:
+        #    exit("Error: day value must be between 1 and 31")
+        #if month > 12 or month < 1:
+        #    exit("Error: month value must be between 1 and 12")
+        self.check_date_time('day', day)
+        self.check_date_time('month', month)
+        if year < 0:
+            exit("Error: Invalid year. Year must be a positive value")
+        if hour > 24 or hour < 0:
+            exit("Error: Invalid hour. Only 24 hours in a day")
+        if minute > 59 or minute < 0:
+            exit("Error: Invalid minute. Minute must be between 0 and 59")
+       
+        dateTimeTable = {}
+        dateTimeTable['day'] = day
+        dateTimeTable['month'] = month
+        dateTimeTable['year'] = year
+        dateTimeTable['hour'] = hour
+        dateTimeTable['minute'] = minute
+        
+        return "DATETIME", dateTimeTable 
 
     def _time_expression(self, tree, flag=None):
         p = re.compile(r'([01]?[0-9]):([0-5][0-9])[ ]((AM)|(PM))')
         match = p.search(tree.leaf)
         hour = int(match.group(1))
-        minute = str(int(match.group(2)))
-        time_of_day = match.group(3)
-        print "Hour: " + str(hour)
-        print "Minute: " + minute
-        print "Time of Day: '" + time_of_day + "'"
-        if time_of_day == "PM":
+        minute = int(match.group(2))
+        am_pm = match.group(3)
+        #print "Hour: " + str(hour)
+        #print "Minute: " + minute
+        #print "Time of Day: '" + am_pm + "'"
+        if am_pm == "PM":
             hour += 12
-        print "Hour: " + str(hour)
-        print "Minute: " + minute
-        print "Time of Day: '" + time_of_day + "'"
-        return "datetime.time(" + str(hour) + ", " + minute +")" 
+        #print "Hour: " + str(hour)
+        #print "Minute: " + minute
+        #print "Time of Day: '" + am_pm + "'"
+       
+        timeTable = {}
+        timeTable['hour'] = hour
+        timeTable['minute'] = minute
+        timeTable['am_pm'] = am_pm
+
+        return "TIME", timeTable
+        #return "datetime.time(" + str(hour) + ", " + minute +")" 
 
     def _date_expression(self, tree, flag=None):
         p = re.compile(r'([0-3]?[0-9])/([01]?[0-9])/([0-9][0-9][0-9][0-9])')
         match = p.search(tree.leaf)
-        day = str(int(match.group(1)))
-        month = str(int(match.group(2)))
-        year = str(int(match.group(3)))
-        return "datetime.date(" + year + ", " + month + ", " + day + ")"
+        day = int(match.group(1))
+        month = int(match.group(2))
+        year = int(match.group(3))
+        
+        dateTable = {}
+        dateTable['day'] = day
+        dateTable['month'] = month
+        dateTable['year'] = year
+        return "DATE", dateTable
+        #return "datetime.date(" + year + ", " + month + ", " + day + ")"
 
 
     def _temperature_expression(self, tree, flag=None):
@@ -330,7 +368,30 @@ class codeGenerator(object):
         return temp_type, number 
         #return "Temperature(" + number + ", '" + temp_type + "')"
    
+    """
+    Used to check if a day, month, year, hour, etc. is valid
+    If invalid calls exit()
+    check_date_time('month', month)
+    """
+    def check_date_time(self, time, time_arg):
+        return {
+            'day': self.check_day, 
+           'month': self.check_month
+                    }[time]
+      #  if year < 0:
+      #      exit("Error: Invalid year. Year must be a positive value")
+      #  if hour > 24 or hour < 0:
+      #      exit("Error: Invalid hour. Only 24 hours in a day")
+      #  if minute > 59 or minute < 0:
+      #      exit("Error: Invalid minute. Minute must be between 0 and 59")
+    def check_day(self, time_arg):
+       if time_arg > 31 or time_arg < 1:
+           exit("Error: day value must be between 1 and 31"),
+    def check_month(self, time_arg):
+       if time_arg > 12 or time_arg < 1:
+           exit("Error: month value must be between 1 and 12")
 
+       
 class TypeError(Exception):
     def __init__(self, value):
         self.value = value
