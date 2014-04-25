@@ -98,15 +98,33 @@ myTester.run_code(s, 31)
 
 #test for function def
 s='''
-def poop(x):
+def poop(num x):
     x = 2+2
+ret = None
+'''
+myTester.run_code(s, None)
+
+#test for function def 2
+s='''
+def poop():
+    x = 2+2
+ret = None
+'''
+myTester.run_code(s, None)
+
+#test for function def 2
+s='''
+def poop(day x, month y):
+    x = Monday
+    y = January
+    print(y)
 ret = None
 '''
 myTester.run_code(s, None)
 
 # test every
 s='''
-print '5'
+print (5)
 ret = 5
 every (Monday):
     print ('5')
