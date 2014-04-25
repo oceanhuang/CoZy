@@ -1,5 +1,6 @@
 import datetime
 import re
+import sys
 everys = 0
 temp_def ='''
 class Temperature:
@@ -31,11 +32,16 @@ class codeGenerator(object):
         self.varScopes = [[]]
         self.scopeDepth = 0
         # Symbols table
-        self.symbolsTable = {}
+        self.symbolTable = {}
         # Variable to store the code
         self.ret = "import datetime\n" + "every_list = []\n" + temp_def + self.dispatch(tree)
         # 
         # Keeps track of the number of every's
+
+    #temporary exit function when exceptions are raised
+    def exit(self, exit_msg):
+        print exit_msg
+        sys.exit()
 
     
     def dispatch(self, tree, flag=None):
@@ -88,7 +94,15 @@ class codeGenerator(object):
         return self.dispatch(tree.children) + "\n"
 
     def _assignment_statement(self, tree, flag=None):
-        return tree.leaf + " = " + self.dispatch(tree.children[0])
+        arg = self.dispatch(tree.children[0]);
+        if type(arg) is tuple:
+            if arg[0] == "F" or arg[0] == "C" or arg[0] == "K":
+                self.symbolTable[tree.leaf] = [arg[0], arg[1]]
+                arg = "Temperature(" + str(arg[1]) + ", '" + arg[0] + "')"
+                print self.symbolTable
+
+        if type(arg) is not str: arg = str(arg)
+        return tree.leaf + " = " + arg
 
     def _or_expression(self, tree, flag=None):
         
@@ -123,13 +137,26 @@ class codeGenerator(object):
         if len(tree.children) == 1:
             return self.dispatch(tree.children[0])
         else:
-            return self.dispatch(tree.children[0]) + " " + tree.children[2] + " " + self.dispatch(tree.children[1])  
+            operand1 = self.dispatch(tree.children[0])
+            operand2 = self.dispatch(tree.children[1])
+            type1 = operand1[0]
+            type2 = operand2[0]
+
+            if(type1 != type2):
+                exit("TypeError! " + type1 + " is not of type " +type2)
+            else:
+                return type1, str(operand1[1]) + " " + tree.children[2] + " " + str(operand2[1]) 
 
     def _multiplicative_expression(self, tree, flag=None):
         
         if len(tree.children) == 1:
             return self.dispatch(tree.children[0]) 
         else:
+            operand1 = self.dispatch(tree.children[0])
+            operand2 = self.dispatch(tree.children[1])
+            type1 = operand1[0]
+            type2 = operand2[0]
+
             return self.dispatch(tree.children[0]) + " " + tree.children[2] + " " + self.dispatch(tree.children[1])
 
     #this needs to be fixed        
@@ -138,7 +165,10 @@ class codeGenerator(object):
             return "( " + self.dispatch(tree.children[0]) + " )"
         else:
             return tree.leaf
-                
+    
+    def _primary_expression_constant(self, tree, flag=None):
+        return "NUM", int(tree.leaf)    
+    
     def _every_statement(self, tree, flag=None):
         global everys
         global every_list        
@@ -297,5 +327,12 @@ class codeGenerator(object):
         match = p.search(tree.leaf)
         number = str(int(match.group(1)))
         temp_type = match.group(2)
-        return "Temperature(" + number + ", '" + temp_type + "')"
-    
+        return temp_type, number 
+        #return "Temperature(" + number + ", '" + temp_type + "')"
+   
+
+class TypeError(Exception):
+    def __init__(self, value):
+        self.value = value
+    def __str__(self):
+        return repr(self.value)

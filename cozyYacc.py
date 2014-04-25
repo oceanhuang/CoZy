@@ -4,7 +4,6 @@ from compiler import ast, misc
 # Get the token map from the lexer.  This is required.
 from cozyLex import *
 from codeGenerator import *
-from semanticAnalyzer import *
 
 class Node(object):
     """ Node class. Used to build the AST. Each node has a type,
@@ -168,8 +167,7 @@ def p_multiplicative_expresion(p):
 
 # Change to include arrays... ALSO!! does "NOT" belong here...... also code generator needs to handle not
 def p_primary_expression(p):
-    """ primary_expression : CONSTANT
-                           | ID
+    """ primary_expression : ID
                            | LPAREN or_expression RPAREN
                            | NOT LPAREN or_expression RPAREN
     """
@@ -179,6 +177,11 @@ def p_primary_expression(p):
         p[0] = Node('primary_expression', [p[2]])
     else:
         p[0] = Node('primary_expression', [p[3]])
+
+def p_primary_expression_constant(p):
+    """ primary_expression : CONSTANT
+    """
+    p[0] = Node('primary_expression_constant', [], p[1])
 
 def p_primary_expression_days(p):
     """ primary_expression : MONDAY
@@ -283,9 +286,7 @@ if __name__ == '__main__':
 
     ## Put code to test here
     s = """
-bday = 16/07/1991
-every (Monday):
-    print ('5')
+a = 60 F + 50F + 30 
  """
      
 
@@ -293,7 +294,6 @@ every (Monday):
 
     # ## Prints the AST
     print result
-    semanticAnalyzer(result)
     code = codeGenerator(result)
     # Prints the actual program
 #    print code.ret
