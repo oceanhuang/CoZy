@@ -12,13 +12,13 @@
                     STATEMEN-LIST STATEMENT *\n*
 
 
-  STATEMENT -> ASSIGNMENT-STATEMENT *;*|
+  STATEMENT -> ASSIGNMENT-STATEMENT |
 	       SELECTION-STATEMENT |
 	       ITERATION-STATEMENT |
 	       EVERY-STATEMENT |
 	       ONCE-STATEMENT  |
-	       RETURN-STATEMENT *;* |
-               PRINT-STATEMENT *;* |
+	       RETURN-STATEMENT |
+               PRINT-STATEMENT |
                FOR-STATEMENT
           
 
@@ -34,8 +34,9 @@
    AND-EXPRESSION -> EQUAILITY-EXPRESSION | 
                      AND-EXPRESSION *and* EQUALITY-EXPRESSION
  
-   EQUALITY-EXPRESSION -> RELATIONAL-EXPRESSION | 
-                          EQUALITY-EXPRESSION *==* RELATIONAL-EXPRESSION
+ 
+   EQUALITY-EXPRESSION ->  RELATIONAL-EXPRESSION| 
+                          EQUALITY-EXPRESSION *==* RELATIONAL-EXPRESSION |
                           EQUALITY-EXPRESSION *!=* RELATIONAL-EXPRESSION
   
    RELATIONAL-EXPRESSION -> ADDITIVE-EXPRESSION |
@@ -50,10 +51,19 @@
 
    MULTIPLICATIVE-EXPRESSION -> FUNCTION-EXPRESSION |
                                 MULTIPLICATIVE-EXPRESSION *** FUNCTION-EXPRESSION |
-                				MULTIPLICATIVE-EXPRESSION */* FUNCTION-EXPRESSION
+                		MULTIPLICATIVE-EXPRESSION */* FUNCTION-EXPRESSION
 
-   FUNCTION-EXPRESSION -> PRIMARY-EXPRESSION |
+   FUNCTION-EXPRESSION -> TO-EXPRESSION |
                           ID *(* PARAMETER-LIST-START *)*
+
+   TO-EXPRESSION -> RELATIONAL-EXPRESSION |
+   		    TO-EXPRESSION *to* NOT-EXPRESSION
+
+
+   NOT-EXPRESSION -> PRIMARY-EXPRESSION |
+                     *not* NOT-EXPRESSION
+
+
 
    PRIMARY-EXPRESSION -> CONSTANT |
                          ID |
@@ -103,45 +113,37 @@
    FOR-STATEMENT -> *for* ID *in* OR-EXPRESSION *to* OR-EXPRESSION *: \n* STATEMENT-LIST |
    		    *for* ID *in* LIST *: \n* STATEMENT-LIST
    
-   EVERY-STATEMENT -> *every* OR-EXPRESSION *: \n*
    
-   ONCE-STATEMENT -> *once every* OR-EXPRESION *: \n*
+   EVERY-STATEMENT -> *every* DURING-EXPRESSION *: \n*
+   
+   ONCE-STATEMENT -> *once every* DURING-EXPRESION *: \n*
+   
+   DURING-OR-EXPRESSION -> DURING-AND-EXPRESSION |
+   			DURING-OR-EXPRESSION *,* DURING-AND-EXPRESSION
+   
+   DURING-AND-EXPRESSION -> PRIMARY-EXPRESSION |
+   			DURING-AND-EXPRESSION *during* PRIMARY-EXPRESSION |
+   			*(* DURING-OR-EXPRESSION *)* *during* DURING-AND-EXPRESSION
    
    RETURN-STATEMENT -> *return* | *return expression*
   
-   MONTH ->  JANUARY
-           | FEBRUARY
-           | MARCH
-           | APRIL
-           | MAY
-           | JUNE
-           | JULY
-           | AUGUST
-           | SEPTEMBER
-           | OCTOBER
-           | NOVEMBER
-           | DECEMBER
+   MONTH ->  JANUARY |
+             FEBRUARY |
+             MARCH |
+             APRIL |
+             MAY |
+             JUNE |
+             JULY |
+             AUGUST |
+             SEPTEMBER |
+             OCTOBER |
+             NOVEMBER |
+             DECEMBER
    
-   DAY -> MONDAY
-           | TUESDAY
-           | WEDNESDAY
-           | THURSDAY
-           | FRIDAY
-           | SATURDAY
-           | SUNDAY
-
-
-
-
-   Might Not actually need this
-   ----------------------------
-   *Temperature grammar*
-   TEMPERATURE -> TEMPERATURE *+* TEMPERATURE_PRIM | 
-                  TEMPERATURE *-* TEMPERATURE_PRIM | 
-                  TEMPERATURE_PRIM
-
-   TEMPERATURE_PRIM -> *temp_constant* |
-                       *temp_constant* *** CONSTANT |
-                       *temp_constant* */* CONSTANT |
-                       CONSTANT *** *temp_constant*
-
+   DAY -> MONDAY |
+          TUESDAY |
+          WEDNESDAY |
+          THURSDAY |
+          FRIDAY |
+          SATURDAY |
+          SUNDAY 
