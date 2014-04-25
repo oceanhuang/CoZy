@@ -158,7 +158,7 @@ def p_during_or_expression(p):
 #        p[0] = Node("during_and_expression", [p[2],p[5]]) #need to write the code gen for this case
 
 #can do something like(TUESDAY, JANUARY DURING WEDNESDAY) DURING 4:30 PM TO 5:30 PM
-#could do this too (TUESDAY, (WEDS, FRIDAY) DURING 4:30 PM TO 5:30 PM) DURING 4:30 PM TO 5:30 PM
+#could it do this too (TUESDAY, (WEDS, FRIDAY) DURING 4:30 PM TO 5:30 PM) DURING 4:30 PM TO 5:30 PM??
 def p_during_and_expression(p):
     """ during_and_expression : additive_expression
                         | during_and_expression DURING additive_expression """
@@ -246,28 +246,6 @@ def p_primary_expression_temperature(p):
 def p_primary_expression_time(p):
     """ primary_expression : TIME """
     p[0] = Node('time_expression', [], p[1])
-
-###this is a very basic during... still working on the grammar
-##def p_during_or_expression(p):
-##    """during_or_expression : during_and_expression
-##                            | during_or_expression COMMA during_and_expression"""
-##    if len(p) == 2:
-##        p[0] = Node("during_or_expression", [p[1]])
-##    else:
-##        p[0] = Node("during_or_expression", [p[1],p[3]])
-##
-###can do something like(TUESDAY, JANUARY DURING WEDNESDAY) DURING 4:30 PM TO 5:30 PM
-##def p_during_and_expression(p):
-##    """ during_and_expression : additive_expression
-##                        | during_and_expression DURING additive_expression
-##                        | LPAREN during_or_expression RPAREN DURING during_and_expression"""
-##    if len(p) == 2:
-##        p[0] = Node("during_and_expression", [p[1]])
-##    elif len(p) == 4:
-##        p[0] = Node("during_and_expression", [p[1],p[3]])
-##    else:
-##        p[0] = Node("during_and_expression", [p[2],p[5]]) #need to write the code gen for this case
-
 
 def p_every_statement(p):
 #    """ every_statement : EVERY LPAREN primary_expression RPAREN COLON NEWLINE INDENT statement_list DEDENT """
@@ -359,11 +337,11 @@ every ((January during Monday, February during Friday) during Wednesday):
     # ## Prints the AST
     print result
 
-    #code = codeGenerator(result)
+    code = codeGenerator(result)
     # Prints the actual program
-    #print code.ret
+    print code.ret
 
     ## Makes the output file
-    #f = open("out.py", 'w')
-    #f.write(code.ret)
-    #print 'Done!\nCheck "out.py"'
+    f = open("out.py", 'w')
+    f.write(code.ret)
+    print 'Done!\nCheck "out.py"'
