@@ -44,7 +44,6 @@ reserved = {
 }
 
 tokens = [
-    'PERIOD',
     'LPAREN',
     'RPAREN',
     'RBRACK',
@@ -76,7 +75,6 @@ tokens = [
 ] + list(reserved.values())
 
 # Regular expression rules for simple tokens
-t_PERIOD    = r'\.'
 t_LPAREN    = r'\('
 t_RPAREN    = r'\)'
 t_LBRACK    = r'\{'

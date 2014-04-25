@@ -35,7 +35,7 @@ class CoZyTester:
     def run_code(self, code_str, output):
         result = self.parser.parse(code_str)
         code = codeGenerator.codeGenerator(result).ret
-        print code
+        #print code
         # print locals()
         exec code in locals()
         if output == None: print locals()['ret']
@@ -50,9 +50,13 @@ ret=3+3
 myTester.run_code(s, 6)
 
 s = '''
-ret = [3, 4, 1>6]
+a = [1,2,3]
+add(a,[12,32,'a'])
+remove(a, 2)
+sort(a)
+ret = a
 '''
-myTester.run_code(s,[3,4,False])
+myTester.run_code(s,[1,3,[12,32,'a']])
 
 
 s = '''
@@ -134,3 +138,6 @@ ret = 50 C
 ret = 80 F
 '''
 myTester.run_code(s, None)
+
+
+

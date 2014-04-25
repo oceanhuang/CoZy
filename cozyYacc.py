@@ -91,6 +91,7 @@ def p_statement_list(p):
 def p_statement(p):
     """ statement : assignment_statement NEWLINE
                   | every_statement
+                  | list_change NEWLINE
                   | iteration_statement
                   | selection_statement
                   | print_statement SEMICOLON
@@ -134,42 +135,21 @@ def p_list_expression(p):
         p[0] = Node("list_expression", [p[1], p[3]])
 
 def p_list_change(p):
-    '''list_change : id_improved PERIOD ADD LPAREN or_expression RPAREN 
-                    | id_improved PERIOD SORT LPAREN RPAREN
+    '''list_change : ADD LPAREN id_improved COMMA or_expression RPAREN 
+                    | SORT LPAREN id_improved RPAREN
     '''
     if len(p) == 7:
-        p[0] = Node("list_add_expression", [p[1], p[5]])
+        p[0] = Node("list_add_expression", [p[3], p[5]])
     else:
-        p[0] = Node("list_sort_expression", [p[1]])
+        p[0] = Node("list_sort_expression", [p[3]])
     
     
 def p_list_change_remove(p):
-    '''list_change : id_improved PERIOD REMOVE LPAREN or_expression RPAREN
+    '''list_change : REMOVE LPAREN id_improved COMMA or_expression RPAREN
     '''
-    p[0] = Node("list_remove_expression", [p[1], p[5]])
+    p[0] = Node("list_remove_expression", [p[3], p[5]])
 
     
-def p_function_param_list(p):
-    'function_param_list : function_param' #need to handle empty string
-    if len(p)==2:
-        p[0] = Node("function_param_list", [p[1]])
-    else:
-        p[0] = Node("function_param_list", [])
-        
-def p_function_param(p):
-    '''function_param : ID 
-                    | function_param COMMA function_param_end
-    '''
-    if len(p)==2:
-        p[0] = Node('function_param', [], p[1])
-    else:
-        p[0] = Node('function_param', [p[1], p[3]])
-
-def p_function_param_end(p):
-    'function_param_end : ID'
-    p[0] = Node('function_param_end', [], p[1])
-
-
 def p_or_expresion(p):
     """ or_expression : and_expression
                         | or_expression OR and_expression
@@ -375,11 +355,12 @@ every (Monday):
     """
     ## Put code to test here
     s = """
-a = 1
 a = [1,2,3]
-bday = 16/07/1991
-every (Friday):
-    print ('5')
+add(a,[12,32,'a'])
+remove(a, 2)
+sort(a)
+print(a)
+
  """
      
 

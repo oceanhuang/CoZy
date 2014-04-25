@@ -96,7 +96,7 @@ class codeGenerator(object):
         return self.dispatch(tree.children[0]) + "[" + self.dispatch(tree.children[1]) + "]"
 
     def _list_add_expression(self, tree, flag=None):
-        return self.dispatch(tree.children[0]) + ".add(" + self.dispatch(tree.children[1]) + ")"
+        return self.dispatch(tree.children[0]) + ".append(" + self.dispatch(tree.children[1]) + ")"
 
     def _list_sort_expression(self, tree, flag=None):
         return self.dispatch(tree.children[0]) + ".sort()"
