@@ -156,7 +156,7 @@ def p_additive_expresion(p):
 
 # Change to continue sequence in grammar i.e. function_expression, etc
 def p_multiplicative_expresion(p):
-    """ multiplicative_expression : primary_expression
+    """ multiplicative_expression : to_expression
                              | multiplicative_expression MULTIPLY primary_expression
                              | multiplicative_expression DIVIDE primary_expression
     """
@@ -165,7 +165,15 @@ def p_multiplicative_expresion(p):
     else:
         p[0] = Node("multiplicative_expression", [p[1], p[3], p[2]])
 
-# Change to include arrays... ALSO!! does "NOT" belong here...... also code generator needs to handle not
+def p_to_expression(p):
+    """ to_expression : primary_expression
+                      | primary_expression TO primary_expression
+    """
+    if len(p) == 2:
+        p[0] = Node("to_expression", [p[1]])
+    else:
+        p[0] = Node("to_expression", [p[1], p[3]])
+ 
 def p_primary_expression(p):
     """ primary_expression : CONSTANT
                            | ID
@@ -282,9 +290,12 @@ if __name__ == '__main__':
 
     ## Put code to test here
     s = """
-bday = 16/07/1991
-every (Monday):
-    print ('5')
+if(Monday to Friday):
+    x = 2
+
+
+if(Saturday to Monday):
+    y = 2
  """
      
 

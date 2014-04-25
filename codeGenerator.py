@@ -132,6 +132,16 @@ class codeGenerator(object):
         else:
             return self.dispatch(tree.children[0]) + " " + tree.children[2] + " " + self.dispatch(tree.children[1])
 
+    def _to_expression(self, tree, flag=None):
+        if len(tree.children) == 1:
+            return self.dispatch(tree.children[0])
+        else:
+            return ''
+
+    def getMonthDayVal(string):
+        print "TEEEEEEEST" + string
+        return (0, 'day')
+
     #this needs to be fixed        
     def _primary_expression(self, tree, flag=None):
         if tree.leaf == None:
