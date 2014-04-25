@@ -12,13 +12,13 @@
                     STATEMEN-LIST STATEMENT *\n*
 
 
-  STATEMENT -> ASSIGNMENT-STATEMENT *;*|
+  STATEMENT -> ASSIGNMENT-STATEMENT |
 	       SELECTION-STATEMENT |
 	       ITERATION-STATEMENT |
 	       EVERY-STATEMENT |
 	       ONCE-STATEMENT  |
-	       RETURN-STATEMENT *;* |
-               PRINT-STATEMENT *;* |
+	       RETURN-STATEMENT |
+               PRINT-STATEMENT |
                FOR-STATEMENT
           
 
