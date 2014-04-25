@@ -35,7 +35,7 @@ class CoZyTester:
     def run_code(self, code_str, output):
         result = self.parser.parse(code_str)
         code = codeGenerator.codeGenerator(result).ret
-        print code
+        #print code
         # print locals()
         exec code in locals()
         if output == None: print locals()['ret']
@@ -98,7 +98,7 @@ myTester.run_code(s, 31)
 
 #test for function def
 s='''
-def poop(num x):
+def poop(number x):
     x = 2+2
 ret = None
 '''
@@ -112,7 +112,7 @@ ret = None
 '''
 myTester.run_code(s, None)
 
-#test for function def 2
+#test function def 2
 s='''
 def poop(day x, month y):
     x = Monday
