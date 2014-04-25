@@ -32,6 +32,9 @@ reserved = {
     'and' : 'AND',
     'if' : 'IF',
     'else' : 'ELSE',
+    'add' : 'ADD',
+    'remove' : 'REMOVE',
+    'sort' : 'SORT',
     #'elif' : 'ELSEIF',
     'while' : 'WHILE',
     'for' : 'FOR',
@@ -41,6 +44,7 @@ reserved = {
 }
 
 tokens = [
+    'PERIOD',
     'LPAREN',
     'RPAREN',
     'RBRACK',
@@ -68,10 +72,11 @@ tokens = [
     'WS',
     'NEWLINE',
     'COMMA',
-    'BOOLEAN',
+    'BOOLEAN'
 ] + list(reserved.values())
 
 # Regular expression rules for simple tokens
+t_PERIOD    = r'\.'
 t_LPAREN    = r'\('
 t_RPAREN    = r'\)'
 t_LBRACK    = r'\{'
@@ -314,6 +319,9 @@ if __name__ == '__main__':
     lexer = CoZyLexer()
     # code
     data = """
+a.add(3)
+a.sort()
+a.remove(5)
 bday = 10:00 PM
 every (Monday):
     print '5'

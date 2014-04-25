@@ -95,6 +95,14 @@ class codeGenerator(object):
     def _list_index(self, tree, flag=None):
         return self.dispatch(tree.children[0]) + "[" + self.dispatch(tree.children[1]) + "]"
 
+    def _list_add_expression(self, tree, flag=None):
+        return self.dispatch(tree.children[0]) + ".add(" + self.dispatch(tree.children[1]) + ")"
+
+    def _list_sort_expression(self, tree, flag=None):
+        return self.dispatch(tree.children[0]) + ".sort()"
+
+    def _list_remove_expression(self, tree, flag=None):
+        return self.dispatch(tree.children[0]) + ".remove(" + self.dispatch(tree.children[1]) + ")"
     
     
     def _statement_list(self, tree, flag=None):

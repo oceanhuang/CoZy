@@ -133,7 +133,22 @@ def p_list_expression(p):
     else:
         p[0] = Node("list_expression", [p[1], p[3]])
 
+def p_list_change(p):
+    '''list_change : id_improved PERIOD ADD LPAREN or_expression RPAREN 
+                    | id_improved PERIOD SORT LPAREN RPAREN
+    '''
+    if len(p) == 7:
+        p[0] = Node("list_add_expression", [p[1], p[5]])
+    else:
+        p[0] = Node("list_sort_expression", [p[1]])
+    
+    
+def p_list_change_remove(p):
+    '''list_change : id_improved PERIOD REMOVE LPAREN or_expression RPAREN
+    '''
+    p[0] = Node("list_remove_expression", [p[1], p[5]])
 
+    
 def p_function_param_list(p):
     'function_param_list : function_param' #need to handle empty string
     if len(p)==2:
@@ -229,7 +244,7 @@ def p_primary_expression(p):
 
 
 def p_primary_expression_list_id(p):
-    """ primary_expression : id_improved
+    """ primary_expression : id_improved 
                            | list_start
     """
     p[0] = Node('list_id_expression', [p[1]])
@@ -349,12 +364,21 @@ if __name__ == '__main__':
     parser = CoZyParser()
     """
 a = [3,4, 2, 3+5, 3>6]
-b = a[]
+f = 1
+bday = 16/07/1991
+a = [1,2,3]
+a.remove(3)
+a = [1,2,3]
+a.add(3)
+every (Monday):
+    print ('5')
     """
     ## Put code to test here
     s = """
+a = 1
+a = [1,2,3]
 bday = 16/07/1991
-every (Monday):
+every (Friday):
     print ('5')
  """
      
@@ -366,7 +390,7 @@ every (Monday):
 
     code = codeGenerator(result)
     # Prints the actual program
-#    print code.ret
+    print code.ret
 
     ## Makes the output file
     f = open("out.py", 'w')
