@@ -4,6 +4,7 @@ from compiler import ast, misc
 # Get the token map from the lexer.  This is required.
 from cozyLex import *
 from codeGenerator import *
+from semanticAnalyzer import *
 
 class Node(object):
     """ Node class. Used to build the AST. Each node has a type,
@@ -292,7 +293,7 @@ every (Monday):
 
     # ## Prints the AST
     print result
-
+    semanticAnalyzer(result)
     code = codeGenerator(result)
     # Prints the actual program
 #    print code.ret
