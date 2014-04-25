@@ -56,30 +56,34 @@ class codeGenerator(object):
     def _external_declaration(self, tree, flag=None):
         return self.dispatch(tree.children)
 
-    # very basic function definition
+    #function definition
     def _function_definition(self, tree, flag=None):
-        s = "def " + tree.children[0] + "(" + self.dispatch(tree.children[1])+") :\n"
-        lines = self.dispatch(tree.children[2]).splitlines()
+        #with parameters
+        if len(tree.children) == 3:
+            s = "def " + tree.children[0] + "(" + self.dispatch(tree.children[1])+") :\n"
+            lines = self.dispatch(tree.children[2]).splitlines()
+            for line in lines:
+                s+= "    " + line +"\n"
+            return s
 
+        #no parameters
+        s = "def " + tree.children[0] + "( ) :\n"
+        lines = self.dispatch(tree.children[1]).splitlines()
         for line in lines:
             s+= "    " + line +"\n"
         return s
 
     def _function_param_list(self, tree, flag=None):
-        if len(tree.children)==0:
-            return ''
+        if len(tree.children) == 1:
+            s = self.dispatch(tree.children[0])
+            return s
         else:
-            return self.dispatch(tree.children[0])
+            s = self.dispatch(tree.children[0]) + ", " + self.dispatch(tree.children[1])
+            return s
 
     def _function_param(self, tree, flag=None):
-        if tree.leaf==None:
-           return  self.dispatch(tree.children[0]) + "," + self.dispatch(tree.children[1])
-        else:
-           return tree.leaf
-
-    def _function_param_end(self, tree, flag=None):
-        return tree.leaf
-
+        s = tree.children[1]
+        return s
 
     def _statement_list(self, tree, flag=None):
         return self.dispatch(tree.children)
