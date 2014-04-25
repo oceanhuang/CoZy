@@ -32,6 +32,7 @@
    AND-EXPRESSION -> EQUAILITY-EXPRESSION | 
                      AND-EXPRESSION *and* EQUALITY-EXPRESSION
  
+ 
    EQUALITY-EXPRESSION -> RELATIONAL-EXPRESSION | 
                           EQUALITY-EXPRESSION *==* RELATIONAL-EXPRESSION
                           EQUALITY-EXPRESSION *!=* RELATIONAL-EXPRESSION
@@ -48,10 +49,13 @@
 
    MULTIPLICATIVE-EXPRESSION -> FUNCTION-EXPRESSION |
                                 MULTIPLICATIVE-EXPRESSION *** FUNCTION-EXPRESSION |
-                				MULTIPLICATIVE-EXPRESSION */* FUNCTION-EXPRESSION
+                		MULTIPLICATIVE-EXPRESSION */* FUNCTION-EXPRESSION
 
-   FUNCTION-EXPRESSION -> PRIMARY-EXPRESSION |
+   FUNCTION-EXPRESSION -> NOT-EXPRESSION |
                           ID *(* PARAMETER-LIST-START *)*
+
+   NOT-EXPRESSION -> PRIMARY-EXPRESSION |
+                     *not* NOT-EXPRESSION
 
    PRIMARY-EXPRESSION -> CONSTANT |
                          ID |
@@ -103,39 +107,23 @@
    
    RETURN-STATEMENT -> *return* | *return expression*
   
-   MONTH ->  JANUARY
-           | FEBRUARY
-           | MARCH
-           | APRIL
-           | MAY
-           | JUNE
-           | JULY
-           | AUGUST
-           | SEPTEMBER
-           | OCTOBER
-           | NOVEMBER
-           | DECEMBER
+   MONTH ->  JANUARY |
+             FEBRUARY |
+             MARCH |
+             APRIL |
+             MAY |
+             JUNE |
+             JULY |
+             AUGUST |
+             SEPTEMBER |
+             OCTOBER |
+             NOVEMBER |
+             DECEMBER
    
-   DAY -> MONDAY
-           | TUESDAY
-           | WEDNESDAY
-           | THURSDAY
-           | FRIDAY
-           | SATURDAY
-           | SUNDAY
-
-
-
-
-   Might Not actually need this
-   ----------------------------
-   *Temperature grammar*
-   TEMPERATURE -> TEMPERATURE *+* TEMPERATURE_PRIM | 
-                  TEMPERATURE *-* TEMPERATURE_PRIM | 
-                  TEMPERATURE_PRIM
-
-   TEMPERATURE_PRIM -> *temp_constant* |
-                       *temp_constant* *** CONSTANT |
-                       *temp_constant* */* CONSTANT |
-                       CONSTANT *** *temp_constant*
-
+   DAY -> MONDAY |
+          TUESDAY |
+          WEDNESDAY |
+          THURSDAY |
+          FRIDAY |
+          SATURDAY |
+          SUNDAY 
