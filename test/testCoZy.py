@@ -106,6 +106,16 @@ ret = x
 '''
 myTester.run_code(s, 31)
 
+# test for each:
+s= '''
+a = [2,3,5,6]
+b = 0
+for each x in a:
+    b = b + x
+ret = b
+'''
+myTester.run_code(s, 16)
+
 #test for function def
 s='''
 def poop(x):

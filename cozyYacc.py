@@ -311,10 +311,16 @@ def p_print_statement(p):
     p[0] = Node("print_statement", [p[3]])
 
 #need to add foreach/ also confused about the grammar
+#I don't think this should go to primary_expression
 def p_for_statement(p):
     """ for_statement : FOR primary_expression IN or_expression TO or_expression COLON NEWLINE INDENT statement_list DEDENT
     """
     p[0] = Node("for_statement", [p[2], p[4], p[6], p[10]])
+
+def p_for_each_statement(p):
+    """ for_statement : FOR EACH ID IN or_expression COLON NEWLINE INDENT statement_list DEDENT
+    """
+    p[0] = Node("for_each_statement", [p[5], p[9]], p[3])
 
 # Error rule for syntax errors
 def p_error(p):
@@ -352,9 +358,6 @@ a = [1,2,3]
 a.add(3)
 every (Monday):
     print ('5')
-    """
-    ## Put code to test here
-    s = """
 a = [1,2,3]
 add(a,[12,32,'a'])
 for i in 1 to 10:
@@ -362,7 +365,12 @@ for i in 1 to 10:
 remove(a, 2)
 sort(a)
 print(a)
-
+a = [2,3,65,2]
+    """
+    ## Put code to test here
+    s = """
+for each x in [1,4,6]:
+    print(x)
  """
      
 

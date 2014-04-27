@@ -40,7 +40,8 @@ reserved = {
     'for' : 'FOR',
     'in' : 'IN', 
     'print' : 'PRINT',
-    'not' : 'NOT'
+    'not' : 'NOT',
+    'each' : 'EACH',
 }
 
 tokens = [
@@ -93,6 +94,7 @@ t_NONEQUIV  = r'(!=)'
 t_RELOP     = r'(<=)|(>=)|(<)|(>)'
 t_COMMA     = r'(,)'
 t_BOOLEAN   = r'true|false'
+t_EACH      = r'each'
 # A regular expression rule with some action code
 
 def t_DATETIME(t):
@@ -323,6 +325,8 @@ a.remove(5)
 bday = 10:00 PM
 every (Monday):
     print '5'
+for each x in a:
+    print x
 """
 #     data = """
 # x=3+3;

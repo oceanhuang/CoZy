@@ -242,6 +242,16 @@ class codeGenerator(object):
         for line in lines:
             s+= "    " + line +"\n"
         return s
+
+    def _for_each_statement(self, tree, flag=None):
+
+        s = "for " + tree.leaf + " in " + self.dispatch(tree.children[0]) + ": \n"
+        lines = self.dispatch(tree.children[1]).splitlines()
+        for line in lines:
+            s+= "    " + line +"\n"
+        return s
+
+    
     
     def _day_expression(self, tree, flag=None):
         s = "datetime.datetime.now().weekday() == "
