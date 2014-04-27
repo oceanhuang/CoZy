@@ -140,6 +140,17 @@ class codeGenerator(object):
         if len(tree.children) == 1:
             return self.dispatch(tree.children[0])
         else:
+            operand1 = self.dispatch(tree.children[0])
+            operand2 = self.dispatch(tree.children[1])
+            type1 = operand1[0]
+            type2 = operand2[0]
+
+            if type1 != type2:
+                exit("TypeError! Can not use relop between type " + type1 + " and " + type2)
+            else:
+                if type1 != "NUM" and tree.children[2] != "!=":
+                    exit("Error: Cannot use '>' or '<' for non-numbers") 
+
             return self.dispatch(tree.children[0]) + " " + tree.children[2] + " " + self.dispatch(tree.children[1])  
 
     def _additive_expression(self, tree, flag=None):
@@ -155,7 +166,7 @@ class codeGenerator(object):
             if type1 != type2:
                 exit("TypeError! " + type1 + " is not of type " +type2)
             else:
-                if type1=="DAY" or type1=="MONTH" or type=="DATE" or type=="TIME" or type=="DATETIME":
+                if type1=="DAY" or type1=="MONTH" or type1=="DATE" or type1=="TIME" or type1=="DATETIME":
                     exit("TypeError! Cannot add " + type1 + " types together")
 
                 return type1, str(operand1[1]) + " " + tree.children[2] + " " + str(operand2[1]) 
@@ -180,7 +191,7 @@ class codeGenerator(object):
                 exit("TypeError! " + type1 + " is not of type " +type2)
 
             else:
-                if type1=="DAY" or type1=="MONTH" or type=="DATE" or type=="TIME" or type=="DATETIME":
+                if type1=="DAY" or type1=="MONTH" or type1=="DATE" or type1=="TIME" or type1=="DATETIME":
                     exit("TypeError! Cannot multiply " + type1 + " types together")
 
             return self.dispatch(tree.children[0]) + " " + tree.children[2] + " " + self.dispatch(tree.children[1])
