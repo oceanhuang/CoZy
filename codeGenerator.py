@@ -225,7 +225,13 @@ class codeGenerator(object):
         if tree.leaf == None:
             return "( " + self.dispatch(tree.children[0]) + " )"
         else:
-            return tree.leaf
+            """
+            This means this is a variable/ID. 
+                Check if variable is in symbol table and return the variable and its type
+            """
+            #TODO check if variable is in the correct scope
+            (varType, value) = self.symbolTable.get(tree.leaf)
+            return varType, tree.leaf
     
     def _primary_expression_constant(self, tree, flag=None):
         return "NUM", int(tree.leaf)    
