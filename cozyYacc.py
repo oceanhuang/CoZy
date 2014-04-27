@@ -357,6 +357,8 @@ every (Monday):
     s = """
 a = [1,2,3]
 add(a,[12,32,'a'])
+for i in 1 to 10:
+    add(a,i)
 remove(a, 2)
 sort(a)
 print(a)
