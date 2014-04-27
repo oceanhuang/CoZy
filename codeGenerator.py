@@ -108,7 +108,13 @@ class codeGenerator(object):
             elif arg[0] == "TIME":
                 self.symbolTable[tree.leaf] = [arg[0], arg[1]]
                 arg = "datetime.time(" + str(arg[1].get('hour')) + ", " + str(arg[1].get('minute')) +")"
+            elif arg[0] == "BOOL" or arg[0] == "NUM":
+                self.symbolTable[tree.leaf] = [arg[0], arg[1]]
+                arg = arg[1]
 
+            else:
+                #TODO add to symbol table
+                arg = arg[1]
 
         print self.symbolTable
         if type(arg) is not str: arg = str(arg)
@@ -119,31 +125,44 @@ class codeGenerator(object):
         if len(tree.children) == 1:
             return self.dispatch(tree.children[0])
         else:
-            return self.dispatch(tree.children[0]) + " " + tree.children[2] + " " + self.dispatch(tree.children[1])  
+            (operand1, operand2, type1, type2) = self.get_types(tree.children[0], tree.children[1])
+            return "BOOL", str(operand[1]) + " " + tree.children[2] + " " + str(operand2[1])
+            #return self.dispatch(tree.children[0]) + " " + tree.children[2] + " " + self.dispatch(tree.children[1])  
 
     def _and_expression(self, tree, flag=None):
         
         if len(tree.children) == 1:
             return self.dispatch(tree.children[0])
         else:
-            return self.dispatch(tree.children[0]) + " " + tree.children[2] + " " + self.dispatch(tree.children[1])  
+            (operand1, operand2, type1, type2) = self.get_types(tree.children[0], tree.children[1])
+            
+            return "BOOL", str(operand1[1]) + " " + tree.children[2] + " " + str(operand2[1])
+            #return self.dispatch(tree.children[0]) + " " + tree.children[2] + " " + self.dispatch(tree.children[1])  
 
     def _equality_expression(self, tree, flag=None):
         
         if len(tree.children) == 1:
             return self.dispatch(tree.children[0])
         else:
-            return self.dispatch(tree.children[0]) + " " + tree.children[2] + " " + self.dispatch(tree.children[1])  
+            (operand1, operand2, type1, type2) = self.get_types(tree.children[0], tree.children[1])
+
+            if type1 != type2:
+                exit("TypeError! Cannot compare objects of type " + type1 + " and objects of type " + type2)
+
+            return "BOOL", str(operand1[1]) + " " + tree.children[2] + " " + str(operand2[2])
+            #return self.dispatch(tree.children[0]) + " " + tree.children[2] + " " + self.dispatch(tree.children[1])  
 
     def _relational_expression(self, tree, flag=None):
         
         if len(tree.children) == 1:
             return self.dispatch(tree.children[0])
         else:
-            operand1 = self.dispatch(tree.children[0])
-            operand2 = self.dispatch(tree.children[1])
-            type1 = operand1[0]
-            type2 = operand2[0]
+
+            (operand1, operand2, type1, type2) = self.get_types(tree.children[0], tree.children[1])
+            #operand1 = self.dispatch(tree.children[0])
+            #operand2 = self.dispatch(tree.children[1])
+            #type1 = operand1[0]
+            #type2 = operand2[0]
 
             if type1 != type2:
                 exit("TypeError! Can not use relop between type " + type1 + " and " + type2)
@@ -151,17 +170,19 @@ class codeGenerator(object):
                 if type1 != "NUM" and tree.children[2] != "!=":
                     exit("Error: Cannot use '>' or '<' for non-numbers") 
 
-            return self.dispatch(tree.children[0]) + " " + tree.children[2] + " " + self.dispatch(tree.children[1])  
+            return type1, str(operand1[1]) + " " + tree.children[2] + " " + str(operand2[1])  
 
     def _additive_expression(self, tree, flag=None):
         
         if len(tree.children) == 1:
             return self.dispatch(tree.children[0])
         else:
-            operand1 = self.dispatch(tree.children[0])
-            operand2 = self.dispatch(tree.children[1])
-            type1 = operand1[0]
-            type2 = operand2[0]
+            
+            (operand1, operand2, type1, type2) = self.get_types(tree.children[0], tree.children[1])
+            #operand1 = self.dispatch(tree.children[0])
+            #operand2 = self.dispatch(tree.children[1])
+            #type1 = operand1[0]
+            #type2 = operand2[0]
 
             if type1 != type2:
                 exit("TypeError! " + type1 + " is not of type " +type2)
@@ -176,10 +197,12 @@ class codeGenerator(object):
         if len(tree.children) == 1:
             return self.dispatch(tree.children[0]) 
         else:
-            operand1 = self.dispatch(tree.children[0])
-            operand2 = self.dispatch(tree.children[1])
-            type1 = operand1[0]
-            type2 = operand2[0]
+            
+            (operand1, operand2, type1, type2) = self.get_types(tree.children[0], tree.children[1])
+            #operand1 = self.dispatch(tree.children[0])
+            #operand2 = self.dispatch(tree.children[1])
+            #type1 = operand1[0]
+            #type2 = operand2[0]
             
             if type1 != type2:
                 #allow NUM * TEMP and TEMP * NUM
@@ -194,7 +217,8 @@ class codeGenerator(object):
                 if type1=="DAY" or type1=="MONTH" or type1=="DATE" or type1=="TIME" or type1=="DATETIME":
                     exit("TypeError! Cannot multiply " + type1 + " types together")
 
-            return self.dispatch(tree.children[0]) + " " + tree.children[2] + " " + self.dispatch(tree.children[1])
+                return type1, str(operand1[1]) + " " + tree.children[2] + " " + str(operand2[1])
+                    #return self.dispatch(tree.children[0]) + " " + tree.children[2] + " " + self.dispatch(tree.children[1])
 
     #this needs to be fixed        
     def _primary_expression(self, tree, flag=None):
@@ -415,6 +439,15 @@ class codeGenerator(object):
        if time_arg > 12 or time_arg < 1:
            exit("Error: month value must be between 1 and 12")
 
+
+    #worth it to use this function?
+    def get_types(self, children1, children2):
+            operand1 = self.dispatch(children1)
+            operand2 = self.dispatch(children2)
+            type1 = operand1[0]
+            type2 = operand2[0]
+
+            return operand1, operand2, type1, type2
        
 class TypeError(Exception):
     def __init__(self, value):
