@@ -33,7 +33,7 @@ class codeGenerator(object):
         # Symbols table
         self.symbolsTable = {}
         # Variable to store the code
-        self.ret = "import datetime\n" + "every_list = []\n" + temp_def + self.dispatch(tree)
+        self.ret = "import datetime\n" + "every_list = []\n" + "log_file = open('cozyLog.txt', 'a')\n" + temp_def + self.dispatch(tree)
         # 
         # Keeps track of the number of every's
 
@@ -187,6 +187,10 @@ class codeGenerator(object):
 
     def _print_statement(self, tree, flag=None):
         s = "print " + self.dispatch(tree.children[0])
+        return s
+
+    def _log_statement(self, tree, flag=None):
+        s = "log_file.write(" + self.dispatch(tree.children[0]) + " + '\\n'" + ")"
         return s
 
     def _for_statement(self, tree, flag=None):

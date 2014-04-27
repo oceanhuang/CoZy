@@ -37,7 +37,8 @@ reserved = {
     'for' : 'FOR',
     'in' : 'IN', 
     'print' : 'PRINT',
-    'not' : 'NOT'
+    'not' : 'NOT',
+    'log' : 'LOG'
 }
 
 tokens = [
@@ -313,6 +314,7 @@ if __name__ == '__main__':
 bday = 10:00 PM
 every (Monday):
     print '5'
+print("something")
 """
 #     data = """
 # x=3+3;
