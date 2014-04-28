@@ -93,6 +93,20 @@ class codeGenerator(object):
 
     def _assignment_statement(self, tree, flag=None):
         return tree.leaf + " = " + self.dispatch(tree.children[0])
+        
+    def _function_input_expression(self, tree, flag=None):
+        if len(tree.children) == 1:
+            return self.dispatch(tree.children[0])
+        else:
+            return self.dispatch(tree.children[0]) + " , " + self.dispatch(tree.children[2])
+
+    def _function_expression(self, tree, flag=None):
+        if len(tree.children) == 1:
+            return self.dispatch(tree.children[0])
+        elif len(tree.children) == 3:
+            return self.dispatch(tree.children[0]) + self.dispatch(tree.children[1]) + self.dispatch(tree.children[2])
+        else:
+            return self.dispatch(tree.children[0]) + " ( " + self.dispatch(tree.children[2]) + " ) " 
 
     def _or_expression(self, tree, flag=None):
         

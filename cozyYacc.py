@@ -326,6 +326,9 @@ every (Monday):
     print ('5')
 def foo( day x ):
     print ('hello')
+x = foo(a, b)
+y = foo(c)
+z = foo()
  """
      
 
@@ -334,11 +337,11 @@ def foo( day x ):
     # ## Prints the AST
     print result
 
-    #code = codeGenerator(result)
+    code = codeGenerator(result)
     # Prints the actual program
-    #print code.ret
+    print code.ret
 
     ## Makes the output file
-#    f = open("out.py", 'w')
-#    f.write(code.ret)
-#    print 'Done!\nCheck "out.py"'
+    f = open("out.py", 'w')
+    f.write(code.ret)
+    print 'Done!\nCheck "out.py"'
