@@ -37,6 +37,7 @@
 	       SELECTION-STATEMENT |
 	       ITERATION-STATEMENT |
 	       EVERY-STATEMENT |
+		   LIST-CHANGE |
 	       ONCE-STATEMENT  |
 	       RETURN-STATEMENT |
                PRINT-STATEMENT |
@@ -117,7 +118,9 @@
    LIST-EXPRESSION -> LIST-EXPRESSION | 
                      LIST-EXPRESSION *,* OR-EXPRESSION
 
-
+   LIST-CHANGE -> *add(* ID *, * OR-EXPRESSION *)* |
+				   remove(* ID *, * OR-EXPRESSION *)* |
+				   sort(* ID *)
    
    PARAMETER-LIST-START -> \epsilon |
                            PARAMETER-LIST
