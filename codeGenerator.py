@@ -104,7 +104,7 @@ class codeGenerator(object):
         if len(tree.children) == 1:
             return self.dispatch(tree.children[0])
         elif len(tree.children) == 3:
-            return self.dispatch(tree.children[0]) + self.dispatch(tree.children[1]) + self.dispatch(tree.children[2])
+            return self.dispatch(tree.children[0]) + "()"
         else:
             return self.dispatch(tree.children[0]) + " ( " + self.dispatch(tree.children[2]) + " ) " 
 

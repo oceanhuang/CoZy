@@ -198,10 +198,10 @@ def p_function_expression(p):
                             | ID LPAREN function_input_expression RPAREN"""
     if len(p) == 2:
         p[0] = Node("function_expression", [p[1]])
-    elif len(p) == 4:
-        p[0] = Node("function_expression", [p[1], p[2], p[3]])
+##    elif len(p) == 4:
+##        p[0] = Node("function_expression", [p[1], p[2], p[3]])
     else:
-        p[0] = Node("function_expression", [p[1], p[2], p[3], p[4]])
+        p[0] = Node("function_expression", [p[1], p[3]])
         
 
 # Change to include arrays... ALSO!! does "NOT" belong here...... also code generator needs to handle not
@@ -326,10 +326,11 @@ every (Monday):
     print ('5')
 def foo( day x ):
     print ('hello')
-x = foo(a, b)
-y = foo(c)
-z = foo()
+x = foo(a)
  """
+
+##    x = foo(a, b)
+##y = foo(c)
      
 
     result = parser.parse(s)
@@ -342,6 +343,6 @@ z = foo()
     print code.ret
 
     ## Makes the output file
-    f = open("out.py", 'w')
-    f.write(code.ret)
-    print 'Done!\nCheck "out.py"'
+    #f = open("out.py", 'w')
+    #f.write(code.ret)
+    #print 'Done!\nCheck "out.py"'
