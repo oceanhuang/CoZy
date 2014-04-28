@@ -112,7 +112,7 @@ ret = None
 '''
 myTester.run_code(s, None)
 
-#test function def 2
+#test for function def 2
 s='''
 def poop(day x, month y):
     x = Monday
