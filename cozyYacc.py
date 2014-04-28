@@ -114,13 +114,23 @@ def p_statement(p):
     """
     p[0] = Node("statement", [p[1]])
 
-# is this correct?? need to fix according to grammar...
+#
 def p_assignment_statement(p):
-    """ assignment_statement : ID EQUALS or_expression
-                             | ID EQUALS assignment_statement or_expression
+    """ assignment_statement : ID EQUALS function_input_expression
+                             | ID EQUALS assignment_statement function_input_expression
     """
     
     p[0] = Node("assignment_statement", [p[3]], p[1])
+
+#the semantic analyzer needs to handle dealing with commas outside of a function
+def p_function_input_expression(p):
+    """ function_input_expression : or_expression
+                                    | function_input_expression COMMA or_expression
+    """
+    if len(p) == 2:
+        p[0] = Node("function_input_expression", [p[1]])
+    else:
+        p[0] = Node("function_input_expression", [p[1], p[2], p[3]])
 
 def p_or_expresion(p):
     """ or_expression : and_expression
@@ -171,14 +181,28 @@ def p_additive_expresion(p):
 
 # Change to continue sequence in grammar i.e. function_expression, etc
 def p_multiplicative_expresion(p):
-    """ multiplicative_expression : primary_expression
-                             | multiplicative_expression MULTIPLY primary_expression
-                             | multiplicative_expression DIVIDE primary_expression
+    """ multiplicative_expression : function_expression
+                             | multiplicative_expression MULTIPLY function_expression
+                             | multiplicative_expression DIVIDE function_expression
     """
     if len(p) == 2:
         p[0] = Node("multiplicative_expression", [p[1]])
     else:
         p[0] = Node("multiplicative_expression", [p[1], p[3], p[2]])
+
+#function_expression for calling functions
+#function parameter input is at the top of grammar
+def p_function_expression(p):
+    """function_expression : primary_expression
+                            | ID LPAREN RPAREN
+                            | ID LPAREN function_input_expression RPAREN"""
+    if len(p) == 2:
+        p[0] = Node("function_expression", [p[1]])
+    elif len(p) == 4:
+        p[0] = Node("function_expression", [p[1], p[2], p[3]])
+    else:
+        p[0] = Node("function_expression", [p[1], p[2], p[3], p[4]])
+        
 
 # Change to include arrays... ALSO!! does "NOT" belong here...... also code generator needs to handle not
 def p_primary_expression(p):
