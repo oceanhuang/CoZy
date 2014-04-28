@@ -175,8 +175,7 @@ def p_to_expression(p):
         p[0] = Node("to_expression", [p[1], p[3]])
  
 def p_primary_expression(p):
-    """ primary_expression : CONSTANT
-                           | ID
+    """ primary_expression : ID
                            | LPAREN or_expression RPAREN
                            | NOT LPAREN or_expression RPAREN
     """
@@ -186,6 +185,11 @@ def p_primary_expression(p):
         p[0] = Node('primary_expression', [p[2]])
     else:
         p[0] = Node('primary_expression', [p[3]])
+
+def p_primary_expression_constant(p):
+    """ primary_expression : CONSTANT
+    """
+    p[0] = Node('primary_expression_constant', [], p[1])
 
 def p_primary_expression_days(p):
     """ primary_expression : MONDAY
@@ -290,20 +294,22 @@ if __name__ == '__main__':
 
     ## Put code to test here
     s = """
-if(Monday to Friday):
-    x = 2
+a = 60 F + 50F + 30F
+d = 35/2/1991 10:00 PM
+c = 10:00 AM
+g = 1 < 3 + 4
+r = 1 + 2 * 3+4
+f = 1:00 PM
+h = 1 < 3 and 4 > 3
 
-
-if(Saturday to Monday):
-    y = 2
- """
-     
+z = r + 2
+z = a + z
+"""     
 
     result = parser.parse(s)
 
     # ## Prints the AST
     print result
-
     code = codeGenerator(result)
     # Prints the actual program
 #    print code.ret

@@ -24,7 +24,7 @@ run_code:
 import sys
 sys.path.append("..")
 
-import cozyLex, cozyYacc, codeGenerator
+import cozyLex, cozyYacc, codeGenerator, semanticAnalyzer
 
 class CoZyTester:
     def __init__(self):
@@ -34,8 +34,9 @@ class CoZyTester:
 
     def run_code(self, code_str, output):
         result = self.parser.parse(code_str)
+        semanticAnalyzer.semanticAnalyzer(result).ret
         code = codeGenerator.codeGenerator(result).ret
-        print code
+        #print code
         # print locals()
         exec code in locals()
         if output == None: print locals()['ret']
@@ -106,7 +107,7 @@ myTester.run_code(s, None)
 
 # test every
 s='''
-print '5'
+print ('5')
 ret = 5
 every (Monday):
     print ('5')
@@ -128,3 +129,15 @@ ret = 50 C
 ret = 80 F
 '''
 myTester.run_code(s, None)
+
+
+
+#This code should fail
+s='''
+ret = 32/2/1991
+'''
+myTester.run_code(s, None)
+
+
+
+
