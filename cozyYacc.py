@@ -348,7 +348,8 @@ if __name__ == '__main__':
 
     # Build the parser
     parser = CoZyParser()
-    """
+
+    s = """
 a = [3,4, 2, 3+5, 3>6]
 f = 1
 bday = 16/07/1991
@@ -366,12 +367,10 @@ remove(a, 2)
 sort(a)
 print(a)
 a = [2,3,65,2]
+a[1] = 700
+print (a)
     """
     ## Put code to test here
-    s = """
-for each x in [1,4,6]:
-    print(x)
- """
      
 
     result = parser.parse(s)

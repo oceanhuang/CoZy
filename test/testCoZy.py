@@ -49,6 +49,7 @@ ret=3+3
 '''
 myTester.run_code(s, 6)
 
+#test for lists
 s = '''
 a = [1,2,3]
 add(a,[12,32,'a'])
@@ -58,6 +59,16 @@ ret = a
 '''
 myTester.run_code(s,[1,3,[12,32,'a']])
 
+#test for lists 2
+s = '''
+a = [1,2,3]
+a[1] = 6
+print (a)
+x = a[1]
+print (x)
+ret = a
+'''
+myTester.run_code(s, [1,6,3])
 
 s = '''
 ret = 'hello ' + "world"
