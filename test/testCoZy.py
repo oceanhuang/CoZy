@@ -138,6 +138,17 @@ ret = 32/2/1991
 '''
 myTester.run_code(s, None)
 
+s='''
+a = 60 F + 50F + 30F
+d = 35/2/1991 10:00 PM
+c = 10:00 AM
+g = 1 < 3 + 4
+r = 1 + 2 * 3+4
+f = 1:00 PM
+h = 1 < 3 and 4 > 3
+z = r + 2
+z = a + z
+ret = None
+'''
 
-
-
+myTester.run_code(s, None)
