@@ -45,9 +45,8 @@
           
 
 
-   ASSIGNMENT-STATEMENT -> ID *=* OR-EXPRESSION |  //code didn't work with ID = CONSTANT
-                           ID *=* ASSIGNMENT-STATEMENT OR-EXPRESION |
-						   ID *=* LIST-EXPRESSION
+   ASSIGNMENT-STATEMENT -> ID-IMPROVED *=* OR-EXPRESSION |  //code didn't work with ID = CONSTANT
+                           ID-IMPROVED *=* ASSIGNMENT-STATEMENT OR-EXPRESION 
    
 
    OR-EXPRESSION -> AND-EXPRESSION |
@@ -92,11 +91,12 @@
    NOT-EXPRESSION -> PRIMARY-EXPRESSION |
                      *not* NOT-EXPRESSION
 
-
+   ID-IMPROVED -> ID |
+					LIST-INDEX
 
    PRIMARY-EXPRESSION -> CONSTANT |
-                         ID |
-						 LIST |
+                         ID-IMPROVED |
+						 LIST-START |
                          *[* PARAMETER-LIST *]* |
                          ( OR-EXPRESSION ) |
                          TEMPERATURE |
@@ -110,7 +110,7 @@
    LIST-OPERATION-EXPRESSION -> ID *[* OR-EXPRESSION *]*
    #what is this?
    
-   LIST-INDEX -> ID*[*ADDITIVE-EXPRESSION*]*
+   LIST-INDEX -> ID-IMPROVED*[*ADDITIVE-EXPRESSION*]*
    
    LIST-START -> *[* \epsilon *]* |
 						   *[* LIST-EXPRESSION *]*
