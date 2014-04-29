@@ -149,7 +149,7 @@ class codeGenerator(object):
             if type1 != type2:
                 exit("TypeError! Cannot compare objects of type " + type1 + " and objects of type " + type2)
 
-            return "BOOL", str(operand1[1]) + " " + tree.children[2] + " " + str(operand2[2])
+            return "BOOL", str(operand1[1]) + " " + tree.children[2] + " " + str(operand2[1])
             #return self.dispatch(tree.children[0]) + " " + tree.children[2] + " " + self.dispatch(tree.children[1])  
 
     def _relational_expression(self, tree, flag=None):
@@ -256,7 +256,12 @@ class codeGenerator(object):
         return s
 
     def _iteration_statement(self, tree, flag=None):
-        s = "while(" + self.dispatch(tree.children[0]) + "):\n"
+        condition = self.dispatch(tree.children[0])
+        if type(condition) is tuple:
+            condition = condition[1]
+        
+        #s = "while(" + self.dispatch(tree.children[0]) + "):\n"
+        s = "while(" + condition + "):\n"
         lines = self.dispatch(tree.children[1]).splitlines()
 
         for line in lines:
@@ -264,14 +269,17 @@ class codeGenerator(object):
         return s
 
     def _selection_statement(self, tree, flag=None):
+        condition = self.dispatch(tree.children[0])
+        if type(condition) is tuple:
+            condition = condition[1]
         if len(tree.children) == 2:
-            s = "if(" + self.dispatch(tree.children[0]) + "):\n"
+            s = "if(" + condition + "):\n"
             lines = self.dispatch(tree.children[1]).splitlines()
             for line in lines:
                 s+= "    " + line +"\n"
             return s
         else:
-            s = "if(" + self.dispatch(tree.children[0]) + "):\n"
+            s = "if(" + condition + "):\n"
             lines = self.dispatch(tree.children[1]).splitlines()
             for line in lines:
                 s+= "    " + line +"\n"
@@ -288,7 +296,15 @@ class codeGenerator(object):
 
     def _for_statement(self, tree, flag=None):
         #for iterator in a range
-        s = "for " + self.dispatch(tree.children[0]) + " in range( " + self.dispatch(tree.children[1]) + " , " + self.dispatch(tree.children[2]) + " + 1 ) : \n"
+        or_expression1 = self.dispatch(tree.children[1])
+        or_expression2 = self.dispatch(tree.children[2])
+        primary_expression = self.dispatch(tree.children[0])
+
+        if type(or_expression1) is tuple: or_expression1 = or_expression1[1]
+        if type(or_expression2) is tuple: or_expression2 = or_expression2[1]
+        if type(primary_expression) is tuple: primary_expression = primary_expression[1]
+
+        s = "for " + primary_expression + " in range( " + or_expression1 + " , " + or_expression2 + " + 1 ) : \n"
         lines = self.dispatch(tree.children[3]).splitlines()
 
         for line in lines:
