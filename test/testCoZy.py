@@ -30,11 +30,14 @@ class CoZyTester:
     def __init__(self):
         # Build the parser
         self.parser = cozyYacc.CoZyParser()
-
+        self.testCount = 0
 
     def run_code(self, code_str, output, debug=False):
         result = self.parser.parse(code_str)
         code = codeGenerator.codeGenerator(result).ret
+        self.testCount += 1
+        print "-------TEST NUMBER : " + `self.testCount` + " --------- "
+        
         if debug: print code
         #print locals()
         exec code in locals()
@@ -49,22 +52,23 @@ ret=3+3
 '''
 myTester.run_code(s, 6)
 
-#s = '''
-#ret = 'hello ' + "world"
-#'''
-#myTester.run_code(s, 'hello world')
+s = '''
+ret = 'hello ' + "world"
+'''
+myTester.run_code(s, 'hello world')
 
 s = '''
 ret = Tuesday
 '''
 myTester.run_code(s, None)
 
-###testing checking date
-##s = '''
-##if(Friday):
-##    print("Hooray!")
-##'''
-##myTester.run_code(s, None)
+#testing checking date
+s = '''
+if(Friday):
+    print("Hooray!")
+ret = 5
+'''
+myTester.run_code(s, 5)
 
 # testing while loop:
 s = '''
@@ -100,24 +104,24 @@ else:
 '''
 myTester.run_code(s, 4)
 
-## test for:
-#s= '''
-#x = 0
-#i = 0
-#for i in 1 to 30:
-#    x = i
-#    x = i + 1
-#ret = x
-#'''
-#myTester.run_code(s, 31)
+# test for:
+s= '''
+x = 0
+i = 0
+for i in 1 to 30:
+    x = i
+    x = i + 1
+ret = x
+'''
+myTester.run_code(s, 31)
 
 #test for function def
 s='''
 def poop(x):
     x = 2+2
-ret = None
+ret = 4
 '''
-myTester.run_code(s, None)
+myTester.run_code(s, 4)
 
 # test every
 s='''
@@ -181,13 +185,13 @@ myTester.run_code(s, None)
 
 #This code should fail
 s='''
-ret = 32/2/1991
+ret = 14/2/1991
 '''
 myTester.run_code(s, None)
 
 s='''
 a = 60 F + 50F + 30F
-d = 35/2/1991 10:00 PM
+d = 25/2/1991 10:00 PM
 c = 10:00 AM
 g = 1 < 3 + 4
 r = 1 + 2 * 3+4

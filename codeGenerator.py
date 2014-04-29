@@ -95,25 +95,25 @@ class codeGenerator(object):
 
     def _assignment_statement(self, tree, flag=None):
         arg = self.dispatch(tree.children[0]);
+        self.symbolTable[tree.leaf] = [arg[0], arg[1]]
         if type(arg) is tuple:
             if arg[0] == "F" or arg[0] == "C" or arg[0] == "K":
-                self.symbolTable[tree.leaf] = [arg[0], arg[1]]
                 arg = "Temperature(" + str(arg[1]) + ", '" + arg[0] + "')"
-            elif arg[0] == "DATETIME":
-                self.symbolTable[tree.leaf] = [arg[0], arg[1]]
-                arg = "datetime.datetime(" + str(arg[1].get('year')) + ", " + str(arg[1].get('month')) + ", " + str(arg[1].get('day')) + ", " + str(arg[1].get('hour')) + ", " + str(arg[1].get('minute')) + ")"
-            elif arg[0] == "DATE":
-                self.symbolTable[tree.leaf] = [arg[0], arg[1]]
-                arg = "datetime.date(" + str(arg[1].get('year')) + ", " + str(arg[1].get('month')) + ", " + str(arg[1].get('day')) + ")" 
-            elif arg[0] == "TIME":
-                self.symbolTable[tree.leaf] = [arg[0], arg[1]]
-                arg = "datetime.time(" + str(arg[1].get('hour')) + ", " + str(arg[1].get('minute')) +")"
+#            elif arg[0] == "DATETIME":
+#                self.symbolTable[tree.leaf] = [arg[0], arg[1]]
+#                arg = "datetime.datetime(" + str(arg[1].get('year')) + ", " + str(arg[1].get('month')) + ", " + str(arg[1].get('day')) + ", " + str(arg[1].get('hour')) + ", " + str(arg[1].get('minute')) + ")"
+#            elif arg[0] == "DATE":
+#                self.symbolTable[tree.leaf] = [arg[0], arg[1]]
+#                arg = "datetime.date(" + str(arg[1].get('year')) + ", " + str(arg[1].get('month')) + ", " + str(arg[1].get('day')) + ")" 
+#            elif arg[0] == "TIME":
+#                self.symbolTable[tree.leaf] = [arg[0], arg[1]]
+#                arg = "datetime.time(" + str(arg[1].get('hour')) + ", " + str(arg[1].get('minute')) +")"
             elif arg[0] == "BOOL" or arg[0] == "NUM":
-                self.symbolTable[tree.leaf] = [arg[0], arg[1]]
                 arg = arg[1]
+            elif self.check_if_time(arg):
+                arg = self.convert_time(arg)
 
             else:
-                #TODO add to symbol table
                 arg = arg[1]
 
         print self.symbolTable
@@ -250,19 +250,25 @@ class codeGenerator(object):
 
     def _during_and_expression(self, tree, flag=None):
         if len(tree.children) == 1:
-            return self.dispatch(tree.children[0])
+            arg = self.dispatch(tree.children[0])
+            if self.check_if_time(arg): arg = self.convert_time(arg)
+            return arg
+
         if len(tree.children) == 2:
-            return "((" + self.dispatch(tree.children[0]) + ") and (" + self.dispatch(tree.children[1]) + "))"
+            arg = self.dispatch(tree.children[1])
+            if not self.check_if_time(arg): exit("OH NO. Must use time type in EVERY statements")
+            arg = self.convert_time(arg)
+            return "((" + self.dispatch(tree.children[0]) + ") and (" + arg + "))"
       
                
     def _every_statement(self, tree, flag=None):
         global everys
         global every_list        
         everys = everys + 1
-        
+
         s = "\ndef every" + str(everys) + "() :\n"
         s += "    print 'executing every" + str(everys) + "'\n"
-
+        
         lines = self.dispatch(tree.children[1]).splitlines()
         for line in lines:
             s+= "    " + line +"\n"
@@ -352,6 +358,8 @@ class codeGenerator(object):
 
         if type(or_expression1) is tuple: or_expression1 = or_expression1[1]
         if type(or_expression2) is tuple: or_expression2 = or_expression2[1]
+        if type(or_expression1) is int: or_expression1 = str(or_expression1)
+        if type(or_expression2) is int: or_expression2 = str(or_expression2)
         if type(primary_expression) is tuple: primary_expression = primary_expression[1]
 
         s = "for " + primary_expression + " in range( " + or_expression1 + " , " + or_expression2 + " + 1 ) : \n"
@@ -362,7 +370,7 @@ class codeGenerator(object):
         return s
     
     def _day_expression(self, tree, flag=None):
-        s = "datetime.datetime.now().weekday() == "
+        s = ""
         if tree.leaf == "Monday":
             s += "0"
         elif tree.leaf == "Tuesday":
@@ -381,7 +389,7 @@ class codeGenerator(object):
         return "DAY", s
     
     def _month_expression(self, tree, flag=None):
-        s = "datetime.datetime.now().month() == "
+        s = ""
         if tree.leaf == "January":
             s+= "0"
         elif tree.leaf == 'February':
@@ -520,7 +528,31 @@ class codeGenerator(object):
             type2 = operand2[0]
 
             return operand1, operand2, type1, type2
-       
+    
+    #take in a type tuple and return the appropriate python string
+    def convert_time(self, arg):
+        if arg[0] == "DATETIME":
+            arg = "datetime.datetime(" + str(arg[1].get('year')) + ", " + str(arg[1].get('month')) + ", " + str(arg[1].get('day')) + ", " + str(arg[1].get('hour')) + ", " + str(arg[1].get('minute')) + ")"
+        elif arg[0] == "DATE":
+            arg = "datetime.date(" + str(arg[1].get('year')) + ", " + str(arg[1].get('month')) + ", " + str(arg[1].get('day')) + ")" 
+        elif arg[0] == "TIME":
+            arg = "datetime.time(" + str(arg[1].get('hour')) + ", " + str(arg[1].get('minute')) +")"
+        elif arg[0] == "DAY" : 
+            arg = "datetime.datetime.now().weekday() == " + arg[1]
+        elif arg[0] == "MONTH":
+            arg = "datetime.datetime.now().month() == " + arg[1]
+        else:
+            return None
+
+        return arg
+    
+    #check if arg is a tuple of some sort of time type
+    def check_if_time(self, arg):
+        if arg[0] == "DATETIME" or arg[0] == "DATE" or arg[0] == "TIME" or arg[0] == "DAY" or arg[0] == "MONTH":
+            return True
+        return False
+
+
 class TypeError(Exception):
     def __init__(self, value):
         self.value = value
