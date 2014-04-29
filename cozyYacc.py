@@ -203,6 +203,12 @@ def p_primary_expression(p):
     else:
         p[0] = Node('primary_expression', [p[3]]) #has not in it
 
+def p_primary_expression_string(p):
+    """ primary_expression : STRING
+    """
+    p[0] = Node('primary_expression_string', [], p[1])
+
+
 def p_primary_expression_constant(p):
     """ primary_expression : CONSTANT
     """
@@ -316,34 +322,37 @@ if __name__ == '__main__':
     parser = CoZyParser()
 
     ## Put code to test here
-    s = """
-a = 60 F + 50F + 30F
-d = 35/2/1991 10:00 PM
-c = 10:00 AM
-g = 1 < 3 + 4
-r = 1 + 2 * 3+4
-f = 1:00 PM
-h = 1 < 3 and 4 > 3
-
-z = r + 2
-z = a + z
-bday = 16/07/1991
-every (Monday):
-    print ('5')
-i = 0
-while (i < 7):
-    print ("okay")
-    i = i + 1
-every (January):
-    print ("hello world")
-once every (January during Monday):
-    print ("hello world")
-once every (January during Monday, February during Friday):
-    print ("hello world")
-every ((January during Monday, February during Friday) during Wednesday):
-    print ("hello world")
-    
- """
+#    s = """
+#a = 60 F + 50F + 30F
+#d = 35/2/1991 10:00 PM
+#c = 10:00 AM
+#g = 1 < 3 + 4
+#r = 1 + 2 * 3+4
+#f = 1:00 PM
+#h = 1 < 3 and 4 > 3
+#
+#z = r + 2
+#z = a + z
+#bday = 16/07/1991
+#every (Monday):
+#    print ('5')
+#i = 0
+#while (i < 7):
+#    print ("okay")
+#    i = i + 1
+#every (January):
+#    print ("hello world")
+#once every (January during Monday):
+#    print ("hello world")
+#once every (January during Monday, February during Friday):
+#    print ("hello world")
+#every ((January during Monday, February during Friday) during Wednesday):
+#    print ("hello world")
+#    
+# """
+    s = '''
+print (5)
+'''
      
 
     result = parser.parse(s)

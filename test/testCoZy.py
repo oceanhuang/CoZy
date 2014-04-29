@@ -100,16 +100,16 @@ else:
 '''
 myTester.run_code(s, 4)
 
-# test for:
-s= '''
-x = 0
-i = 0
-for i in 1 to 30:
-    x = i
-    x = i + 1
-ret = x
-'''
-myTester.run_code(s, 31)
+## test for:
+#s= '''
+#x = 0
+#i = 0
+#for i in 1 to 30:
+#    x = i
+#    x = i + 1
+#ret = x
+#'''
+#myTester.run_code(s, 31)
 
 #test for function def
 s='''

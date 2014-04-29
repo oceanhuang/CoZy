@@ -233,6 +233,10 @@ class codeGenerator(object):
             (varType, value) = self.symbolTable.get(tree.leaf)
             return varType, tree.leaf
     
+    def _primary_expression_string(self, tree, flag=None):
+        return "STRING", tree.leaf
+
+
     def _primary_expression_constant(self, tree, flag=None):
         return "NUM", int(tree.leaf)    
     
@@ -331,7 +335,13 @@ class codeGenerator(object):
             return s
 
     def _print_statement(self, tree, flag=None):
-        s = "print " + self.dispatch(tree.children[0])
+        arg = self.dispatch(tree.children[0])
+        if type(arg) is tuple:
+            arg = arg[1]
+
+        if type(arg) is int:
+            arg = str(arg)
+        s = "print " + arg
         return s
 
     def _for_statement(self, tree, flag=None):

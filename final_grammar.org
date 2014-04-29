@@ -93,6 +93,7 @@
 
    PRIMARY-EXPRESSION -> CONSTANT |
                          ID |
+                         STRING |
                          *[* PARAMETER-LIST *]* |
                          ( OR-EXPRESSION ) |
                          TEMPERATURE |
