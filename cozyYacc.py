@@ -91,6 +91,7 @@ def p_statement_list(p):
 def p_statement(p):
     """ statement : assignment_statement NEWLINE
                   | every_statement
+                  | once_every_statement
                   | iteration_statement
                   | selection_statement
                   | print_statement SEMICOLON
@@ -136,13 +137,37 @@ def p_equality_expresion(p):
         p[0] = Node("equality_expression", [p[1], p[3], p[2]])
 
 def p_relational_expresion(p):
-    """ relational_expression : additive_expression
-                        | relational_expression RELOP additive_expression
+    """ relational_expression : during_or_expression
+                        | relational_expression RELOP during_or_expression
     """
     if len(p) == 2:
         p[0] = Node("relational_expression", [p[1]])
     else:
         p[0] = Node("relational_expression", [p[1], p[3], p[2]])
+
+#maybe put during things here.... need to not allow above cases for during in the grammar!!
+def p_during_or_expression(p):
+    """during_or_expression : during_and_expression
+                            | during_or_expression COMMA during_and_expression"""
+#                            | LPAREN during_or_expression RPAREN DURING during_and_expression"""
+    if len(p) == 2:
+        p[0] = Node("during_or_expression", [p[1]])
+    else:
+        p[0] = Node("during_or_expression", [p[1],p[3]])
+#    else:
+#        p[0] = Node("during_and_expression", [p[2],p[5]]) #need to write the code gen for this case
+
+#can do something like(TUESDAY, JANUARY DURING WEDNESDAY) DURING 4:30 PM TO 5:30 PM
+#could it do this too (TUESDAY, (WEDS, FRIDAY) DURING 4:30 PM TO 5:30 PM) DURING 4:30 PM TO 5:30 PM??
+def p_during_and_expression(p):
+    """ during_and_expression : additive_expression
+                        | during_and_expression DURING additive_expression """
+
+    if len(p) == 2:
+        p[0] = Node("during_and_expression", [p[1]])
+    elif len(p) == 4:
+        p[0] = Node("during_and_expression", [p[1],p[3]])
+
         
 def p_additive_expresion(p):
     """ additive_expression : multiplicative_expression
@@ -165,7 +190,7 @@ def p_multiplicative_expresion(p):
     else:
         p[0] = Node("multiplicative_expression", [p[1], p[3], p[2]])
 
-# Change to include arrays... ALSO!! does "NOT" belong here...... also code generator needs to handle not
+# needs to be fixed (move not)...... also code generator needs to handle not
 def p_primary_expression(p):
     """ primary_expression : ID
                            | LPAREN or_expression RPAREN
@@ -176,7 +201,7 @@ def p_primary_expression(p):
     elif len(p) == 4:
         p[0] = Node('primary_expression', [p[2]])
     else:
-        p[0] = Node('primary_expression', [p[3]])
+        p[0] = Node('primary_expression', [p[3]]) #has not in it
 
 def p_primary_expression_constant(p):
     """ primary_expression : CONSTANT
@@ -227,8 +252,14 @@ def p_primary_expression_time(p):
     p[0] = Node('time_expression', [], p[1])
 
 def p_every_statement(p):
-    """ every_statement : EVERY LPAREN primary_expression RPAREN COLON NEWLINE INDENT statement_list DEDENT """
+#    """ every_statement : EVERY LPAREN primary_expression RPAREN COLON NEWLINE INDENT statement_list DEDENT """
+    """ every_statement : EVERY LPAREN during_or_expression RPAREN COLON NEWLINE INDENT statement_list DEDENT """
     p[0] = Node("every_statement", [p[3], p[8]])
+
+def p_once_every_statement(p):
+#    """ once_every_statement : ONCE EVERY LPAREN primary_expression RPAREN COLON NEWLINE INDENT statement_list DEDENT """
+    """ once_every_statement : ONCE EVERY LPAREN during_or_expression RPAREN COLON NEWLINE INDENT statement_list DEDENT """
+    p[0] = Node("once_every_statement", [p[4], p[9]])
 
 #fix this when tabs and newlines happen
 def p_iteration_statement(p):
@@ -296,7 +327,23 @@ h = 1 < 3 and 4 > 3
 
 z = r + 2
 z = a + z
-"""
+bday = 16/07/1991
+every (Monday):
+    print ('5')
+i = 0
+while (i < 7):
+    print ("okay")
+    i = i + 1
+every (January):
+    print ("hello world")
+once every (January during Monday):
+    print ("hello world")
+once every (January during Monday, February during Friday):
+    print ("hello world")
+every ((January during Monday, February during Friday) during Wednesday):
+    print ("hello world")
+    
+ """
      
 
     result = parser.parse(s)
@@ -305,7 +352,7 @@ z = a + z
     print result
     code = codeGenerator(result)
     # Prints the actual program
-#    print code.ret
+    print code.ret
 
     ## Makes the output file
     f = open("out.py", 'w')

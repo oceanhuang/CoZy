@@ -32,11 +32,11 @@ class CoZyTester:
         self.parser = cozyYacc.CoZyParser()
 
 
-    def run_code(self, code_str, output):
+    def run_code(self, code_str, output, debug=False):
         result = self.parser.parse(code_str)
         code = codeGenerator.codeGenerator(result).ret
-        #print code
-        # print locals()
+        if debug: print code
+        #print locals()
         exec code in locals()
         if output == None: print locals()['ret']
         else: assert locals()['ret'] == output
@@ -58,6 +58,13 @@ s = '''
 ret = Tuesday
 '''
 myTester.run_code(s, None)
+
+###testing checking date
+##s = '''
+##if(Friday):
+##    print("Hooray!")
+##'''
+##myTester.run_code(s, None)
 
 # testing while loop:
 s = '''
@@ -118,6 +125,39 @@ print ('5')
 ret = 5
 every (Monday):
     print ('5')
+'''
+myTester.run_code(s, 5)
+
+#test once every
+s='''
+print ('5')
+ret = 5
+once every (Monday):
+    print ('5')
+'''
+myTester.run_code(s, 5)
+
+#test during 1
+s = '''
+ret = 5
+once every (April during Friday):
+    print ("hello world")
+'''
+myTester.run_code(s, 5)
+
+#test during 2
+s = '''
+ret = 5
+once every (January during Monday, February during Friday):
+    print ("hello world")
+'''
+myTester.run_code(s, 5)
+
+#test during 3
+s = '''
+ret = 5
+every ((January during Monday, February during Friday) during Wednesday):
+    print ("hello world")
 '''
 myTester.run_code(s, 5)
 
