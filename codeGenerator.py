@@ -116,7 +116,8 @@ class codeGenerator(object):
             else:
                 arg = arg[1]
 
-        print self.symbolTable
+        
+        #print self.symbolTable #uncomment to check symbol table
         if type(arg) is not str: arg = str(arg)
         return tree.leaf + " = " + arg
 
