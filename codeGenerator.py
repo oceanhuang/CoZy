@@ -405,31 +405,31 @@ class codeGenerator(object):
     def _month_expression(self, tree, flag=None):
         s = ""
         if tree.leaf == "January":
-            s+= "0"
-        elif tree.leaf == 'February':
             s+= "1"
-        elif tree.leaf == 'March':
+        elif tree.leaf == 'February':
             s+= "2"
-        elif tree.leaf == 'April':
+        elif tree.leaf == 'March':
             s+= "3"
-        elif tree.leaf == 'May':
+        elif tree.leaf == 'April':
             s+= "4"
-        elif tree.leaf == 'June':
+        elif tree.leaf == 'May':
             s+= "5"
-        elif tree.leaf == 'July':
+        elif tree.leaf == 'June':
             s+= "6"
-        elif tree.leaf == 'August':
+        elif tree.leaf == 'July':
             s+= "7"
-        elif tree.leaf == 'September':
+        elif tree.leaf == 'August':
             s+= "8"
-        elif tree.leaf == 'October':
+        elif tree.leaf == 'September':
             s+= "9"
-        elif tree.leaf == 'November':
+        elif tree.leaf == 'October':
             s+= "10"
-        elif tree.leaf == 'December':
+        elif tree.leaf == 'November':
             s+= "11"
-        else:
+        elif tree.leaf == 'December':
             s+= "12"
+        else:
+            s+= "13"
         return "MONTH", s
 
     def _date_time_expression(self, tree, flag=None):
@@ -554,7 +554,7 @@ class codeGenerator(object):
         elif arg[0] == "DAY" : 
             arg = "datetime.datetime.now().weekday() == " + arg[1]
         elif arg[0] == "MONTH":
-            arg = "datetime.datetime.now().month() == " + arg[1]
+            arg = "datetime.datetime.now().month == " + arg[1]
         else:
             return None
 
