@@ -181,14 +181,121 @@ ret = 80 F
 '''
 myTester.run_code(s, None)
 
-
-
-#This code should fail
+#test date
 s='''
 ret = 14/2/1991
 '''
 myTester.run_code(s, None)
 
+### test every -- THIS GUY DOESNT WORK BUT IT SHOULD
+##s='''
+##h = Monday
+##every(h):
+##    print("Hooray!")
+##ret = 5
+##'''
+##myTester.run_code(s, 5)
+
+# test temp
+s='''
+print("hello")
+ret = 5
+'''
+myTester.run_code(s, 5)
+
+#This code should work BUT IT DOESNT
+s='''
+a = 70 F
+print (a)
+ret = 5
+'''
+myTester.run_code(s, 5)
+
+#This code should work BUT IT DOESNT
+s='''
+print(60 F)
+ret = 5
+'''
+myTester.run_code(s, 5)
+
+###This code should fail BUT IT BREAKS
+##s='''
+##b = 15/9/1991
+##c = 14/7/2011
+##a = c * b
+##ret = None
+##'''
+##myTester.run_code(s, None)
+
+#this should fail, and it has a bug
+s = '''
+b = Monday
+c = 70 F
+a = c + b * January
+'''
+myTester.run_code(s, None)
+
+###this should fail BUT IT BREAKS
+##s = '''
+##b = January
+##c = 15/9/1991
+##a = c + b
+##'''
+##myTester.run_code(s, None)
+
+#this should fail, and it has a bug
+s = '''
+b = Monday
+c = 70 F
+a = c + b
+'''
+myTester.run_code(s, None)
+
+#this should fail, and it has a bug
+s = '''
+b = 15/9/1991
+c = 70 F
+a = b + c
+'''
+myTester.run_code(s, None)
+
+#this should fail, and it has a bug
+s = '''
+b = 15/9/1991
+c = 14/7/2011
+a = b + 70 F
+'''
+myTester.run_code(s, None)
+
+#this should fail
+s = '''
+b = 15/9/1991
+c = 14/7/2011
+a = 15/9/1991 + 70 F
+'''
+myTester.run_code(s, None)
+
+#this should fail
+s = '''
+b = 15/9/1991
+c = 14/7/2011
+a = 15/9/1991 * 14/7/2011
+'''
+myTester.run_code(s, None)
+
+#This code should fail
+s='''
+a = January * February
+'''
+myTester.run_code(s, None)
+
+#This code should fail
+s='''
+a = 60 F + 50F * Tuesday
+'''
+myTester.run_code(s, None)
+
+#This code should fail
 s='''
 a = 60 F + 50F + 30F
 d = 25/2/1991 10:00 PM
@@ -200,6 +307,9 @@ h = 1 < 3 and 4 > 3
 z = r + 2
 y = 7 * 80F
 ret = 5
+z = a + z
 '''
 
-myTester.run_code(s, 5)
+myTester.run_code(s, None)
+
+

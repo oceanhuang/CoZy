@@ -351,9 +351,8 @@ if __name__ == '__main__':
 #    
 # """
     s = '''
-b = Monday
-c = 70 F
-a = c + b
+every ((January, February) during Wednesday):
+    print ("hello world")
 '''
      
 
