@@ -1,5 +1,6 @@
 import datetime
 import re
+import sys
 everys = 0
 temp_def ='''
 class Temperature:
@@ -31,11 +32,16 @@ class codeGenerator(object):
         self.varScopes = [[]]
         self.scopeDepth = 0
         # Symbols table
-        self.symbolsTable = {}
+        self.symbolTable = {}
         # Variable to store the code
         self.ret = "import datetime\n" + "every_list = []\n" + temp_def + self.dispatch(tree)
         # 
         # Keeps track of the number of every's
+
+    #temporary exit function when exceptions are raised
+    def exit(self, exit_msg):
+        print exit_msg
+        #sys.exit()
 
     
     def dispatch(self, tree, flag=None):
@@ -114,83 +120,237 @@ class codeGenerator(object):
     def _assignment_statement(self, tree, flag=None):
         return self.dispatch(tree.children[1]) + " = " + self.dispatch(tree.children[0])
         #return tree.leaf + " = " + self.dispatch(tree.children[0])
+
+        arg = self.dispatch(tree.children[0]);
+        self.symbolTable[tree.leaf] = [arg[0], arg[1]]
+        if type(arg) is tuple:
+            if arg[0] == "F" or arg[0] == "C" or arg[0] == "K":
+                arg = "Temperature(" + str(arg[1]) + ", '" + arg[0] + "')"
+#            elif arg[0] == "DATETIME":
+#                self.symbolTable[tree.leaf] = [arg[0], arg[1]]
+#                arg = "datetime.datetime(" + str(arg[1].get('year')) + ", " + str(arg[1].get('month')) + ", " + str(arg[1].get('day')) + ", " + str(arg[1].get('hour')) + ", " + str(arg[1].get('minute')) + ")"
+#            elif arg[0] == "DATE":
+#                self.symbolTable[tree.leaf] = [arg[0], arg[1]]
+#                arg = "datetime.date(" + str(arg[1].get('year')) + ", " + str(arg[1].get('month')) + ", " + str(arg[1].get('day')) + ")" 
+#            elif arg[0] == "TIME":
+#                self.symbolTable[tree.leaf] = [arg[0], arg[1]]
+#                arg = "datetime.time(" + str(arg[1].get('hour')) + ", " + str(arg[1].get('minute')) +")"
+            elif arg[0] == "BOOL" or arg[0] == "NUM":
+                arg = arg[1]
+            elif self.check_if_time(arg):
+                arg = self.convert_time(arg)
+
+            else:
+                arg = arg[1]
+
         
+        #print self.symbolTable #uncomment to check symbol table
+        if type(arg) is not str: arg = str(arg)
+        return tree.leaf + " = " + arg
+
     def _or_expression(self, tree, flag=None):
         
         if len(tree.children) == 1:
-            return self.dispatch(tree.children[0])
+            return self.dispatch(tree.children[0], flag)
         else:
-            return self.dispatch(tree.children[0]) + " " + tree.children[2] + " " + self.dispatch(tree.children[1])  
+            (operand1, operand2, type1, type2) = self.get_types(tree.children[0], tree.children[1], flag)
+            return "BOOL", str(operand[1]) + " " + tree.children[2] + " " + str(operand2[1])
+            #return self.dispatch(tree.children[0]) + " " + tree.children[2] + " " + self.dispatch(tree.children[1])  
 
     def _and_expression(self, tree, flag=None):
         
         if len(tree.children) == 1:
-            return self.dispatch(tree.children[0])
+            return self.dispatch(tree.children[0], flag)
         else:
-            return self.dispatch(tree.children[0]) + " " + tree.children[2] + " " + self.dispatch(tree.children[1])  
+            (operand1, operand2, type1, type2) = self.get_types(tree.children[0], tree.children[1], flag)
+            
+            return "BOOL", str(operand1[1]) + " " + tree.children[2] + " " + str(operand2[1])
+            #return self.dispatch(tree.children[0]) + " " + tree.children[2] + " " + self.dispatch(tree.children[1])  
 
     def _equality_expression(self, tree, flag=None):
         
         if len(tree.children) == 1:
-            return self.dispatch(tree.children[0])
+            return self.dispatch(tree.children[0],flag)
         else:
-            return self.dispatch(tree.children[0]) + " " + tree.children[2] + " " + self.dispatch(tree.children[1])  
+            (operand1, operand2, type1, type2) = self.get_types(tree.children[0], tree.children[1], flag)
+
+            if type1 != type2:
+                exit("TypeError! Cannot compare objects of type " + type1 + " and objects of type " + type2)
+
+            return "BOOL", str(operand1[1]) + " " + tree.children[2] + " " + str(operand2[1])
+            #return self.dispatch(tree.children[0]) + " " + tree.children[2] + " " + self.dispatch(tree.children[1])  
 
     def _relational_expression(self, tree, flag=None):
         
         if len(tree.children) == 1:
-            return self.dispatch(tree.children[0])
+            return self.dispatch(tree.children[0], flag)
         else:
-            return self.dispatch(tree.children[0]) + " " + tree.children[2] + " " + self.dispatch(tree.children[1])  
+
+            (operand1, operand2, type1, type2) = self.get_types(tree.children[0], tree.children[1], flag)
+            #operand1 = self.dispatch(tree.children[0])
+            #operand2 = self.dispatch(tree.children[1])
+            #type1 = operand1[0]
+            #type2 = operand2[0]
+
+            if type1 != type2:
+                exit("TypeError! Can not use relop between type " + type1 + " and " + type2)
+            else:
+                if type1 != "NUM" and tree.children[2] != "!=":
+                    exit("Error: Cannot use '>' or '<' for non-numbers") 
+
+            return type1, str(operand1[1]) + " " + tree.children[2] + " " + str(operand2[1])  
 
     def _additive_expression(self, tree, flag=None):
         
         if len(tree.children) == 1:
-            return self.dispatch(tree.children[0])
+            return self.dispatch(tree.children[0], flag)
         else:
-            return self.dispatch(tree.children[0]) + " " + tree.children[2] + " " + self.dispatch(tree.children[1])  
+            
+            (operand1, operand2, type1, type2) = self.get_types(tree.children[0], tree.children[1], flag)
+            #operand1 = self.dispatch(tree.children[0])
+            #operand2 = self.dispatch(tree.children[1])
+            #type1 = operand1[0]
+            #type2 = operand2[0]
+
+            if type1 != type2:
+                exit("TypeError! " + type1 + " is not of type " +type2)
+            else:
+                if type1=="DAY" or type1=="MONTH" or type1=="DATE" or type1=="TIME" or type1=="DATETIME":
+                    exit("TypeError! Cannot add " + type1 + " types together")
+
+                return type1, str(operand1[1]) + " " + tree.children[2] + " " + str(operand2[1]) 
 
     def _multiplicative_expression(self, tree, flag=None):
         
         if len(tree.children) == 1:
-            return self.dispatch(tree.children[0]) 
+            return self.dispatch(tree.children[0], flag) 
         else:
-            return self.dispatch(tree.children[0]) + " " + tree.children[2] + " " + self.dispatch(tree.children[1])
+            
+            (operand1, operand2, type1, type2) = self.get_types(tree.children[0], tree.children[1], flag)
+            #operand1 = self.dispatch(tree.children[0])
+            #operand2 = self.dispatch(tree.children[1])
+            #type1 = operand1[0]
+            #type2 = operand2[0]
+            
+            if type1 != type2:
+                #allow NUM * TEMP and TEMP * NUM
+                if type1=="NUM" and (type2=="F" or type2=="C" or type2=="K"):
+                    return type2, str(operand1[1]) + " " + tree.children[2] + " " + str(operand2[1])
+                elif (type1=="F" or type1=="C" or type2=="K") and type2=="NUM":
+                    return type1, str(operand1[1]) + " " + tree.children[2] + " " + str(operand2[1])
+                
+                exit("TypeError! " + type1 + " is not of type " +type2)
+
+            else:
+                if self.check_if_time(type1) or type1=="F" or type1=="C" or type1=="K":
+                    exit("TypeError! Cannot multiply " + type1 + " types together")
+
+                return type1, str(operand1[1]) + " " + tree.children[2] + " " + str(operand2[1])
+                    #return self.dispatch(tree.children[0]) + " " + tree.children[2] + " " + self.dispatch(tree.children[1])
 
     #this needs to be fixed
     def _primary_expression(self, tree, flag=None):
         if tree.leaf == None:
-            return "( " + self.dispatch(tree.children[0]) + " )"
+            return "( " + self.dispatch(tree.children[0], flag) + " )"
         else:
-            return tree.leaf
+            """
+            This means this is a variable/ID. 
+                Check if variable is in symbol table and return the variable and its type
+            """
+            #TODO check if variable is in the correct scope
+            (varType, value) = self.symbolTable.get(tree.leaf)
+            return varType, tree.leaf
+    
 
     def _list_id_expression(self, tree, flag=None):
         if tree.leaf == None:
             return self.dispatch(tree.children[0])
         else:
             return tree.leaf
-                            
+
+    def _primary_expression_string(self, tree, flag=None):
+        return "STRING", tree.leaf
+
+
+    def _primary_expression_constant(self, tree, flag=None):
+        return "NUM", int(tree.leaf)    
+    
+
+    def _during_or_expression(self, tree, flag=None):
+        if len(tree.children) == 1:
+            return self.dispatch(tree.children[0], flag)
+        if len(tree.children) == 2:
+            return "((" + self.dispatch(tree.children[0], flag) + ") or (" + self.dispatch(tree.children[1], flag) + "))"
+      
+
+    def _during_and_expression(self, tree, flag=None):
+        if len(tree.children) == 1:
+            arg = self.dispatch(tree.children[0], flag)
+            if self.check_if_time(arg) and flag=="EVERY": 
+                arg = self.convert_time(arg)
+            return arg
+
+        if len(tree.children) == 2:
+            arg = self.dispatch(tree.children[1], flag)
+            if not self.check_if_time(arg): exit("OH NO. Must use time type in EVERY statements")
+            arg = self.convert_time(arg)
+            poop = self.dispatch(tree.children[0], flag)
+            return "((" + self.dispatch(tree.children[0], flag) + ") and (" + arg + "))"
+      
+               
     def _every_statement(self, tree, flag=None):
         global everys
         global every_list        
         everys = everys + 1
-        
+        everyFlag = "EVERY"
+
         s = "\ndef every" + str(everys) + "() :\n"
         s += "    print 'executing every" + str(everys) + "'\n"
-
+        
         lines = self.dispatch(tree.children[1]).splitlines()
         for line in lines:
             s+= "    " + line +"\n"
 
         s += "def condition" + str(everys) + "():\n"
         s += "    print 'checking" + str(everys) + "'\n"
-        s += "    if " + self.dispatch(tree.children[0]) + ": return True\n"
+        s += "    if " + self.dispatch(tree.children[0], everyFlag) + ": return True\n"
+        s += "every_list.append({'func' : 'every" + str(everys)
+        s += "', 'condition' : 'condition" + str(everys) + "'})"
+        return s
+
+    def _once_every_statement(self, tree, flag=None):
+        global everys
+        global every_list        
+        everys = everys + 1
+        everyFlag = "EVERY"
+
+        s = "\ndef every" + str(everys) + "() :\n"
+        s += "    print 'executing once every" + str(everys) + "'\n"
+
+        lines = self.dispatch(tree.children[1]).splitlines()
+        for line in lines:
+            s+= "    " + line +"\n"
+
+        s += "    happened" + str(everys) + " = False\n"
+        s += "def condition" + str(everys) + "():\n"
+        s += "    print 'checking" + str(everys) + "'\n"
+        s += "    global happened" + str(everys) + "\n"
+        s += "    if " + self.dispatch(tree.children[0], everyFlag) + " and happened" + str(everys) + " == False"+ ":\n"
+        s += "        happened" + str(everys) + " = True\n"
+        s += "        return True\n"
+        s += "    if not(" + self.dispatch(tree.children[0], everyFlag) + "):\n"
+        s += "        happened" + str(everys) + " = False\n"
         s += "every_list.append({'func' : 'every" + str(everys)
         s += "', 'condition' : 'condition" + str(everys) + "'})"
         return s
 
     def _iteration_statement(self, tree, flag=None):
-        s = "while(" + self.dispatch(tree.children[0]) + "):\n"
+        condition = self.dispatch(tree.children[0])
+        if type(condition) is tuple:
+            condition = condition[1]
+        
+        #s = "while(" + self.dispatch(tree.children[0]) + "):\n"
+        s = "while(" + condition + "):\n"
         lines = self.dispatch(tree.children[1]).splitlines()
 
         for line in lines:
@@ -198,14 +358,17 @@ class codeGenerator(object):
         return s
 
     def _selection_statement(self, tree, flag=None):
+        condition = self.dispatch(tree.children[0])
+        if type(condition) is tuple:
+            condition = condition[1]
         if len(tree.children) == 2:
-            s = "if(" + self.dispatch(tree.children[0]) + "):\n"
+            s = "if(" + condition + "):\n"
             lines = self.dispatch(tree.children[1]).splitlines()
             for line in lines:
                 s+= "    " + line +"\n"
             return s
         else:
-            s = "if(" + self.dispatch(tree.children[0]) + "):\n"
+            s = "if(" + condition + "):\n"
             lines = self.dispatch(tree.children[1]).splitlines()
             for line in lines:
                 s+= "    " + line +"\n"
@@ -217,7 +380,13 @@ class codeGenerator(object):
             return s
 
     def _print_statement(self, tree, flag=None):
-        s = "print " + self.dispatch(tree.children[0])
+        arg = self.dispatch(tree.children[0])
+        if type(arg) is tuple:
+            arg = arg[1]
+
+        if type(arg) is int:
+            arg = str(arg)
+        s = "print " + arg
         return s
 
 
@@ -236,7 +405,17 @@ class codeGenerator(object):
 
     def _for_statement(self, tree, flag=None):
         #for iterator in a range
-        s = "for " + self.dispatch(tree.children[0]) + " in range( " + self.dispatch(tree.children[1]) + " , " + self.dispatch(tree.children[2]) + " + 1 ) : \n"
+        or_expression1 = self.dispatch(tree.children[1])
+        or_expression2 = self.dispatch(tree.children[2])
+        primary_expression = self.dispatch(tree.children[0])
+
+        if type(or_expression1) is tuple: or_expression1 = or_expression1[1]
+        if type(or_expression2) is tuple: or_expression2 = or_expression2[1]
+        if type(or_expression1) is int: or_expression1 = str(or_expression1)
+        if type(or_expression2) is int: or_expression2 = str(or_expression2)
+        if type(primary_expression) is tuple: primary_expression = primary_expression[1]
+
+        s = "for " + primary_expression + " in range( " + or_expression1 + " , " + or_expression2 + " + 1 ) : \n"
         lines = self.dispatch(tree.children[3]).splitlines()
 
         for line in lines:
@@ -254,7 +433,7 @@ class codeGenerator(object):
     
     
     def _day_expression(self, tree, flag=None):
-        s = "datetime.datetime.now().weekday() == "
+        s = ""
         if tree.leaf == "Monday":
             s += "0"
         elif tree.leaf == "Tuesday":
@@ -270,10 +449,10 @@ class codeGenerator(object):
         elif tree.leaf == "Sunday":
             s += "6"
 
-        return s
+        return "DAY", s
     
     def _month_expression(self, tree, flag=None):
-        s = "datetime.datetime.now().month() == "
+        s = ""
         if tree.leaf == "January":
             s+= "0"
         elif tree.leaf == 'February':
@@ -300,51 +479,76 @@ class codeGenerator(object):
             s+= "11"
         else:
             s+= "12"
-        return s
+        return "MONTH", s
 
     def _date_time_expression(self, tree, flag=None):
         p = re.compile(r'([0-3]?[0-9])/([01]?[0-9])/([0-9][0-9][0-9][0-9])[ ]([01]?[0-9]):([0-5][0-9][ ])((AM)|(PM))')
         match = p.search(tree.leaf)
-        day = str(int(match.group(1)))
-        month = str(int(match.group(2)))
-        year = str(int(match.group(3)))
-        hour = str(int(match.group(4)))
-        minute = str(int(match.group(5)))
-        # print "Day: "
-        # print day
-        # print "Month: "
-        # print month
-        # print "Year: "
-        # print year
-        # print "Hour: "
-        # print hour
-        # print "Minute: "
-        # print minute
-        return "datetime.datetime(" + year + ", " + month + ", " + day + ", " + hour + ", " + minute + ")"
+        day = int(match.group(1))
+        month = int(match.group(2))
+        year = int(match.group(3))
+        hour = int(match.group(4))
+        minute = int(match.group(5))
+        
+        #check for valid time entries
+        #if day > 31 or day < 1:
+        #    exit("Error: day value must be between 1 and 31")
+        #if month > 12 or month < 1:
+        #    exit("Error: month value must be between 1 and 12")
+        self.check_date_time('day', day)
+        self.check_date_time('month', month)
+        if year < 0:
+            exit("Error: Invalid year. Year must be a positive value")
+        if hour > 24 or hour < 0:
+            exit("Error: Invalid hour. Only 24 hours in a day")
+        if minute > 59 or minute < 0:
+            exit("Error: Invalid minute. Minute must be between 0 and 59")
+       
+        dateTimeTable = {}
+        dateTimeTable['day'] = day
+        dateTimeTable['month'] = month
+        dateTimeTable['year'] = year
+        dateTimeTable['hour'] = hour
+        dateTimeTable['minute'] = minute
+        
+        return "DATETIME", dateTimeTable 
 
     def _time_expression(self, tree, flag=None):
         p = re.compile(r'([01]?[0-9]):([0-5][0-9])[ ]((AM)|(PM))')
         match = p.search(tree.leaf)
         hour = int(match.group(1))
-        minute = str(int(match.group(2)))
-        time_of_day = match.group(3)
-        print "Hour: " + str(hour)
-        print "Minute: " + minute
-        print "Time of Day: '" + time_of_day + "'"
-        if time_of_day == "PM":
+        minute = int(match.group(2))
+        am_pm = match.group(3)
+        #print "Hour: " + str(hour)
+        #print "Minute: " + minute
+        #print "Time of Day: '" + am_pm + "'"
+        if am_pm == "PM":
             hour += 12
-        print "Hour: " + str(hour)
-        print "Minute: " + minute
-        print "Time of Day: '" + time_of_day + "'"
-        return "datetime.time(" + str(hour) + ", " + minute +")" 
+        #print "Hour: " + str(hour)
+        #print "Minute: " + minute
+        #print "Time of Day: '" + am_pm + "'"
+       
+        timeTable = {}
+        timeTable['hour'] = hour
+        timeTable['minute'] = minute
+        timeTable['am_pm'] = am_pm
+
+        return "TIME", timeTable
+        #return "datetime.time(" + str(hour) + ", " + minute +")" 
 
     def _date_expression(self, tree, flag=None):
         p = re.compile(r'([0-3]?[0-9])/([01]?[0-9])/([0-9][0-9][0-9][0-9])')
         match = p.search(tree.leaf)
-        day = str(int(match.group(1)))
-        month = str(int(match.group(2)))
-        year = str(int(match.group(3)))
-        return "datetime.date(" + year + ", " + month + ", " + day + ")"
+        day = int(match.group(1))
+        month = int(match.group(2))
+        year = int(match.group(3))
+        
+        dateTable = {}
+        dateTable['day'] = day
+        dateTable['month'] = month
+        dateTable['year'] = year
+        return "DATE", dateTable
+        #return "datetime.date(" + year + ", " + month + ", " + day + ")"
 
 
     def _temperature_expression(self, tree, flag=None):
@@ -352,5 +556,73 @@ class codeGenerator(object):
         match = p.search(tree.leaf)
         number = str(int(match.group(1)))
         temp_type = match.group(2)
-        return "Temperature(" + number + ", '" + temp_type + "')"
+        return temp_type, number 
+        #return "Temperature(" + number + ", '" + temp_type + "')"
+   
+    """
+    Used to check if a day, month, year, hour, etc. is valid
+    If invalid calls exit()
+    check_date_time('month', month)
+    """
+    def check_date_time(self, time, time_arg):
+        return {
+            'day': self.check_day, 
+           'month': self.check_month
+                    }[time]
+      #  if year < 0:
+      #      exit("Error: Invalid year. Year must be a positive value")
+      #  if hour > 24 or hour < 0:
+      #      exit("Error: Invalid hour. Only 24 hours in a day")
+      #  if minute > 59 or minute < 0:
+      #      exit("Error: Invalid minute. Minute must be between 0 and 59")
+    def check_day(self, time_arg):
+       if time_arg > 31 or time_arg < 1:
+           exit("Error: day value must be between 1 and 31"),
+    def check_month(self, time_arg):
+       if time_arg > 12 or time_arg < 1:
+           exit("Error: month value must be between 1 and 12")
+
+
+    #worth it to use this function?
+    def get_types(self, children1, children2, flag=None):
+            operand1 = self.dispatch(children1, flag)
+            operand2 = self.dispatch(children2, flag)
+            type1 = operand1[0]
+            type2 = operand2[0]
+
+            return operand1, operand2, type1, type2
     
+    #take in a type tuple and return the appropriate python string
+    def convert_time(self, arg):
+        if arg[0] == "DATETIME":
+            arg = "datetime.datetime(" + str(arg[1].get('year')) + ", " + str(arg[1].get('month')) + ", " + str(arg[1].get('day')) + ", " + str(arg[1].get('hour')) + ", " + str(arg[1].get('minute')) + ")"
+        elif arg[0] == "DATE":
+            arg = "datetime.date(" + str(arg[1].get('year')) + ", " + str(arg[1].get('month')) + ", " + str(arg[1].get('day')) + ")" 
+        elif arg[0] == "TIME":
+            arg = "datetime.time(" + str(arg[1].get('hour')) + ", " + str(arg[1].get('minute')) +")"
+        elif arg[0] == "DAY" : 
+            arg = "datetime.datetime.now().weekday() == " + arg[1]
+        elif arg[0] == "MONTH":
+            arg = "datetime.datetime.now().month() == " + arg[1]
+        else:
+            return None
+
+        return arg
+    
+    #check if arg is a tuple of some sort of time type
+    def check_if_time(self, arg):
+       
+        if type(arg) is tuple:
+            myType = arg[0]
+        else: 
+            myType = arg
+        if myType == "DATETIME" or myType == "DATE" or myType == "TIME" or myType == "DAY" or myType == "MONTH":
+            return True
+        return False
+
+
+class TypeError(Exception):
+    def __init__(self, value):
+        self.value = value
+    def __str__(self):
+        return repr(self.value)

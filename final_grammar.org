@@ -95,8 +95,13 @@
 					LIST-INDEX
 
    PRIMARY-EXPRESSION -> CONSTANT |
+<<<<<<< HEAD
                          ID-IMPROVED |
 						 LIST-START |
+=======
+                         ID |
+                         STRING |
+>>>>>>> origin/master
                          *[* PARAMETER-LIST *]* |
                          ( OR-EXPRESSION ) |
                          TEMPERATURE |
