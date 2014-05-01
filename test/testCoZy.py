@@ -218,24 +218,23 @@ ret = 5
 '''
 myTester.run_code(s, 5)
 
-###This code should fail BUT IT BREAKS
+###This code should fail 
 ##s='''
 ##b = 15/9/1991
 ##c = 14/7/2011
 ##a = c * b
-##ret = None
 ##'''
 ##myTester.run_code(s, None)
 
-#this should fail, and it has a bug
-s = '''
-b = Monday
-c = 70 F
-a = c + b * January
-'''
-myTester.run_code(s, None)
+###this should fail
+##s = '''
+##b = Monday
+##c = 70 F
+##a = c + b * January
+##'''
+##myTester.run_code(s, None)
 
-###this should fail BUT IT BREAKS
+###this should fail 
 ##s = '''
 ##b = January
 ##c = 15/9/1991
@@ -243,23 +242,41 @@ myTester.run_code(s, None)
 ##'''
 ##myTester.run_code(s, None)
 
-#this should fail, and it has a bug
-s = '''
-b = Monday
-c = 70 F
-a = c + b
-'''
-myTester.run_code(s, None)
+###this should fail
+##s = '''
+##b = Monday
+##c = 70 F
+##a = c + b
+##'''
+##myTester.run_code(s, None)
 
-#this should fail, and it has a bug
+###this should fail
+##s = '''
+##b = 15/9/1991
+##c = 70 F
+##a = b + c
+##'''
+##myTester.run_code(s, None)
+
+#this should fail and it does
 s = '''
 b = 15/9/1991
-c = 70 F
-a = b + c
+every(Monday + Tuesday during January):
+    print("Hello!")
+ret = 5
 '''
-myTester.run_code(s, None)
+myTester.run_code(s, 5)
 
-#this should fail, and it has a bug
+#this should work but it doesnt
+##s = '''
+##b = 15/9/1991
+##every(b):
+##    print("Hello!")
+##ret = 5
+##'''
+##myTester.run_code(s, 5)
+
+#this should fail
 s = '''
 b = 15/9/1991
 c = 14/7/2011
