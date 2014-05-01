@@ -351,8 +351,9 @@ if __name__ == '__main__':
 #    
 # """
     s = '''
-every ((January during Monday, February during Friday) during Wednesday):
-    print ("hello world")
+b = 15/9/1991
+a = January * b
+
 '''
      
 

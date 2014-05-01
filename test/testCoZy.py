@@ -125,7 +125,7 @@ myTester.run_code(s, 4)
 
 # test every
 s='''
-print ('5')
+print ('6')
 ret = 5
 every (Monday):
     print ('5')

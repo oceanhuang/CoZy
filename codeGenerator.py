@@ -117,25 +117,25 @@ class codeGenerator(object):
                 arg = arg[1]
 
         
-        #print self.symbolTable #uncomment to check symbol table
+        print self.symbolTable #uncomment to check symbol table
         if type(arg) is not str: arg = str(arg)
         return tree.leaf + " = " + arg
 
     def _or_expression(self, tree, flag=None):
         
         if len(tree.children) == 1:
-            return self.dispatch(tree.children[0])
+            return self.dispatch(tree.children[0], flag)
         else:
-            (operand1, operand2, type1, type2) = self.get_types(tree.children[0], tree.children[1])
+            (operand1, operand2, type1, type2) = self.get_types(tree.children[0], tree.children[1], flag)
             return "BOOL", str(operand[1]) + " " + tree.children[2] + " " + str(operand2[1])
             #return self.dispatch(tree.children[0]) + " " + tree.children[2] + " " + self.dispatch(tree.children[1])  
 
     def _and_expression(self, tree, flag=None):
         
         if len(tree.children) == 1:
-            return self.dispatch(tree.children[0])
+            return self.dispatch(tree.children[0], flag)
         else:
-            (operand1, operand2, type1, type2) = self.get_types(tree.children[0], tree.children[1])
+            (operand1, operand2, type1, type2) = self.get_types(tree.children[0], tree.children[1], flag)
             
             return "BOOL", str(operand1[1]) + " " + tree.children[2] + " " + str(operand2[1])
             #return self.dispatch(tree.children[0]) + " " + tree.children[2] + " " + self.dispatch(tree.children[1])  
@@ -143,9 +143,9 @@ class codeGenerator(object):
     def _equality_expression(self, tree, flag=None):
         
         if len(tree.children) == 1:
-            return self.dispatch(tree.children[0])
+            return self.dispatch(tree.children[0],flag)
         else:
-            (operand1, operand2, type1, type2) = self.get_types(tree.children[0], tree.children[1])
+            (operand1, operand2, type1, type2) = self.get_types(tree.children[0], tree.children[1], flag)
 
             if type1 != type2:
                 exit("TypeError! Cannot compare objects of type " + type1 + " and objects of type " + type2)
@@ -156,10 +156,10 @@ class codeGenerator(object):
     def _relational_expression(self, tree, flag=None):
         
         if len(tree.children) == 1:
-            return self.dispatch(tree.children[0])
+            return self.dispatch(tree.children[0], flag)
         else:
 
-            (operand1, operand2, type1, type2) = self.get_types(tree.children[0], tree.children[1])
+            (operand1, operand2, type1, type2) = self.get_types(tree.children[0], tree.children[1], flag)
             #operand1 = self.dispatch(tree.children[0])
             #operand2 = self.dispatch(tree.children[1])
             #type1 = operand1[0]
@@ -176,10 +176,10 @@ class codeGenerator(object):
     def _additive_expression(self, tree, flag=None):
         
         if len(tree.children) == 1:
-            return self.dispatch(tree.children[0])
+            return self.dispatch(tree.children[0], flag)
         else:
             
-            (operand1, operand2, type1, type2) = self.get_types(tree.children[0], tree.children[1])
+            (operand1, operand2, type1, type2) = self.get_types(tree.children[0], tree.children[1], flag)
             #operand1 = self.dispatch(tree.children[0])
             #operand2 = self.dispatch(tree.children[1])
             #type1 = operand1[0]
@@ -196,10 +196,10 @@ class codeGenerator(object):
     def _multiplicative_expression(self, tree, flag=None):
         
         if len(tree.children) == 1:
-            return self.dispatch(tree.children[0]) 
+            return self.dispatch(tree.children[0], flag) 
         else:
             
-            (operand1, operand2, type1, type2) = self.get_types(tree.children[0], tree.children[1])
+            (operand1, operand2, type1, type2) = self.get_types(tree.children[0], tree.children[1], flag)
             #operand1 = self.dispatch(tree.children[0])
             #operand2 = self.dispatch(tree.children[1])
             #type1 = operand1[0]
@@ -224,7 +224,7 @@ class codeGenerator(object):
     #this needs to be fixed        
     def _primary_expression(self, tree, flag=None):
         if tree.leaf == None:
-            return "( " + self.dispatch(tree.children[0]) + " )"
+            return "( " + self.dispatch(tree.children[0], flag) + " )"
         else:
             """
             This means this is a variable/ID. 
@@ -244,28 +244,43 @@ class codeGenerator(object):
 
     def _during_or_expression(self, tree, flag=None):
         if len(tree.children) == 1:
-            return self.dispatch(tree.children[0])
+            print "ONE CHILD"
+            print flag
+            return self.dispatch(tree.children[0], flag)
         if len(tree.children) == 2:
-            return "((" + self.dispatch(tree.children[0]) + ") or (" + self.dispatch(tree.children[1]) + "))"
+            print "TWO CHILD"
+            print flag
+            return "((" + self.dispatch(tree.children[0], flag) + ") or (" + self.dispatch(tree.children[1], flag) + "))"
       
 
     def _during_and_expression(self, tree, flag=None):
         if len(tree.children) == 1:
-            arg = self.dispatch(tree.children[0])
-            if self.check_if_time(arg): arg = self.convert_time(arg)
+            print "AND ONE CHILD"
+            arg = self.dispatch(tree.children[0], flag)
+            print arg
+            print flag
+            if self.check_if_time(arg) and flag=="EVERY": 
+                arg = self.convert_time(arg)
             return arg
 
         if len(tree.children) == 2:
-            arg = self.dispatch(tree.children[1])
+            print "AND TWO CHILD"
+            arg = self.dispatch(tree.children[1], flag)
             if not self.check_if_time(arg): exit("OH NO. Must use time type in EVERY statements")
             arg = self.convert_time(arg)
-            return "((" + self.dispatch(tree.children[0]) + ") and (" + arg + "))"
+            poop = self.dispatch(tree.children[0], flag)
+            print "-----------------agaba-------------------"
+            print flag
+            print poop
+            print arg
+            return "((" + self.dispatch(tree.children[0], flag) + ") and (" + arg + "))"
       
                
     def _every_statement(self, tree, flag=None):
         global everys
         global every_list        
         everys = everys + 1
+        everyFlag = "EVERY"
 
         s = "\ndef every" + str(everys) + "() :\n"
         s += "    print 'executing every" + str(everys) + "'\n"
@@ -274,9 +289,10 @@ class codeGenerator(object):
         for line in lines:
             s+= "    " + line +"\n"
 
+        print "every statement"
         s += "def condition" + str(everys) + "():\n"
         s += "    print 'checking" + str(everys) + "'\n"
-        s += "    if " + self.dispatch(tree.children[0]) + ": return True\n"
+        s += "    if " + self.dispatch(tree.children[0], everyFlag) + ": return True\n"
         s += "every_list.append({'func' : 'every" + str(everys)
         s += "', 'condition' : 'condition" + str(everys) + "'})"
         return s
@@ -285,7 +301,8 @@ class codeGenerator(object):
         global everys
         global every_list        
         everys = everys + 1
-        
+        everyFlag = "EVERY"
+
         s = "\ndef every" + str(everys) + "() :\n"
         s += "    print 'executing once every" + str(everys) + "'\n"
 
@@ -297,10 +314,10 @@ class codeGenerator(object):
         s += "def condition" + str(everys) + "():\n"
         s += "    print 'checking" + str(everys) + "'\n"
         s += "    global happened" + str(everys) + "\n"
-        s += "    if " + self.dispatch(tree.children[0]) + " and happened" + str(everys) + " == False"+ ":\n"
+        s += "    if " + self.dispatch(tree.children[0], everyFlag) + " and happened" + str(everys) + " == False"+ ":\n"
         s += "        happened" + str(everys) + " = True\n"
         s += "        return True\n"
-        s += "    if not(" + self.dispatch(tree.children[0]) + "):\n"
+        s += "    if not(" + self.dispatch(tree.children[0], everyFlag) + "):\n"
         s += "        happened" + str(everys) + " = False\n"
         s += "every_list.append({'func' : 'every" + str(everys)
         s += "', 'condition' : 'condition" + str(everys) + "'})"
@@ -522,9 +539,9 @@ class codeGenerator(object):
 
 
     #worth it to use this function?
-    def get_types(self, children1, children2):
-            operand1 = self.dispatch(children1)
-            operand2 = self.dispatch(children2)
+    def get_types(self, children1, children2, flag=None):
+            operand1 = self.dispatch(children1, flag)
+            operand2 = self.dispatch(children2, flag)
             type1 = operand1[0]
             type2 = operand2[0]
 
