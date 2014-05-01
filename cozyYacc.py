@@ -351,7 +351,7 @@ if __name__ == '__main__':
 #    
 # """
     s = '''
-every (May during Thursday):
+every ((January during Monday, May) during Thursday):
     print ("hello world")
 '''
      
