@@ -359,8 +359,7 @@ if __name__ == '__main__':
 #    
 # """
     s = '''
-every ((January, February) during Wednesday):
-    print ("hello world")
+log("5")
 '''
 
 
