@@ -32,12 +32,16 @@ reserved = {
     'and' : 'AND',
     'if' : 'IF',
     'else' : 'ELSE',
+    'add' : 'ADD',
+    'remove' : 'REMOVE',
+    'sort' : 'SORT',
     #'elif' : 'ELSEIF',
     'while' : 'WHILE',
     'for' : 'FOR',
     'in' : 'IN', 
     'print' : 'PRINT',
     'not' : 'NOT',
+    'each' : 'EACH',
     'once' : 'ONCE',
     'during' : 'DURING'
 }
@@ -47,6 +51,8 @@ tokens = [
     'RPAREN',
     'RBRACK',
     'LBRACK',
+    'RBRACE',
+    'LBRACE',
     'EQUALS',
     'PLUS',
     'MINUS',
@@ -77,6 +83,8 @@ t_LPAREN    = r'\('
 t_RPAREN    = r'\)'
 t_LBRACK    = r'\{'
 t_RBRACK    = r'\}'
+t_LBRACE    = r'\['
+t_RBRACE    = r'\]'
 t_EQUALS    = r'='
 t_PLUS      = r'\+'
 t_MINUS     = r'\-'
@@ -318,6 +326,8 @@ if __name__ == '__main__':
     lexer = CoZyLexer()
     # code
     data = """
+a = [1,2,3]
+a[2] = 3
 "poop"
 'poop'
 5

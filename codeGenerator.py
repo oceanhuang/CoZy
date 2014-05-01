@@ -26,6 +26,8 @@ class Temperature:
 
 '''
 
+
+
 class codeGenerator(object):
     def __init__(self, tree):
         # Keep track of scopes
@@ -56,6 +58,12 @@ class codeGenerator(object):
         code = method(tree, flag)
         return code
 
+    def dispatchTuple(self, tree, flag=None):
+        arg = self.dispatch(tree.children[0], flag)
+        if type(arg) is tuple:
+            arg = arg[1]
+        return str(arg)
+
     def _program(self, tree, flag=None):
         return self.dispatch(tree.children)
 
@@ -85,6 +93,54 @@ class codeGenerator(object):
 
     def _function_param_end(self, tree, flag=None):
         return tree.leaf
+
+
+    
+    def _list_start(self, tree, flag=None):
+        if len(tree.children)==0:
+            return "[]"
+        else:
+            print "thing"
+            print self.dispatch(tree.children[0])
+            print "tuple"
+            print self.dispatchTuple(tree.children[0])            
+            return "[" + self.dispatchTuple(tree.children[0]) + "]"
+    
+    def _list_expression(self, tree, flag=None):
+        print "first"
+        print "thing"
+        print self.dispatch(tree.children[0])
+        print "tuple"
+        print self.dispatchTuple(tree.children[0])
+        if len(tree.children) == 1:
+            return self.dispatchTuple(tree.children[0])
+        else:
+            print "second"
+            print "thing"
+            print self.dispatch(tree.children[1])
+            print "tuple"
+            print self.dispatchTuple(tree.children[1])
+            
+            
+            return self.dispatchTuple(tree.children[0]) + ", " + self.dispatchTuple(tree.children[1])
+        
+    def _list_index(self, tree, flag=None):
+        return self.dispatch(tree.children[0]) + "[" + self.dispatch(tree.children[1]) + "]"
+
+
+
+    def _id_id(self, tree, flag=None):
+        return tree.leaf
+    
+    def _id_list(self, tree, flag=None):
+        return self.dispatch(tree.children[0])
+
+    def _list_primary_expression(self, tree, flag=None):
+        if tree.leaf == None:
+            return self.dispatch(tree.children[0])
+        else:
+            return tree.leaf
+
 
 
     def _statement_list(self, tree, flag=None):
@@ -246,6 +302,10 @@ class codeGenerator(object):
         if len(tree.children) == 1:
             return self.dispatch(tree.children[0], flag)
         if len(tree.children) == 2:
+            for i in range(10):
+                print "HERE"
+            print self.dispatch(tree.children[0], flag)
+            #this is stealing lists
             return "((" + self.dispatch(tree.children[0], flag) + ") or (" + self.dispatch(tree.children[1], flag) + "))"
       
 

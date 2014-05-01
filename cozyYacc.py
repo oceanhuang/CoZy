@@ -98,7 +98,35 @@ def p_statement(p):
                   | for_statement
                   | print_statement NEWLINE
     """
+    #maybe add | list_change NEWLINE
     p[0] = Node("statement", [p[1]])
+
+
+"""
+def p_list_index(p):
+    '''list_index : id_improved LBRACE additive_expression RBRACE'''
+    p[0] = Node("list_index", [p[1], p[3]])
+"""
+
+def p_list_start(p):
+    '''list_start : LBRACE RBRACE
+                     | LBRACE list_expression RBRACE
+    '''
+    if len(p)==3:
+        p[0] = Node("list_start", [])
+    else:
+        p[0] = Node("list_start", [p[2]])
+
+def p_list_expression(p):
+    
+    '''list_expression : or_expression
+                            | list_expression COMMA or_expression
+    '''
+    if len(p) == 2:
+        p[0] = Node("list_expression", [p[1]])
+    else:
+        p[0] = Node("list_expression", [p[1], p[3]])
+
 
 # is this correct?? need to fix according to grammar...
 def p_assignment_statement(p):
@@ -148,7 +176,7 @@ def p_relational_expresion(p):
 #maybe put during things here.... need to not allow above cases for during in the grammar!!
 def p_during_or_expression(p):
     """during_or_expression : during_and_expression
-                            | during_or_expression COMMA during_and_expression"""
+                            | during_or_expression SEMICOLON during_and_expression"""
 #                            | LPAREN during_or_expression RPAREN DURING during_and_expression"""
     if len(p) == 2:
         p[0] = Node("during_or_expression", [p[1]])
@@ -161,7 +189,7 @@ def p_during_or_expression(p):
 #could it do this too (TUESDAY, (WEDS, FRIDAY) DURING 4:30 PM TO 5:30 PM) DURING 4:30 PM TO 5:30 PM??
 def p_during_and_expression(p):
     """ during_and_expression : additive_expression
-                        | during_and_expression DURING additive_expression """
+                        | during_and_expression SEMICOLON additive_expression """
 
     if len(p) == 2:
         p[0] = Node("during_and_expression", [p[1]])
@@ -193,7 +221,7 @@ def p_multiplicative_expresion(p):
 # needs to be fixed (move not)...... also code generator needs to handle not
 def p_primary_expression(p):
     """ primary_expression : ID
-                           | LPAREN or_expression RPAREN
+                            | LPAREN or_expression RPAREN
                            | NOT LPAREN or_expression RPAREN
     """
     if len(p) == 2:
@@ -202,6 +230,26 @@ def p_primary_expression(p):
         p[0] = Node('primary_expression', [p[2]])
     else:
         p[0] = Node('primary_expression', [p[3]]) #has not in it
+
+def p_primary_expression_list(p):
+    """ primary_expression : list_start
+    """
+    p[0] = Node('list_primary_expression', [p[1]])
+
+
+'''
+def p_id_id(p):
+    """ id_improved : ID
+    """
+    p[0] = Node('id_id', [], p[1])
+
+
+def p_id_list(p):
+    """ id_improved : list_index
+    """
+    p[0] = Node('id_list', [p[1]])
+'''
+    
 
 def p_primary_expression_string(p):
     """ primary_expression : STRING
@@ -351,8 +399,7 @@ if __name__ == '__main__':
 #    
 # """
     s = '''
-every ((January, February) during Wednesday):
-    print ("hello world")
+a = [1,2]
 '''
      
 
