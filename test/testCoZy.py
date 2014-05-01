@@ -305,11 +305,10 @@ r = 1 + 2 * 3+4
 f = 1:00 PM
 h = 1 < 3 and 4 > 3
 z = r + 2
+y = 7 * 80F
 z = a + z
 '''
 
 myTester.run_code(s, None)
-
-
 
 

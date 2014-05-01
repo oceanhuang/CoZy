@@ -215,7 +215,7 @@ class codeGenerator(object):
                 exit("TypeError! " + type1 + " is not of type " +type2)
 
             else:
-                if type1=="DAY" or type1=="MONTH" or type1=="DATE" or type1=="TIME" or type1=="DATETIME":
+                if self.check_if_time(type1) or type1=="F" or type1=="C" or type1=="K":
                     exit("TypeError! Cannot multiply " + type1 + " types together")
 
                 return type1, str(operand1[1]) + " " + tree.children[2] + " " + str(operand2[1])
@@ -549,7 +549,12 @@ class codeGenerator(object):
     
     #check if arg is a tuple of some sort of time type
     def check_if_time(self, arg):
-        if arg[0] == "DATETIME" or arg[0] == "DATE" or arg[0] == "TIME" or arg[0] == "DAY" or arg[0] == "MONTH":
+       
+        if type(arg) is tuple:
+            myType = arg[0]
+        else: 
+            myType = arg
+        if myType == "DATETIME" or myType == "DATE" or myType == "TIME" or myType == "DAY" or myType == "MONTH":
             return True
         return False
 
