@@ -319,16 +319,13 @@ if __name__ == '__main__':
     lexer = CoZyLexer()
     # code
     data = """
-<<<<<<< HEAD
 bday = 10:00 PM
 every (Monday):
     print '5'
 print("something")
-=======
 "poop"
 'poop'
 5
->>>>>>> origin/master
 """
 #     data = """
 # x=3+3;
