@@ -26,6 +26,14 @@ class Temperature:
 
 '''
 
+loop_def = '''
+while 1:
+    for e in every_list:
+        if eval(e['condition'] + "()"):
+            eval(e['func']+ "()")
+    
+'''
+
 class codeGenerator(object):
     def __init__(self, tree):
         # Keep track of scopes
@@ -34,7 +42,8 @@ class codeGenerator(object):
         # Symbols table
         self.symbolTable = {}
         # Variable to store the code
-        self.ret = "import datetime\n" + "every_list = []\n" + temp_def + self.dispatch(tree)
+        self.ret = "import datetime\n" + "every_list = []\n" + temp_def + self.dispatch(tree) + loop_def
+        #add the continous every loop here
         # 
         # Keeps track of the number of every's
 
