@@ -351,9 +351,9 @@ if __name__ == '__main__':
 #    
 # """
     s = '''
-b = 15/9/1991
-a = January * b
-
+b = Monday
+c = 70 F
+a = c + b
 '''
      
 

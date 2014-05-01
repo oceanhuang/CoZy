@@ -117,7 +117,7 @@ class codeGenerator(object):
                 arg = arg[1]
 
         
-        print self.symbolTable #uncomment to check symbol table
+        #print self.symbolTable #uncomment to check symbol table
         if type(arg) is not str: arg = str(arg)
         return tree.leaf + " = " + arg
 
@@ -244,35 +244,23 @@ class codeGenerator(object):
 
     def _during_or_expression(self, tree, flag=None):
         if len(tree.children) == 1:
-            print "ONE CHILD"
-            print flag
             return self.dispatch(tree.children[0], flag)
         if len(tree.children) == 2:
-            print "TWO CHILD"
-            print flag
             return "((" + self.dispatch(tree.children[0], flag) + ") or (" + self.dispatch(tree.children[1], flag) + "))"
       
 
     def _during_and_expression(self, tree, flag=None):
         if len(tree.children) == 1:
-            print "AND ONE CHILD"
             arg = self.dispatch(tree.children[0], flag)
-            print arg
-            print flag
             if self.check_if_time(arg) and flag=="EVERY": 
                 arg = self.convert_time(arg)
             return arg
 
         if len(tree.children) == 2:
-            print "AND TWO CHILD"
             arg = self.dispatch(tree.children[1], flag)
             if not self.check_if_time(arg): exit("OH NO. Must use time type in EVERY statements")
             arg = self.convert_time(arg)
             poop = self.dispatch(tree.children[0], flag)
-            print "-----------------agaba-------------------"
-            print flag
-            print poop
-            print arg
             return "((" + self.dispatch(tree.children[0], flag) + ") and (" + arg + "))"
       
                
@@ -289,7 +277,6 @@ class codeGenerator(object):
         for line in lines:
             s+= "    " + line +"\n"
 
-        print "every statement"
         s += "def condition" + str(everys) + "():\n"
         s += "    print 'checking" + str(everys) + "'\n"
         s += "    if " + self.dispatch(tree.children[0], everyFlag) + ": return True\n"
