@@ -38,8 +38,10 @@ reserved = {
     'in' : 'IN', 
     'print' : 'PRINT',
     'not' : 'NOT',
-    'log' : 'LOG'
-}
+    'log' : 'LOG',
+    'once' : 'ONCE',
+    'during' : 'DURING',
+    }
 
 tokens = [
     'LPAREN',
@@ -68,6 +70,7 @@ tokens = [
     'NEWLINE',
     'COMMA',
     'BOOLEAN',
+    'STRING',
 ] + list(reserved.values())
 
 # Regular expression rules for simple tokens
@@ -104,6 +107,10 @@ def t_TIME(t):
     r'[01]?[0-9]:[0-5][0-9][ ]((AM)|(PM))'
     return t
 
+def t_STRING(t):
+    r'((".*") | (\'.*\'))'
+    return t
+
 def t_CONSTANT(t):
     r'[0-9]*\.?[0-9]+|((\'|\").*?(\'|\"))'
     return t
@@ -112,7 +119,8 @@ def t_ID(t):
     r'[a-zA-Z_][a-zA-Z_0-9]*'
     t.type = reserved.get(t.value, 'ID') #looks in reserved list, if can't find, assigns it to type ID 
     return t
-    
+
+
 # Define a rule so we can track line numbers
 def t_newline(t):
     r'\n+'
@@ -311,10 +319,16 @@ if __name__ == '__main__':
     lexer = CoZyLexer()
     # code
     data = """
+<<<<<<< HEAD
 bday = 10:00 PM
 every (Monday):
     print '5'
 print("something")
+=======
+"poop"
+'poop'
+5
+>>>>>>> origin/master
 """
 #     data = """
 # x=3+3;
