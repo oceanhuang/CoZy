@@ -59,7 +59,7 @@ class codeGenerator(object):
         return code
 
     def dispatchTuple(self, tree, flag=None):
-        arg = self.dispatch(tree.children[0], flag)
+        arg = self.dispatch(tree, flag)
         if type(arg) is tuple:
             arg = arg[1]
         return str(arg)
@@ -100,41 +100,61 @@ class codeGenerator(object):
         if len(tree.children)==0:
             return "[]"
         else:
-            print "thing"
-            print self.dispatch(tree.children[0])
-            print "tuple"
-            print self.dispatchTuple(tree.children[0])            
-            return "[" + self.dispatchTuple(tree.children[0]) + "]"
+            """
+            thing = self.dispatch(tree.children[0])
+            print "thingatstart"
+            print thing
+            tupleThing = self.dispatchTuple(tree.children[0])
+            print "tupleatstart"
+            print tupleThing
+            """
+            return "[" + self.dispatch(tree.children[0]) + "]"
     
     def _list_expression(self, tree, flag=None):
+        """
+        thing = self.dispatch(tree.children[0])
         print "first"
         print "thing"
-        print self.dispatch(tree.children[0])
+        print thing
+        tupleThing = self.dispatchTuple(tree.children[0])
         print "tuple"
-        print self.dispatchTuple(tree.children[0])
+        print tupleThing
+        """
         if len(tree.children) == 1:
+            #print "first option"
             return self.dispatchTuple(tree.children[0])
         else:
+            """
+            thing = self.dispatch(tree.children[1])
             print "second"
             print "thing"
-            print self.dispatch(tree.children[1])
+            print thing
+            tupleThing = self.dispatchTuple(tree.children[1])
             print "tuple"
-            print self.dispatchTuple(tree.children[1])
+            print tupleThing
             
-            
+            toReturn = self.dispatchTuple(tree.children[0]) + ", " + self.dispatchTuple(tree.children[1])
+            print "toReturn:"
+            print toReturn
+            """
             return self.dispatchTuple(tree.children[0]) + ", " + self.dispatchTuple(tree.children[1])
         
-    def _list_index(self, tree, flag=None):
-        return self.dispatch(tree.children[0]) + "[" + self.dispatch(tree.children[1]) + "]"
+    def _list_index_double(self, tree, flag=None):
+        return self.dispatchTuple(tree.children[0]) + "[" + self.dispatchTuple(tree.children[1]) + "]"
 
+    def _list_index_id(self, tree, flag=None):
+        return tree.leaf + "[" + self.dispatchTuple(tree.children[0]) + "]"
 
-
+    
+    """
     def _id_id(self, tree, flag=None):
         return tree.leaf
     
     def _id_list(self, tree, flag=None):
         return self.dispatch(tree.children[0])
+    """
 
+    
     def _list_primary_expression(self, tree, flag=None):
         if tree.leaf == None:
             return self.dispatch(tree.children[0])
@@ -142,6 +162,16 @@ class codeGenerator(object):
             return tree.leaf
 
 
+    def _list_add_expression(self, tree, flag=None):
+        return tree.leaf + ".append(" + self.dispatchTuple(tree.children[0]) + ")"
+
+
+    def _list_sort_expression(self, tree, flag=None):
+        return tree.leaf + ".sort()"
+
+    def _list_remove_expression(self, tree, flag=None):
+        return tree.leaf + ".remove(" + self.dispatchTuple(tree.children[0]) + ")"
+    
 
     def _statement_list(self, tree, flag=None):
         return self.dispatch(tree.children)
@@ -149,6 +179,7 @@ class codeGenerator(object):
     def _statement(self, tree, flag=None):
         return self.dispatch(tree.children) + "\n"
 
+    #whoever wrote this, please have a look at _assignnment_statement_list_index
     def _assignment_statement(self, tree, flag=None):
         arg = self.dispatch(tree.children[0]);
         self.symbolTable[tree.leaf] = [arg[0], arg[1]]
@@ -176,6 +207,38 @@ class codeGenerator(object):
         #print self.symbolTable #uncomment to check symbol table
         if type(arg) is not str: arg = str(arg)
         return tree.leaf + " = " + arg
+
+    #not sure whether this actually works with the symbol table and everything
+    def _assignment_statement_list_index(self, tree, flag=None):
+        arg = self.dispatch(tree.children[1]);
+        listIndex = self.dispatch(tree.children[0])
+        self.symbolTable[listIndex] = [arg[0], arg[1]]
+        if type(arg) is tuple:
+            if arg[0] == "F" or arg[0] == "C" or arg[0] == "K":
+                arg = "Temperature(" + str(arg[1]) + ", '" + arg[0] + "')"
+#            elif arg[0] == "DATETIME":
+#                self.symbolTable[listIndex] = [arg[0], arg[1]]
+#                arg = "datetime.datetime(" + str(arg[1].get('year')) + ", " + str(arg[1].get('month')) + ", " + str(arg[1].get('day')) + ", " + str(arg[1].get('hour')) + ", " + str(arg[1].get('minute')) + ")"
+#            elif arg[0] == "DATE":
+#                self.symbolTable[listIndex] = [arg[0], arg[1]]
+#                arg = "datetime.date(" + str(arg[1].get('year')) + ", " + str(arg[1].get('month')) + ", " + str(arg[1].get('day')) + ")" 
+#            elif arg[0] == "TIME":
+#                self.symbolTable[listIndex] = [arg[0], arg[1]]
+#                arg = "datetime.time(" + str(arg[1].get('hour')) + ", " + str(arg[1].get('minute')) +")"
+            elif arg[0] == "BOOL" or arg[0] == "NUM":
+                arg = arg[1]
+            elif self.check_if_time(arg):
+                arg = self.convert_time(arg)
+
+            else:
+                arg = arg[1]
+
+        
+        #print self.symbolTable #uncomment to check symbol table
+        if type(arg) is not str: arg = str(arg)
+        return listIndex + " = " + arg
+
+
 
     def _or_expression(self, tree, flag=None):
         

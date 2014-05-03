@@ -91,6 +91,7 @@ def p_statement_list(p):
 def p_statement(p):
     """ statement : assignment_statement NEWLINE
                   | every_statement
+                  | list_change NEWLINE
                   | once_every_statement
                   | iteration_statement
                   | selection_statement
@@ -102,25 +103,47 @@ def p_statement(p):
     p[0] = Node("statement", [p[1]])
 
 
-"""
-def p_list_index(p):
-    '''list_index : id_improved LBRACE additive_expression RBRACE'''
-    p[0] = Node("list_index", [p[1], p[3]])
-"""
+def p_list_change(p):
+    '''list_change : ADD LPAREN ID COMMA or_expression RPAREN 
+                    | SORT LPAREN ID RPAREN
+    '''
+    if len(p) == 7:
+        p[0] = Node("list_add_expression", [p[5]], p[3])
+    else:
+        p[0] = Node("list_sort_expression", [], p[3])
+    
+    
+def p_list_change_remove(p):
+    '''list_change : REMOVE LPAREN ID COMMA or_expression RPAREN
+    '''
+    p[0] = Node("list_remove_expression", [p[5]], p[3])
+
+    
+
+def p_list_index_double(p):
+    '''list_index : list_index LBRACE additive_expression RBRACE
+    '''
+    p[0] = Node("list_index_double", [p[1], p[3]])
+
+def p_list_index_id(p):
+    '''list_index : ID LBRACE additive_expression RBRACE
+    '''
+    p[0] = Node("list_index_id", [p[3]], p[1])
+
 
 def p_list_start(p):
     '''list_start : LBRACE RBRACE
                      | LBRACE list_expression RBRACE
     '''
     if len(p)==3:
-        p[0] = Node("list_start", [])
+        p[0] = Node("list_start")
     else:
         p[0] = Node("list_start", [p[2]])
 
 def p_list_expression(p):
     
-    '''list_expression : or_expression
-                            | list_expression COMMA or_expression
+    '''list_expression : list_expression COMMA or_expression
+                            | or_expression
     '''
     if len(p) == 2:
         p[0] = Node("list_expression", [p[1]])
@@ -128,13 +151,23 @@ def p_list_expression(p):
         p[0] = Node("list_expression", [p[1], p[3]])
 
 
-# is this correct?? need to fix according to grammar...
+# is this correct?? need to fix according to grammar... Remember to fix the one below it too!
 def p_assignment_statement(p):
     """ assignment_statement : ID EQUALS or_expression
                              | ID EQUALS assignment_statement or_expression
     """
     
     p[0] = Node("assignment_statement", [p[3]], p[1])
+
+
+def p_assignment_statement_list_index(p):
+    """ assignment_statement : list_index EQUALS or_expression
+                             | list_index EQUALS assignment_statement or_expression
+    """
+    
+    p[0] = Node("assignment_statement_list_index", [p[1],p[3]])
+
+    
 
 def p_or_expresion(p):
     """ or_expression : and_expression
@@ -233,6 +266,7 @@ def p_primary_expression(p):
 
 def p_primary_expression_list(p):
     """ primary_expression : list_start
+                            | list_index
     """
     p[0] = Node('list_primary_expression', [p[1]])
 
@@ -399,7 +433,7 @@ if __name__ == '__main__':
 #    
 # """
     s = '''
-a = [1,2]
+add{a,4}
 '''
      
 
