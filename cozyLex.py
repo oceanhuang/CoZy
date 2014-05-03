@@ -39,6 +39,9 @@ reserved = {
     'print' : 'PRINT',
     'not' : 'NOT',
     'to' : 'TO',
+    'log' : 'LOG',
+    'once' : 'ONCE',
+    'during' : 'DURING',
 }
 
 tokens = [
@@ -68,6 +71,7 @@ tokens = [
     'NEWLINE',
     'COMMA',
     'BOOLEAN',
+    'STRING',
 ] + list(reserved.values())
 
 # Regular expression rules for simple tokens
@@ -104,6 +108,10 @@ def t_TIME(t):
     r'[01]?[0-9]:[0-5][0-9][ ]((AM)|(PM))'
     return t
 
+def t_STRING(t):
+    r'((".*") | (\'.*\'))'
+    return t
+
 def t_CONSTANT(t):
     r'[0-9]*\.?[0-9]+|((\'|\").*?(\'|\"))'
     return t
@@ -112,7 +120,8 @@ def t_ID(t):
     r'[a-zA-Z_][a-zA-Z_0-9]*'
     t.type = reserved.get(t.value, 'ID') #looks in reserved list, if can't find, assigns it to type ID 
     return t
-    
+
+
 # Define a rule so we can track line numbers
 def t_newline(t):
     r'\n+'
@@ -313,8 +322,6 @@ if __name__ == '__main__':
     data = """
 if(Monday to Friday):
     x = 2
-
-
 if(Saturday to Monday):
     y = 2
 """

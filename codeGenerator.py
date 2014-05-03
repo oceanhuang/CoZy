@@ -34,7 +34,7 @@ class codeGenerator(object):
         # Symbols table
         self.symbolTable = {}
         # Variable to store the code
-        self.ret = "import datetime\n" + "every_list = []\n" + temp_def + self.dispatch(tree)
+        self.ret = "import datetime\n" + "every_list = []\n" + "log_file = open('cozyLog.txt', 'a')\n" + temp_def + self.dispatch(tree)
         # 
         # Keeps track of the number of every's
 
@@ -95,45 +95,46 @@ class codeGenerator(object):
 
     def _assignment_statement(self, tree, flag=None):
         arg = self.dispatch(tree.children[0]);
+        self.symbolTable[tree.leaf] = [arg[0], arg[1]]
         if type(arg) is tuple:
             if arg[0] == "F" or arg[0] == "C" or arg[0] == "K":
-                self.symbolTable[tree.leaf] = [arg[0], arg[1]]
                 arg = "Temperature(" + str(arg[1]) + ", '" + arg[0] + "')"
-            elif arg[0] == "DATETIME":
-                self.symbolTable[tree.leaf] = [arg[0], arg[1]]
-                arg = "datetime.datetime(" + str(arg[1].get('year')) + ", " + str(arg[1].get('month')) + ", " + str(arg[1].get('day')) + ", " + str(arg[1].get('hour')) + ", " + str(arg[1].get('minute')) + ")"
-            elif arg[0] == "DATE":
-                self.symbolTable[tree.leaf] = [arg[0], arg[1]]
-                arg = "datetime.date(" + str(arg[1].get('year')) + ", " + str(arg[1].get('month')) + ", " + str(arg[1].get('day')) + ")" 
-            elif arg[0] == "TIME":
-                self.symbolTable[tree.leaf] = [arg[0], arg[1]]
-                arg = "datetime.time(" + str(arg[1].get('hour')) + ", " + str(arg[1].get('minute')) +")"
+#            elif arg[0] == "DATETIME":
+#                self.symbolTable[tree.leaf] = [arg[0], arg[1]]
+#                arg = "datetime.datetime(" + str(arg[1].get('year')) + ", " + str(arg[1].get('month')) + ", " + str(arg[1].get('day')) + ", " + str(arg[1].get('hour')) + ", " + str(arg[1].get('minute')) + ")"
+#            elif arg[0] == "DATE":
+#                self.symbolTable[tree.leaf] = [arg[0], arg[1]]
+#                arg = "datetime.date(" + str(arg[1].get('year')) + ", " + str(arg[1].get('month')) + ", " + str(arg[1].get('day')) + ")" 
+#            elif arg[0] == "TIME":
+#                self.symbolTable[tree.leaf] = [arg[0], arg[1]]
+#                arg = "datetime.time(" + str(arg[1].get('hour')) + ", " + str(arg[1].get('minute')) +")"
             elif arg[0] == "BOOL" or arg[0] == "NUM":
-                self.symbolTable[tree.leaf] = [arg[0], arg[1]]
                 arg = arg[1]
+            elif self.check_if_time(arg):
+                arg = self.convert_time(arg)
             else:
-                #TODO add to symbol table
                 arg = arg[1]
 
-        print self.symbolTable
+        
+        #print self.symbolTable #uncomment to check symbol table
         if type(arg) is not str: arg = str(arg)
         return tree.leaf + " = " + arg
 
     def _or_expression(self, tree, flag=None):
         
         if len(tree.children) == 1:
-            return self.dispatch(tree.children[0])
+            return self.dispatch(tree.children[0], flag)
         else:
-            (operand1, operand2, type1, type2) = self.get_types(tree.children[0], tree.children[1])
+            (operand1, operand2, type1, type2) = self.get_types(tree.children[0], tree.children[1], flag)
             return "BOOL", str(operand[1]) + " " + tree.children[2] + " " + str(operand2[1])
             #return self.dispatch(tree.children[0]) + " " + tree.children[2] + " " + self.dispatch(tree.children[1])  
 
     def _and_expression(self, tree, flag=None):
         
         if len(tree.children) == 1:
-            return self.dispatch(tree.children[0])
+            return self.dispatch(tree.children[0], flag)
         else:
-            (operand1, operand2, type1, type2) = self.get_types(tree.children[0], tree.children[1])
+            (operand1, operand2, type1, type2) = self.get_types(tree.children[0], tree.children[1], flag)
             
             return "BOOL", str(operand1[1]) + " " + tree.children[2] + " " + str(operand2[1])
             #return self.dispatch(tree.children[0]) + " " + tree.children[2] + " " + self.dispatch(tree.children[1])  
@@ -141,23 +142,23 @@ class codeGenerator(object):
     def _equality_expression(self, tree, flag=None):
         
         if len(tree.children) == 1:
-            return self.dispatch(tree.children[0])
+            return self.dispatch(tree.children[0],flag)
         else:
-            (operand1, operand2, type1, type2) = self.get_types(tree.children[0], tree.children[1])
+            (operand1, operand2, type1, type2) = self.get_types(tree.children[0], tree.children[1], flag)
 
             if type1 != type2:
                 exit("TypeError! Cannot compare objects of type " + type1 + " and objects of type " + type2)
 
-            return "BOOL", str(operand1[1]) + " " + tree.children[2] + " " + str(operand2[2])
+            return "BOOL", str(operand1[1]) + " " + tree.children[2] + " " + str(operand2[1])
             #return self.dispatch(tree.children[0]) + " " + tree.children[2] + " " + self.dispatch(tree.children[1])  
 
     def _relational_expression(self, tree, flag=None):
         
         if len(tree.children) == 1:
-            return self.dispatch(tree.children[0])
+            return self.dispatch(tree.children[0], flag)
         else:
 
-            (operand1, operand2, type1, type2) = self.get_types(tree.children[0], tree.children[1])
+            (operand1, operand2, type1, type2) = self.get_types(tree.children[0], tree.children[1], flag)
             #operand1 = self.dispatch(tree.children[0])
             #operand2 = self.dispatch(tree.children[1])
             #type1 = operand1[0]
@@ -174,10 +175,10 @@ class codeGenerator(object):
     def _additive_expression(self, tree, flag=None):
         
         if len(tree.children) == 1:
-            return self.dispatch(tree.children[0])
+            return self.dispatch(tree.children[0], flag)
         else:
             
-            (operand1, operand2, type1, type2) = self.get_types(tree.children[0], tree.children[1])
+            (operand1, operand2, type1, type2) = self.get_types(tree.children[0], tree.children[1], flag)
             #operand1 = self.dispatch(tree.children[0])
             #operand2 = self.dispatch(tree.children[1])
             #type1 = operand1[0]
@@ -194,10 +195,10 @@ class codeGenerator(object):
     def _multiplicative_expression(self, tree, flag=None):
         
         if len(tree.children) == 1:
-            return self.dispatch(tree.children[0]) 
+            return self.dispatch(tree.children[0], flag) 
         else:
             
-            (operand1, operand2, type1, type2) = self.get_types(tree.children[0], tree.children[1])
+            (operand1, operand2, type1, type2) = self.get_types(tree.children[0], tree.children[1], flag)
             #operand1 = self.dispatch(tree.children[0])
             #operand2 = self.dispatch(tree.children[1])
             #type1 = operand1[0]
@@ -213,7 +214,7 @@ class codeGenerator(object):
                 exit("TypeError! " + type1 + " is not of type " +type2)
 
             else:
-                if type1=="DAY" or type1=="MONTH" or type1=="DATE" or type1=="TIME" or type1=="DATETIME":
+                if self.check_if_time(type1) or type1=="F" or type1=="C" or type1=="K":
                     exit("TypeError! Cannot multiply " + type1 + " types together")
 
                 return type1, str(operand1[1]) + " " + tree.children[2] + " " + str(operand2[1])
@@ -244,16 +245,10 @@ class codeGenerator(object):
                 end_month = operand2[1].get("month")
                 start_year = operand1[1].get("year")
                 end_year = operand2[1].get("year")
-                retStr += "("
                 #Day
-                retStr += "(" + str(start_day) + " <= datetime.datetime.now().day <= " + str(end_day) + ")"
-                retStr += " and ("
-                #Month
-                retStr += str(start_month) + " <= datetime.datetime.now().month <= "+ str(end_month) + ")"
-                retStr += " and ("
-                #Year
-                retStr += str(start_year) + " <= datetime.datetime.now().year <= "+ str(end_year) + ")"
-                retStr += ")"
+                retStr += "(" + str(start_year*10000 + start_month*100 + start_day)
+                retStr += " <= datetime.datetime.now().year*10000 + datetime.datetime.now().month*100 + datetime.datetime.now().day <= " 
+                retStr += str(end_year*10000 + end_month*100 + end_day) + ")"
                 return "DATE_RANGE", retStr
             elif type1 == "DATETIME":
                 start_day = operand1[1].get("day")
@@ -266,33 +261,19 @@ class codeGenerator(object):
                 end_hour = operand2[1].get("hour")
                 start_minute = operand1[1].get("minute")
                 end_minute = operand2[1].get("minute")
-                retStr += "("
-                #Day
-                retStr += "(" + str(start_day) + " <= datetime.datetime.now().day <= " + str(end_day) + ")"
-                retStr += " and ("
-                #Month
-                retStr += str(start_month) + " <= datetime.datetime.now().month <= " + str(end_month) + ")"
-                retStr += " and ("
-                #Year
-                retStr += str(start_year) + " <= datetime.datetime.now().year <= " + str(end_year) + ")"
-                retStr += " and ("
-                #hour
-                retStr += str(start_hour) + " <= datetime.datetime.now().hour <= " + str(end_hour) + ")"
-                retStr += " and ("
-                #Minute
-                retStr += str(start_minute) + " <= datetime.datetime.now().minute <= " + str(start_minute) + ")"
-                retStr += ")"
+                retStr += "(" + str(start_year*100000000 + start_month*1000000 + start_day*10000 + start_hour*100 + start_minute)
+                retStr += " <= datetime.datetime.now().year*100000000 + datetime.datetime.now().month*1000000 + datetime.datetime.now().day*10000 + datetime.datetime.now().hour*100 + datetime.datetime.now().minute <= " 
+                retStr += str(end_year*100000000 + end_month*1000000 + end_day*10000 + end_hour*100 + end_minute) + ")"
+
                 return "DATETIME_RANGE", retStr
             elif type1 == "TIME":
                 start_hour = operand1[1].get("hour")
                 end_hour = operand2[1].get("hour")
                 start_minute = operand1[1].get("minute")
                 end_minute = operand2[1].get("minute")
-                retStr += "(("
-                retStr += str(start_hour) + " <= datetime.datetime.now().hour <= " + str(end_hour) + ")"
-                retStr += " and ("
-                #Minute
-                retStr += str(start_minute) + " <= datetime.datetime.now().minute <= " + str(start_minute) + ")"
+                retStr += "("
+                #time
+                retStr += str(start_hour*100 + start_minute) + " <= datetime.datetime.now().hour*100 + datetime.datetime.now().minute <= " + str(end_hour*100 + end_minute)
                 retStr += ")"
                 return "TIME_RANGE", retStr
             else:
@@ -300,7 +281,7 @@ class codeGenerator(object):
 
     def _primary_expression(self, tree, flag=None):
         if tree.leaf == None:
-            return "( " + self.dispatch(tree.children[0]) + " )"
+            return "( " + self.dispatch(tree.children[0], flag) + " )"
         else:
             
             # This means this is a variable/ID. 
@@ -310,30 +291,89 @@ class codeGenerator(object):
             (varType, value) = self.symbolTable.get(tree.leaf)
             return varType, tree.leaf
     
+    def _primary_expression_string(self, tree, flag=None):
+        return "STRING", tree.leaf
+
+
     def _primary_expression_constant(self, tree, flag=None):
         return "NUM", int(tree.leaf)    
     
+
+    def _during_or_expression(self, tree, flag=None):
+        if len(tree.children) == 1:
+            return self.dispatch(tree.children[0], flag)
+        if len(tree.children) == 2:
+            return "((" + self.dispatch(tree.children[0], flag) + ") or (" + self.dispatch(tree.children[1], flag) + "))"
+      
+
+    def _during_and_expression(self, tree, flag=None):
+        if len(tree.children) == 1:
+            arg = self.dispatch(tree.children[0], flag)
+            if self.check_if_time(arg) and flag=="EVERY": 
+                arg = self.convert_time(arg)
+            return arg
+
+        if len(tree.children) == 2:
+            arg = self.dispatch(tree.children[1], flag)
+            if not self.check_if_time(arg): exit("OH NO. Must use time type in EVERY statements")
+            arg = self.convert_time(arg)
+            poop = self.dispatch(tree.children[0], flag)
+            return "((" + self.dispatch(tree.children[0], flag) + ") and (" + arg + "))"
+      
+               
     def _every_statement(self, tree, flag=None):
         global everys
         global every_list        
         everys = everys + 1
-        
+        everyFlag = "EVERY"
+
         s = "\ndef every" + str(everys) + "() :\n"
         s += "    print 'executing every" + str(everys) + "'\n"
-
+        
         lines = self.dispatch(tree.children[1]).splitlines()
         for line in lines:
             s+= "    " + line +"\n"
 
         s += "def condition" + str(everys) + "():\n"
         s += "    print 'checking" + str(everys) + "'\n"
-        s += "    if " + self.dispatch(tree.children[0]) + ": return True\n"
+        s += "    if " + self.dispatch(tree.children[0], everyFlag) + ": return True\n"
+        s += "every_list.append({'func' : 'every" + str(everys)
+        s += "', 'condition' : 'condition" + str(everys) + "'})"
+        return s
+
+    def _once_every_statement(self, tree, flag=None):
+        global everys
+        global every_list        
+        everys = everys + 1
+        everyFlag = "EVERY"
+
+        s = "\ndef every" + str(everys) + "() :\n"
+        s += "    print 'executing once every" + str(everys) + "'\n"
+
+        lines = self.dispatch(tree.children[1]).splitlines()
+        for line in lines:
+            s+= "    " + line +"\n"
+
+        s += "    happened" + str(everys) + " = False\n"
+        s += "def condition" + str(everys) + "():\n"
+        s += "    print 'checking" + str(everys) + "'\n"
+        s += "    global happened" + str(everys) + "\n"
+        s += "    if " + self.dispatch(tree.children[0], everyFlag) + " and happened" + str(everys) + " == False"+ ":\n"
+        s += "        happened" + str(everys) + " = True\n"
+        s += "        return True\n"
+        s += "    if not(" + self.dispatch(tree.children[0], everyFlag) + "):\n"
+        s += "        happened" + str(everys) + " = False\n"
         s += "every_list.append({'func' : 'every" + str(everys)
         s += "', 'condition' : 'condition" + str(everys) + "'})"
         return s
 
     def _iteration_statement(self, tree, flag=None):
-        s = "while(" + self.dispatch(tree.children[0]) + "):\n"
+        condition = self.dispatch(tree.children[0])
+        if type(condition) is tuple:
+            condition = condition[1]
+        
+        #s = "while(" + self.dispatch(tree.children[0]) + "):\n"
+        s = "while(" + condition + "):\n"
         lines = self.dispatch(tree.children[1]).splitlines()
 
         for line in lines:
@@ -341,14 +381,17 @@ class codeGenerator(object):
         return s
 
     def _selection_statement(self, tree, flag=None):
+        condition = self.dispatch(tree.children[0])
+        if type(condition) is tuple:
+            condition = condition[1]
         if len(tree.children) == 2:
-            s = "if(" + self.dispatch(tree.children[0])[1] + "):\n"
+            s = "if(" + condition + "):\n"
             lines = self.dispatch(tree.children[1]).splitlines()
             for line in lines:
                 s+= "    " + line +"\n"
             return s
         else:
-            s = "if(" + self.dispatch(tree.children[0])[1] + "):\n"
+            s = "if(" + condition + "):\n"
             lines = self.dispatch(tree.children[1]).splitlines()
             for line in lines:
                 s+= "    " + line +"\n"
@@ -360,12 +403,40 @@ class codeGenerator(object):
             return s
 
     def _print_statement(self, tree, flag=None):
-        s = "print " + self.dispatch(tree.children[0])
+        arg = self.dispatch(tree.children[0])
+        if type(arg) is tuple:
+            arg = arg[1]
+
+        if type(arg) is int:
+            arg = str(arg)
+        s = "print " + arg
+        return s
+
+    def _log_statement(self, tree, flag=None):
+        arg = self.dispatch(tree.children[0])
+        if type(arg) is tuple:
+            arg = arg[1]
+
+        if type(arg) is int:
+            arg = str(arg)
+        
+            
+        s = "log_file.write( str(" + arg + ") + '\\n'" + ")"
         return s
 
     def _for_statement(self, tree, flag=None):
         #for iterator in a range
-        s = "for " + self.dispatch(tree.children[0]) + " in range( " + self.dispatch(tree.children[1]) + " , " + self.dispatch(tree.children[2]) + " + 1 ) : \n"
+        or_expression1 = self.dispatch(tree.children[1])
+        or_expression2 = self.dispatch(tree.children[2])
+        primary_expression = self.dispatch(tree.children[0])
+
+        if type(or_expression1) is tuple: or_expression1 = or_expression1[1]
+        if type(or_expression2) is tuple: or_expression2 = or_expression2[1]
+        if type(or_expression1) is int: or_expression1 = str(or_expression1)
+        if type(or_expression2) is int: or_expression2 = str(or_expression2)
+        if type(primary_expression) is tuple: primary_expression = primary_expression[1]
+
+        s = "for " + primary_expression + " in range( " + or_expression1 + " , " + or_expression2 + " + 1 ) : \n"
         lines = self.dispatch(tree.children[3]).splitlines()
 
         for line in lines:
@@ -373,9 +444,7 @@ class codeGenerator(object):
         return s
     
     def _day_expression(self, tree, flag=None):
-        s = "datetime.datetime.now().weekday() == "
-        s += self.get_day_value(tree.leaf)
-        return "DAY", s
+        return "DAY", self.get_day_value(tree.leaf)
 
     def get_day_value(self, day):
         if day == "Monday":
@@ -392,14 +461,11 @@ class codeGenerator(object):
             return "5"
         elif day == "Sunday":
             return "6"
-        else:
-            exit("WrongDay: " + day + "is not a valid day")
+        exit("WrongDay: " + day + "is not a valid day")
 
 
     def _month_expression(self, tree, flag=None):
-        s = "datetime.datetime.now().month() == " + self.get_month_value(tree.leaf)
-        return "MONTH", s
-
+        return "MONTH", self.get_month_value(tree.leaf)
 
     def get_month_value(self, month):
         s = ''
@@ -536,14 +602,41 @@ class codeGenerator(object):
 
 
     #worth it to use this function?
-    def get_types(self, children1, children2):
-            operand1 = self.dispatch(children1)
-            operand2 = self.dispatch(children2)
+    def get_types(self, children1, children2, flag=None):
+            operand1 = self.dispatch(children1, flag)
+            operand2 = self.dispatch(children2, flag)
             type1 = operand1[0]
             type2 = operand2[0]
 
             return operand1, operand2, type1, type2
+    
+    #take in a type tuple and return the appropriate python string
+    def convert_time(self, arg):
+        if arg[0] == "DATETIME":
+            arg = "datetime.datetime(" + str(arg[1].get('year')) + ", " + str(arg[1].get('month')) + ", " + str(arg[1].get('day')) + ", " + str(arg[1].get('hour')) + ", " + str(arg[1].get('minute')) + ")"
+        elif arg[0] == "DATE":
+            arg = "datetime.date(" + str(arg[1].get('year')) + ", " + str(arg[1].get('month')) + ", " + str(arg[1].get('day')) + ")" 
+        elif arg[0] == "TIME":
+            arg = "datetime.time(" + str(arg[1].get('hour')) + ", " + str(arg[1].get('minute')) +")"
+        elif arg[0] == "DAY" : 
+            arg = "datetime.datetime.now().weekday() == " + arg[1]
+        elif arg[0] == "MONTH":
+            arg = "datetime.datetime.now().month() == " + arg[1]
+        else:
+            return None
+
+        return arg
+    
+    #check if arg is a tuple of some sort of time type
+    def check_if_time(self, arg):
        
+        if type(arg) is tuple:
+            myType = arg[0]
+        else: 
+            myType = arg
+        if myType == "DATETIME" or myType == "DATE" or myType == "TIME" or myType == "DAY" or myType == "MONTH":
+            return True
+        return False
 
 class TypeError(Exception):
     def __init__(self, value):

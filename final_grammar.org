@@ -6,28 +6,7 @@
   EXTERNAL-DECLARATION -> FUNCTION-DEFINITION *\n* | 
                           STATEMENT *\n*
 
-  FUNCTION-DEFINITION -> *def* ID *(* FUNCTION-PARAM-LIST *) : \n* STATEMENT-LIST |
-  			 *def* ID *(* *) : \n* STATEMENT-LIST
-  
-  FUNCTION-PARAM-LIST -> FUNCTION-PARAM |
-  			 FUNCTION-PARAM-LIST *,* FUNCTION-PARAM
-  			 
-  FUNCTION-PARAM -> TYPE-EXPRESSION *id*
-  
-  TYPE-EXPRESSION -> TNUMBER
-                    | TTEMPERATURE
-                    | TTIME
-                    | TDATETIME
-                    | TBOOLEAN
-                    | TDAY
-                    | TMONTH
-                    | TDATE
-                    | TDAYRANGE
-                    | TMONTHRANGE
-                    | TDATERANGE
-                    | TTIMERANGE
-                    | TSTRING
-                    | TLIST
+  FUNCTION-DEFINITION -> *def* ID *(* FUNCTION_PARAMETER_LIST *) : \n* STATEMENT-LIST
 
   STATEMENT-LIST -> STATEMENT *\n* | 
                     STATEMEN-LIST STATEMENT *\n*
@@ -40,6 +19,7 @@
 	       ONCE-STATEMENT  |
 	       RETURN-STATEMENT |
                PRINT-STATEMENT |
+			   LOG-STATEMENT |
                FOR-STATEMENT
           
 
@@ -58,18 +38,11 @@
                           EQUALITY-EXPRESSION *==* RELATIONAL-EXPRESSION |
                           EQUALITY-EXPRESSION *!=* RELATIONAL-EXPRESSION
   
-   RELATIONAL-EXPRESSION -> DURING-OR-EXPRESSION |
-                            RELATIONAL-EXPRESSION *<* DURING-OR-EXPRESSION |
-                            RELATIONAL-EXPRESSION *>* DURING-OR-EXPRESSION |
-                            RELATIONAL-EXPRESSION *<=* DURING-OR-EXPRESSION |
-                            RELATIONAL-EXPRESSION *>=* DURING-OR-EXPRESSION
-   
-      
-   DURING-OR-EXPRESSION -> DURING-AND-EXPRESSION |
-   			DURING-OR-EXPRESSION *,* DURING-AND-EXPRESSION
-   
-   DURING-AND-EXPRESSION -> ADDITIVE-EXPRESSION |
-   			DURING-AND-EXPRESSION *during* ADDITIVE-EXPRESSION
+   RELATIONAL-EXPRESSION -> ADDITIVE-EXPRESSION |
+                            RELATIONAL-EXPRESSION *<* ADDITIVE-EXPRESSION |
+                            RELATIONAL-EXPRESSION *>* ADDITIVE-EXPRESSION |
+                            RELATIONAL-EXPRESSION *<=* ADDITIVE-EXPRESSION |
+                            RELATIONAL-EXPRESSION *>=* ADDITIVE-EXPRESSION
 
    ADDITIVE-EXPRESSION -> MULTIPLICATIVE-EXPRESSION |
                           ADDITIVE-EXPRESSION *+* MULTIPLICATIVE-EXPRESSION |
@@ -93,6 +66,7 @@
 
    PRIMARY-EXPRESSION -> CONSTANT |
                          ID |
+                         STRING |
                          *[* PARAMETER-LIST *]* |
                          ( OR-EXPRESSION ) |
                          TEMPERATURE |
@@ -104,7 +78,9 @@
 
 
    LIST-OPERATION-EXPRESSION -> ID *[* OR-EXPRESSION *]*
-
+   
+   LOG-STATEMENT -> * log(* OR-EXPRESSION *)
+   
    PARAMETER-LIST-START -> \epsilon |
                            PARAMETER-LIST
 
@@ -131,7 +107,14 @@
    EVERY-STATEMENT -> *every* DURING-EXPRESSION *: \n*
    
    ONCE-STATEMENT -> *once every* DURING-EXPRESION *: \n*
-
+   
+   DURING-OR-EXPRESSION -> DURING-AND-EXPRESSION |
+   			DURING-OR-EXPRESSION *,* DURING-AND-EXPRESSION
+   
+   DURING-AND-EXPRESSION -> PRIMARY-EXPRESSION |
+   			DURING-AND-EXPRESSION *during* PRIMARY-EXPRESSION |
+   			*(* DURING-OR-EXPRESSION *)* *during* DURING-AND-EXPRESSION
+   
    RETURN-STATEMENT -> *return* | *return expression*
   
    MONTH ->  JANUARY |
