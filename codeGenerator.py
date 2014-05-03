@@ -111,7 +111,6 @@ class codeGenerator(object):
             elif arg[0] == "BOOL" or arg[0] == "NUM":
                 self.symbolTable[tree.leaf] = [arg[0], arg[1]]
                 arg = arg[1]
-
             else:
                 #TODO add to symbol table
                 arg = arg[1]
@@ -224,21 +223,89 @@ class codeGenerator(object):
         if len(tree.children) == 1:
             return self.dispatch(tree.children[0])
         else:
-            return ''
+            retStr = ""
+            (operand1, operand2, type1, type2) = self.get_types(tree.children[0], tree.children[1])
+            if type1 != type2:
+                exit("TypeError! Cannot have range of different types")
+            elif type1 == 'DAY':
+                start_day = int(self.get_day_value(tree.children[0].leaf))
+                end_day = int(self.get_day_value(tree.children[1].leaf))
+                retStr += "("+ str(start_day) + " <= datetime.datetime.now().weekday() <= " + str(end_day) + ")"
+                return "DAY_RANGE", retStr
+            elif type1 == 'MONTH':
+                start_month = int(self.get_month_value(tree.children[0].leaf))
+                end_month = int(self.get_month_value(tree.children[1].leaf))
+                retStr += "(" + str(start_month) + " <= datetime.datetime.now().month <= " + str(end_month) + ")"
+                return "MONTH_RANGE", retStr
+            elif type1 == "DATE":
+                start_day = operand1[1].get("day")
+                end_day = operand2[1].get("day")
+                start_month = operand1[1].get("month")
+                end_month = operand2[1].get("month")
+                start_year = operand1[1].get("year")
+                end_year = operand2[1].get("year")
+                retStr += "("
+                #Day
+                retStr += "(" + str(start_day) + " <= datetime.datetime.now().day <= " + str(end_day) + ")"
+                retStr += " and ("
+                #Month
+                retStr += str(start_month) + " <= datetime.datetime.now().month <= "+ str(end_month) + ")"
+                retStr += " and ("
+                #Year
+                retStr += str(start_year) + " <= datetime.datetime.now().year <= "+ str(end_year) + ")"
+                retStr += ")"
+                return "DATE_RANGE", retStr
+            elif type1 == "DATETIME":
+                start_day = operand1[1].get("day")
+                end_day = operand2[1].get("day")
+                start_month = operand1[1].get("month")
+                end_month = operand2[1].get("month")
+                start_year = operand1[1].get("year")
+                end_year = operand2[1].get("year")
+                start_hour = operand1[1].get("hour")
+                end_hour = operand2[1].get("hour")
+                start_minute = operand1[1].get("minute")
+                end_minute = operand2[1].get("minute")
+                retStr += "("
+                #Day
+                retStr += "(" + str(start_day) + " <= datetime.datetime.now().day <= " + str(end_day) + ")"
+                retStr += " and ("
+                #Month
+                retStr += str(start_month) + " <= datetime.datetime.now().month <= " + str(end_month) + ")"
+                retStr += " and ("
+                #Year
+                retStr += str(start_year) + " <= datetime.datetime.now().year <= " + str(end_year) + ")"
+                retStr += " and ("
+                #hour
+                retStr += str(start_hour) + " <= datetime.datetime.now().hour <= " + str(end_hour) + ")"
+                retStr += " and ("
+                #Minute
+                retStr += str(start_minute) + " <= datetime.datetime.now().minute <= " + str(start_minute) + ")"
+                retStr += ")"
+                return "DATETIME_RANGE", retStr
+            elif type1 == "TIME":
+                start_hour = operand1[1].get("hour")
+                end_hour = operand2[1].get("hour")
+                start_minute = operand1[1].get("minute")
+                end_minute = operand2[1].get("minute")
+                retStr += "(("
+                retStr += str(start_hour) + " <= datetime.datetime.now().hour <= " + str(end_hour) + ")"
+                retStr += " and ("
+                #Minute
+                retStr += str(start_minute) + " <= datetime.datetime.now().minute <= " + str(start_minute) + ")"
+                retStr += ")"
+                return "TIME_RANGE", retStr
+            else:
+                exit("TypeError: Cannot use 'to' for type: " + type1)
 
-    def getMonthDayVal(string):
-        print "TEEEEEEEST" + string
-        return (0, 'day')
-
-    #this needs to be fixed        
     def _primary_expression(self, tree, flag=None):
         if tree.leaf == None:
             return "( " + self.dispatch(tree.children[0]) + " )"
         else:
-            """
-            This means this is a variable/ID. 
-                Check if variable is in symbol table and return the variable and its type
-            """
+            
+            # This means this is a variable/ID. 
+            # Check if variable is in symbol table and return the variable and its type
+            
             #TODO check if variable is in the correct scope
             (varType, value) = self.symbolTable.get(tree.leaf)
             return varType, tree.leaf
@@ -275,13 +342,13 @@ class codeGenerator(object):
 
     def _selection_statement(self, tree, flag=None):
         if len(tree.children) == 2:
-            s = "if(" + self.dispatch(tree.children[0]) + "):\n"
+            s = "if(" + self.dispatch(tree.children[0])[1] + "):\n"
             lines = self.dispatch(tree.children[1]).splitlines()
             for line in lines:
                 s+= "    " + line +"\n"
             return s
         else:
-            s = "if(" + self.dispatch(tree.children[0]) + "):\n"
+            s = "if(" + self.dispatch(tree.children[0])[1] + "):\n"
             lines = self.dispatch(tree.children[1]).splitlines()
             for line in lines:
                 s+= "    " + line +"\n"
@@ -307,52 +374,62 @@ class codeGenerator(object):
     
     def _day_expression(self, tree, flag=None):
         s = "datetime.datetime.now().weekday() == "
-        if tree.leaf == "Monday":
-            s += "0"
-        elif tree.leaf == "Tuesday":
-            s += "1"
-        elif tree.leaf == "Wednesday":
-            s += "2"
-        elif tree.leaf == "Thursday":
-            s += "3"
-        elif tree.leaf == "Friday":
-            s += "4"
-        elif tree.leaf == "Saturday":
-            s += "5"
-        elif tree.leaf == "Sunday":
-            s += "6"
-
+        s += self.get_day_value(tree.leaf)
         return "DAY", s
-    
-    def _month_expression(self, tree, flag=None):
-        s = "datetime.datetime.now().month() == "
-        if tree.leaf == "January":
-            s+= "0"
-        elif tree.leaf == 'February':
-            s+= "1"
-        elif tree.leaf == 'March':
-            s+= "2"
-        elif tree.leaf == 'April':
-            s+= "3"
-        elif tree.leaf == 'May':
-            s+= "4"
-        elif tree.leaf == 'June':
-            s+= "5"
-        elif tree.leaf == 'July':
-            s+= "6"
-        elif tree.leaf == 'August':
-            s+= "7"
-        elif tree.leaf == 'September':
-            s+= "8"
-        elif tree.leaf == 'October':
-            s+= "9"
-        elif tree.leaf == 'November':
-            s+= "10"
-        elif tree.leaf == 'December':
-            s+= "11"
+
+    def get_day_value(self, day):
+        if day == "Monday":
+            return "0"
+        elif day == "Tuesday":
+            return "1"
+        elif day == "Wednesday":
+            return "2"
+        elif day == "Thursday":
+            return "3"
+        elif day == "Friday":
+            return "4"
+        elif day == "Saturday":
+            return "5"
+        elif day == "Sunday":
+            return "6"
         else:
-            s+= "12"
+            exit("WrongDay: " + day + "is not a valid day")
+
+
+    def _month_expression(self, tree, flag=None):
+        s = "datetime.datetime.now().month() == " + self.get_month_value(tree.leaf)
         return "MONTH", s
+
+
+    def get_month_value(self, month):
+        s = ''
+        if month == "January":
+            s = "0"
+        elif month == 'February':
+            s = "1"
+        elif month == 'March':
+            s = "2"
+        elif month == 'April':
+            s = "3"
+        elif month == 'May':
+            s = "4"
+        elif month == 'June':
+            s = "5"
+        elif month == 'July':
+            s = "6"
+        elif month == 'August':
+            s = "7"
+        elif month == 'September':
+            s = "8"
+        elif month == 'October':
+            s = "9"
+        elif month == 'November':
+            s = "10"
+        elif month == 'December':
+            s = "11"
+        else:
+            s = "12"
+        return s
 
     def _date_time_expression(self, tree, flag=None):
         p = re.compile(r'([0-3]?[0-9])/([01]?[0-9])/([0-9][0-9][0-9][0-9])[ ]([01]?[0-9]):([0-5][0-9][ ])((AM)|(PM))')
@@ -451,6 +528,8 @@ class codeGenerator(object):
     def check_day(self, time_arg):
        if time_arg > 31 or time_arg < 1:
            exit("Error: day value must be between 1 and 31"),
+    
+    
     def check_month(self, time_arg):
        if time_arg > 12 or time_arg < 1:
            exit("Error: month value must be between 1 and 12")
@@ -465,6 +544,7 @@ class codeGenerator(object):
 
             return operand1, operand2, type1, type2
        
+
 class TypeError(Exception):
     def __init__(self, value):
         self.value = value
