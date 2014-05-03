@@ -1,0 +1,4 @@
+#None
+every ((January during Monday, February during Friday) during Wednesday):
+    print ("hello world")
+ret = None

@@ -1,0 +1,4 @@
+#None
+if(Friday):
+    print("Hooray!")
+ret = None

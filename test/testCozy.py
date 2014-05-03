@@ -16,7 +16,7 @@ class CoZyTester:
         print code
         exec code in locals()
         
-        if output == None:
+        if output == "None":
             print locals()['ret']
         else:
             result = locals()['ret']

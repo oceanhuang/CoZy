@@ -22,15 +22,15 @@ COUNTER=0
 TESTFILE="testFiles/test"
 RESULTS="results/result"
 ERROR="errors/error"
-TESTRESULT="TEST"
+red='\e[0;31m'
+grn='\e[0;32m'
+NC='\e[0m' # No Color
 
 while [ $COUNTER -lt $NUMTESTS ]; do
+    TESTRESULT="TEST"
     EXT=$COUNTER".cz"
     #get the return value
-    RET=$(head -n 1 $TESTFILE$EXT)
-    RET=${RET//#/}
 
-    #stream everything but the first line into testCozy
     cat $TESTFILE$EXT | python testCozy.py 1>$RESULTS$COUNTER 2>$ERROR$COUNTER 
     FAILED=false
 
@@ -42,14 +42,13 @@ while [ $COUNTER -lt $NUMTESTS ]; do
 
     if [ $FAILED = true ] 
     then
-        TESTRESULT=$TESTRESULT$COUNTER" FAILED"
+        TESTRESULT=$TESTRESULT$COUNTER${red}" FAILED"${NC}
     else
-        TESTRESULT=$TESTRESULT$COUNTER" SUCCESS"
+        TESTRESULT=$TESTRESULT$COUNTER${grn}" SUCCESS"${NC}
     fi
 
-    echo $TESTRESULT
+    echo -e $TESTRESULT
     let COUNTER=$COUNTER+1
-    
 done
 
 
