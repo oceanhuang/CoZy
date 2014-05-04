@@ -42,9 +42,10 @@ reserved = {
     'print' : 'PRINT',
     'not' : 'NOT',
     'each' : 'EACH',
+    'log' : 'LOG',
     'once' : 'ONCE',
-    'during' : 'DURING'
-}
+    'during' : 'DURING',
+    }
 
 tokens = [
     'LPAREN',
@@ -328,6 +329,10 @@ if __name__ == '__main__':
     data = """
 a = [1,2,3]
 a[2] = 3
+bday = 10:00 PM
+every (Monday):
+    print '5'
+print("something")
 "poop"
 'poop'
 5

@@ -187,6 +187,27 @@ ret = 14/2/1991
 '''
 myTester.run_code(s, None)
 
+#test log
+s='''
+ret = 5000
+log(5000 + 70)
+'''
+myTester.run_code(s, 5000)
+
+#test log 2
+s='''
+ret = 5000 
+log(ret)
+'''
+myTester.run_code(s, 5000)
+
+###test print DOESNT WORK
+##s='''
+##ret = 5000 F
+##print(ret)
+##'''
+##myTester.run_code(s, 5000)
+
 ### test every -- THIS GUY DOESNT WORK BUT IT SHOULD
 ##s='''
 ##h = Monday

@@ -96,8 +96,10 @@ def p_statement(p):
                   | iteration_statement
                   | selection_statement
                   | print_statement SEMICOLON
+                  | log_statement SEMICOLON
                   | for_statement
                   | print_statement NEWLINE
+                  | log_statement NEWLINE
     """
     #maybe add | list_change NEWLINE
     p[0] = Node("statement", [p[1]])
@@ -370,6 +372,13 @@ def p_print_statement(p):
     """
     p[0] = Node("print_statement", [p[3]])
 
+    
+def p_log_statement(p):
+    """ log_statement : LOG LPAREN or_expression RPAREN
+    """
+    p[0] = Node("log_statement", [p[3]])
+
+
 #need to add foreach/ also confused about the grammar
 def p_for_statement(p):
     """ for_statement : FOR primary_expression IN or_expression TO or_expression COLON NEWLINE INDENT statement_list DEDENT
@@ -402,7 +411,6 @@ if __name__ == '__main__':
 
     # Build the parser
     parser = CoZyParser()
-
     ## Put code to test here
 #    s = """
 #a = 60 F + 50F + 30F
@@ -433,9 +441,10 @@ if __name__ == '__main__':
 #    
 # """
     s = '''
-add{a,4}
+add(a,4)
+log("5")
 '''
-     
+
 
     result = parser.parse(s)
 
