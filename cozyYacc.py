@@ -113,12 +113,27 @@ def p_list_change(p):
         p[0] = Node("list_add_expression", [p[5]], p[3])
     else:
         p[0] = Node("list_sort_expression", [], p[3])
+
+
+def p_list_change_index(p):
+    '''list_change : ADD LPAREN list_index COMMA or_expression RPAREN 
+                    | SORT LPAREN list_index RPAREN
+    '''
+    if len(p) == 7:
+        p[0] = Node("list_add_expression_index", [p[3],p[5]])
+    else:
+        p[0] = Node("list_sort_expression_index", [p[3]])
     
     
 def p_list_change_remove(p):
     '''list_change : REMOVE LPAREN ID COMMA or_expression RPAREN
     '''
     p[0] = Node("list_remove_expression", [p[5]], p[3])
+
+def p_list_change_remove_index(p):
+    '''list_change : REMOVE LPAREN list_index COMMA or_expression RPAREN
+    '''
+    p[0] = Node("list_remove_expression_index", [p[3], p[5]])
 
     
 
@@ -441,7 +456,7 @@ if __name__ == '__main__':
 #    
 # """
     s = '''
-add(a,4)
+remove(a[3], 5)
 log("5")
 '''
 

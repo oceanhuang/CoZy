@@ -58,6 +58,16 @@ ret = 'hello ' + "world"
 myTester.run_code(s, 'hello world')
 
 s = '''
+a = [2,1,3+5, [5,4]]
+a[0] = 153
+add(a[3], 14)
+remove(a, 1)
+sort(a[2])
+ret = a
+'''
+myTester.run_code(s, [153,8,[4,5,14]])
+
+s = '''
 ret = Tuesday
 '''
 myTester.run_code(s, None)
