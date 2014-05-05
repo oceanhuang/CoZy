@@ -1,4 +1,4 @@
 #None
-once every (January during Monday, February during Friday):
+once every (January during Monday; February during Friday):
     print ("hello world")
 

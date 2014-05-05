@@ -17,11 +17,9 @@ class CoZyTester:
         exec code in locals()
         
         if output != "None":
-            #print locals()['ret']
-
-        #else:
             result = locals()['ret']
             if type(result) is int: result = str(result)
+            if type(result) is list: output = eval(output)
             assert result == output
 
 
