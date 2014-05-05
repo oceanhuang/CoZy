@@ -1,4 +1,3 @@
 #None
 once every (April during Friday):
     print ("hello world")
-ret = None

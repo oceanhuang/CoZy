@@ -2,4 +2,3 @@
 print ('5')
 once every (Monday):
     print ('5')
-ret = None
