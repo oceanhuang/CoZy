@@ -95,8 +95,10 @@ def p_statement(p):
                   | iteration_statement
                   | selection_statement
                   | print_statement SEMICOLON
+                  | log_statement SEMICOLON
                   | for_statement
                   | print_statement NEWLINE
+                  | log_statement NEWLINE
     """
     p[0] = Node("statement", [p[1]])
 
@@ -192,8 +194,7 @@ def p_multiplicative_expresion(p):
 
 # needs to be fixed (move not)...... also code generator needs to handle not
 def p_primary_expression(p):
-    """ primary_expression : CONSTANT
-                           | ID
+    """ primary_expression : ID
                            | LPAREN or_expression RPAREN
                            | NOT LPAREN or_expression RPAREN
     """
@@ -203,6 +204,17 @@ def p_primary_expression(p):
         p[0] = Node('primary_expression', [p[2]])
     else:
         p[0] = Node('primary_expression', [p[3]]) #has not in it
+
+def p_primary_expression_string(p):
+    """ primary_expression : STRING
+    """
+    p[0] = Node('primary_expression_string', [], p[1])
+
+
+def p_primary_expression_constant(p):
+    """ primary_expression : CONSTANT
+    """
+    p[0] = Node('primary_expression_constant', [], p[1])
 
 def p_primary_expression_days(p):
     """ primary_expression : MONDAY
@@ -278,6 +290,13 @@ def p_print_statement(p):
     """
     p[0] = Node("print_statement", [p[3]])
 
+    
+def p_log_statement(p):
+    """ log_statement : LOG LPAREN or_expression RPAREN
+    """
+    p[0] = Node("log_statement", [p[3]])
+
+
 #need to add foreach/ also confused about the grammar
 def p_for_statement(p):
     """ for_statement : FOR primary_expression IN or_expression TO or_expression COLON NEWLINE INDENT statement_list DEDENT
@@ -310,33 +329,44 @@ if __name__ == '__main__':
 
     # Build the parser
     parser = CoZyParser()
-
     ## Put code to test here
-    s = """
-bday = 16/07/1991
-every (Monday):
-    print ('5')
-i = 0
-while (i < 7):
-    print ("okay")
-    i = i + 1
-every (January):
-    print ("hello world")
-once every (January during Monday):
-    print ("hello world")
-once every (January during Monday, February during Friday):
-    print ("hello world")
-every ((January during Monday, February during Friday) during Wednesday):
-    print ("hello world")
-    
- """
-     
+#    s = """
+#a = 60 F + 50F + 30F
+#d = 35/2/1991 10:00 PM
+#c = 10:00 AM
+#g = 1 < 3 + 4
+#r = 1 + 2 * 3+4
+#f = 1:00 PM
+#h = 1 < 3 and 4 > 3
+#
+#z = r + 2
+#z = a + z
+#bday = 16/07/1991
+#every (Monday):
+#    print ('5')
+#i = 0
+#while (i < 7):
+#    print ("okay")
+#    i = i + 1
+#every (January):
+#    print ("hello world")
+#once every (January during Monday):
+#    print ("hello world")
+#once every (January during Monday, February during Friday):
+#    print ("hello world")
+#every ((January during Monday, February during Friday) during Wednesday):
+#    print ("hello world")
+#    
+# """
+    s = '''
+log("5")
+'''
+
 
     result = parser.parse(s)
 
     # ## Prints the AST
     print result
-
     code = codeGenerator(result)
     # Prints the actual program
     print code.ret

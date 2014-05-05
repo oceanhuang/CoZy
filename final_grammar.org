@@ -19,6 +19,7 @@
 	       ONCE-STATEMENT  |
 	       RETURN-STATEMENT |
                PRINT-STATEMENT |
+			   LOG-STATEMENT |
                FOR-STATEMENT
           
 
@@ -65,6 +66,7 @@
 
    PRIMARY-EXPRESSION -> CONSTANT |
                          ID |
+                         STRING |
                          *[* PARAMETER-LIST *]* |
                          ( OR-EXPRESSION ) |
                          TEMPERATURE |
@@ -76,7 +78,9 @@
 
 
    LIST-OPERATION-EXPRESSION -> ID *[* OR-EXPRESSION *]*
-
+   
+   LOG-STATEMENT -> * log(* OR-EXPRESSION *)
+   
    PARAMETER-LIST-START -> \epsilon |
                            PARAMETER-LIST
 
