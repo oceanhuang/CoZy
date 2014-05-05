@@ -239,7 +239,7 @@ def p_during_or_expression(p):
 #could it do this too (TUESDAY, (WEDS, FRIDAY) DURING 4:30 PM TO 5:30 PM) DURING 4:30 PM TO 5:30 PM??
 def p_during_and_expression(p):
     """ during_and_expression : additive_expression
-                        | during_and_expression SEMICOLON additive_expression """
+                        | during_and_expression DURING additive_expression """
 
     if len(p) == 2:
         p[0] = Node("during_and_expression", [p[1]])
@@ -396,9 +396,9 @@ def p_log_statement(p):
 
 #need to add foreach/ also confused about the grammar
 def p_for_statement(p):
-    """ for_statement : FOR primary_expression IN or_expression TO or_expression COLON NEWLINE INDENT statement_list DEDENT
+    """ for_statement : FOR ID IN or_expression TO or_expression COLON NEWLINE INDENT statement_list DEDENT
     """
-    p[0] = Node("for_statement", [p[2], p[4], p[6], p[10]])
+    p[0] = Node("for_statement", [p[4], p[6], p[10]], p[2])
 
 # Error rule for syntax errors
 def p_error(p):
@@ -458,6 +458,7 @@ if __name__ == '__main__':
     s = '''
 remove(a[3], 5)
 log("5")
+for i in
 '''
 
 

@@ -100,43 +100,12 @@ class codeGenerator(object):
         if len(tree.children)==0:
             return "[]"
         else:
-            """
-            thing = self.dispatch(tree.children[0])
-            print "thingatstart"
-            print thing
-            tupleThing = self.dispatchTuple(tree.children[0])
-            print "tupleatstart"
-            print tupleThing
-            """
             return "[" + self.dispatch(tree.children[0]) + "]"
     
     def _list_expression(self, tree, flag=None):
-        """
-        thing = self.dispatch(tree.children[0])
-        print "first"
-        print "thing"
-        print thing
-        tupleThing = self.dispatchTuple(tree.children[0])
-        print "tuple"
-        print tupleThing
-        """
         if len(tree.children) == 1:
-            #print "first option"
             return self.dispatchTuple(tree.children[0])
         else:
-            """
-            thing = self.dispatch(tree.children[1])
-            print "second"
-            print "thing"
-            print thing
-            tupleThing = self.dispatchTuple(tree.children[1])
-            print "tuple"
-            print tupleThing
-            
-            toReturn = self.dispatchTuple(tree.children[0]) + ", " + self.dispatchTuple(tree.children[1])
-            print "toReturn:"
-            print toReturn
-            """
             return self.dispatchTuple(tree.children[0]) + ", " + self.dispatchTuple(tree.children[1])
         
     def _list_index_double(self, tree, flag=None):
@@ -376,9 +345,6 @@ class codeGenerator(object):
         if len(tree.children) == 1:
             return self.dispatch(tree.children[0], flag)
         if len(tree.children) == 2:
-            for i in range(10):
-                print "HERE"
-            print self.dispatch(tree.children[0], flag)
             #this is stealing lists
             return "((" + self.dispatch(tree.children[0], flag) + ") or (" + self.dispatch(tree.children[1], flag) + "))"
       
@@ -503,18 +469,17 @@ class codeGenerator(object):
 
     def _for_statement(self, tree, flag=None):
         #for iterator in a range
-        or_expression1 = self.dispatch(tree.children[1])
-        or_expression2 = self.dispatch(tree.children[2])
-        primary_expression = self.dispatch(tree.children[0])
+        or_expression1 = self.dispatch(tree.children[0])
+        or_expression2 = self.dispatch(tree.children[1])
+        the_id = tree.leaf
 
         if type(or_expression1) is tuple: or_expression1 = or_expression1[1]
         if type(or_expression2) is tuple: or_expression2 = or_expression2[1]
         if type(or_expression1) is int: or_expression1 = str(or_expression1)
         if type(or_expression2) is int: or_expression2 = str(or_expression2)
-        if type(primary_expression) is tuple: primary_expression = primary_expression[1]
-
-        s = "for " + primary_expression + " in range( " + or_expression1 + " , " + or_expression2 + " + 1 ) : \n"
-        lines = self.dispatch(tree.children[3]).splitlines()
+        
+        s = "for " + the_id + " in range( " + or_expression1 + " , " + or_expression2 + " + 1 ) : \n"
+        lines = self.dispatch(tree.children[2]).splitlines()
 
         for line in lines:
             s+= "    " + line +"\n"

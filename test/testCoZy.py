@@ -162,7 +162,7 @@ myTester.run_code(s, 5)
 #test during 2
 s = '''
 ret = 5
-once every (January during Monday, February during Friday):
+once every (January during Monday; February during Friday):
     print ("hello world")
 '''
 myTester.run_code(s, 5)
@@ -170,7 +170,7 @@ myTester.run_code(s, 5)
 #test during 3
 s = '''
 ret = 5
-every ((January during Monday, February during Friday) during Wednesday):
+every ((January during Monday; February during Friday) during Wednesday):
     print ("hello world")
 '''
 myTester.run_code(s, 5)
