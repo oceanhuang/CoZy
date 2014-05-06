@@ -268,7 +268,7 @@ def p_multiplicative_expresion(p):
     else:
         p[0] = Node("multiplicative_expression", [p[1], p[3], p[2]])
 
-# needs to be fixed (move not)...... also code generator needs to handle not
+
 def p_primary_expression(p):
     """ primary_expression : ID
                             | LPAREN or_expression RPAREN
@@ -277,6 +277,11 @@ def p_primary_expression(p):
         p[0] = Node('primary_expression', [], p[1])
     else:
         p[0] = Node('primary_expression', [p[2]])
+
+def p_primary_expression_not(p):
+    """ primary_expression : NOT LPAREN or_expression RPAREN
+    """
+    p[0] = Node('primary_expression_not', [p[3]])
 
 def p_primary_expression_boolean(p):
     """ primary_expression : TRUE
@@ -458,7 +463,7 @@ if __name__ == '__main__':
 #    
 # """
     s = '''
-b = true
+b = not(true)
 '''
 
 

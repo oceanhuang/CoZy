@@ -322,8 +322,11 @@ class codeGenerator(object):
 
     #this needs to be fixed        
     def _primary_expression(self, tree, flag=None):
+        arg = self.dispatch(tree.children[0])
+        if type(arg) is tuple:
+            arg = str(arg[1])
         if tree.leaf == None:
-            return "( " + self.dispatch(tree.children[0], flag) + " )"
+            return "(" + arg + ")"
         else:
             """
             This means this is a variable/ID. 
@@ -332,6 +335,14 @@ class codeGenerator(object):
             #TODO check if variable is in the correct scope
             (varType, value) = self.symbolTable.get(tree.leaf)
             return varType, tree.leaf
+
+    def _primary_expression_not(self, tree, flag=None):
+        arg = self.dispatch(tree.children[0])
+        if type(arg) is tuple:
+            arg = str(arg[1])
+        if tree.leaf == None:
+            return "not(" + arg + ")"
+              
 
     def _primary_expression_boolean(self, tree, flag=None):
         return "BOOLEAN", str(tree.leaf).title()

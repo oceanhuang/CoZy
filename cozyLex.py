@@ -326,16 +326,9 @@ if __name__ == '__main__':
     # Build the lexer
     lexer = CoZyLexer()
     # code
+    #this doesnt work RGGGGGG
     data = """
-a = [1,2,3]
-a[2] = 3
-bday = 10:00 PM
-every (Monday):
-    print '5'
-print("something")
-"poop"
-'poop'
-5
+h = (7 + 3) * 5
 """
 #     data = """
 # x=3+3;
