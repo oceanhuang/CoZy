@@ -272,14 +272,16 @@ def p_multiplicative_expresion(p):
 def p_primary_expression(p):
     """ primary_expression : ID
                             | LPAREN or_expression RPAREN
-                           | NOT LPAREN or_expression RPAREN
     """
     if len(p) == 2:
         p[0] = Node('primary_expression', [], p[1])
-    elif len(p) == 4:
-        p[0] = Node('primary_expression', [p[2]])
     else:
-        p[0] = Node('primary_expression', [p[3]]) #has not in it
+        p[0] = Node('primary_expression', [p[2]])
+
+def p_primary_expression_boolean(p):
+    """ primary_expression : TRUE
+                            | FALSE"""
+    p[0] = Node('primary_expression_boolean', [], p[1])
 
 def p_primary_expression_list(p):
     """ primary_expression : list_start
@@ -456,8 +458,7 @@ if __name__ == '__main__':
 #    
 # """
     s = '''
-remove(a[3], 5)
-log("5")
+b = true
 '''
 
 

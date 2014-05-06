@@ -332,6 +332,9 @@ class codeGenerator(object):
             #TODO check if variable is in the correct scope
             (varType, value) = self.symbolTable.get(tree.leaf)
             return varType, tree.leaf
+
+    def _primary_expression_boolean(self, tree, flag=None):
+        return "BOOLEAN", str(tree.leaf).title()
     
     def _primary_expression_string(self, tree, flag=None):
         return "STRING", tree.leaf
