@@ -458,7 +458,6 @@ if __name__ == '__main__':
     s = '''
 remove(a[3], 5)
 log("5")
-for i in
 '''
 
 
