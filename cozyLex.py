@@ -45,6 +45,8 @@ reserved = {
     'log' : 'LOG',
     'once' : 'ONCE',
     'during' : 'DURING',
+    'true' : 'TRUE',
+    'false' : 'FALSE'
     }
 
 tokens = [
@@ -75,7 +77,6 @@ tokens = [
     'WS',
     'NEWLINE',
     'COMMA',
-    'BOOLEAN',
     'STRING',
 ] + list(reserved.values())
 
@@ -97,7 +98,6 @@ t_EQUIV     = r'(==)'
 t_NONEQUIV  = r'(!=)'
 t_RELOP     = r'(<=)|(>=)|(<)|(>)'
 t_COMMA     = r'(,)'
-t_BOOLEAN   = r'true|false'
 # A regular expression rule with some action code
 
 def t_DATETIME(t):
