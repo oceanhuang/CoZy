@@ -384,7 +384,7 @@ class codeGenerator(object):
             if not self.check_if_time(arg): exit("OH NO. Must use time type in EVERY statements")
             arg = self.convert_time(arg)
             poop = self.dispatch(tree.children[0], flag)
-            return "((" + self.dispatch(tree.children[0], flag) + ") and (" + arg + "))"
+            return "((" + self.dispatchTuple(tree.children[0], flag) + ") and (" + arg + "))"
       
                
     def _every_statement(self, tree, flag=None):
