@@ -41,8 +41,12 @@ class codeGenerator(object):
         self.scopeDepth = 0
         # Symbols table
         self.symbolTable = {}
-        # Variable to store the code 
-        self.ret = "import datetime\n" + "every_list = []\n" + "log_file = open('cozyLog.txt', 'a')\n" + temp_def + self.dispatch(tree) + loop_def
+        # Variable to store the code
+        loops = "loops"
+        if loops = "noloops":
+            self.ret = "import datetime\n" + "every_list = []\n" + "log_file = open('cozyLog.txt', 'a')\n" + temp_def + self.dispatch(tree)
+        elif loops = "loops":
+            self.ret = "import datetime\n" + "every_list = []\n" + "log_file = open('cozyLog.txt', 'a')\n" + temp_def + self.dispatch(tree) + loop_def
 
         # 
         # Keeps track of the number of every's
