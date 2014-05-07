@@ -1,4 +1,4 @@
-#27
+#None
 b = not(7 + 3)
 a = Monday
 c = not(true or false)

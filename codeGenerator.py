@@ -342,7 +342,7 @@ class codeGenerator(object):
             arg = self.dispatch(tree.children[0])
             if type(arg) is tuple:
                 arg = str(arg[1])
-            return "BOOLEAN, ""not(" + arg + ")"
+            return "BOOLEAN", "not(" + arg + ")"
         else:
             """
             This means this is a variable/ID. 
@@ -350,7 +350,7 @@ class codeGenerator(object):
             """
             #TODO check if variable is in the correct scope
             (varType, value) = self.symbolTable.get(tree.leaf)
-            return "BOOLEAN", tree.leaf
+            return vartype, tree.leaf
               
 
     def _primary_expression_boolean(self, tree, flag=None):
