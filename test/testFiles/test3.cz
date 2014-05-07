@@ -1,0 +1,12 @@
+#2
+z = 4
+while (z > 2):
+    z = z-1
+    k = 5
+    if (k == 5):
+        k = k+1
+        k = k-1
+    else:
+        k = k-1
+        k = k+1
+ret = z    
