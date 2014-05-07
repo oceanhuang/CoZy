@@ -463,7 +463,14 @@ if __name__ == '__main__':
 #    
 # """
     s = '''
-b = (7 + 3) *20
+b = not(7 + 3)
+a = Monday
+c = not(true or false)
+c = not(true or a)
+c = not(b or a)
+c = not(b)
+c = (b)
+c = not(b) + 2
 '''
 
 
@@ -471,11 +478,11 @@ b = (7 + 3) *20
 
     # ## Prints the AST
     print result
-##    code = codeGenerator(result)
-##    # Prints the actual program
-##    print code.ret
-##
-##    ## Makes the output file
-##    f = open("out.py", 'w')
-##    f.write(code.ret)
-##    print 'Done!\nCheck "out.py"'
+    code = codeGenerator(result)
+    # Prints the actual program
+    print code.ret
+
+    ## Makes the output file
+    f = open("out.py", 'w')
+    f.write(code.ret)
+    print 'Done!\nCheck "out.py"'

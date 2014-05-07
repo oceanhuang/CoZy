@@ -226,7 +226,7 @@ class codeGenerator(object):
             return self.dispatch(tree.children[0], flag)
         else:
             (operand1, operand2, type1, type2) = self.get_types(tree.children[0], tree.children[1], flag)
-            return "BOOL", str(operand[1]) + " " + tree.children[2] + " " + str(operand2[1])
+            return "BOOLEAN", str(operand1[1]) + " " + tree.children[2] + " " + str(operand2[1])
             #return self.dispatch(tree.children[0]) + " " + tree.children[2] + " " + self.dispatch(tree.children[1])  
 
     def _and_expression(self, tree, flag=None):
@@ -236,7 +236,7 @@ class codeGenerator(object):
         else:
             (operand1, operand2, type1, type2) = self.get_types(tree.children[0], tree.children[1], flag)
             
-            return "BOOL", str(operand1[1]) + " " + tree.children[2] + " " + str(operand2[1])
+            return "BOOLEAN", str(operand1[1]) + " " + tree.children[2] + " " + str(operand2[1])
             #return self.dispatch(tree.children[0]) + " " + tree.children[2] + " " + self.dispatch(tree.children[1])  
 
     def _equality_expression(self, tree, flag=None):
@@ -322,10 +322,11 @@ class codeGenerator(object):
 
     #this needs to be fixed        
     def _primary_expression(self, tree, flag=None):
-        arg = self.dispatch(tree.children[0])
-        if type(arg) is tuple:
-            arg = str(arg[1])
+        
         if tree.leaf == None:
+            arg = self.dispatch(tree.children[0])
+            if type(arg) is tuple:
+                arg = str(arg[1])
             return "(" + arg + ")"
         else:
             """
@@ -337,11 +338,19 @@ class codeGenerator(object):
             return varType, tree.leaf
 
     def _primary_expression_not(self, tree, flag=None):
-        arg = self.dispatch(tree.children[0])
-        if type(arg) is tuple:
-            arg = str(arg[1])
         if tree.leaf == None:
-            return "not(" + arg + ")"
+            arg = self.dispatch(tree.children[0])
+            if type(arg) is tuple:
+                arg = str(arg[1])
+            return "BOOLEAN, ""not(" + arg + ")"
+        else:
+            """
+            This means this is a variable/ID. 
+                Check if variable is in symbol table and return the variable and its type
+            """
+            #TODO check if variable is in the correct scope
+            (varType, value) = self.symbolTable.get(tree.leaf)
+            return "BOOLEAN", tree.leaf
               
 
     def _primary_expression_boolean(self, tree, flag=None):
