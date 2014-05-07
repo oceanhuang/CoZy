@@ -1,5 +1,6 @@
 import fileinput
 import sys
+import re
 sys.path.append("..")
 
 import cozyLex, cozyYacc, codeGenerator
@@ -16,6 +17,11 @@ class CoZyTester:
         print code
         exec code in locals()
         
+        #strip away any "fails" in output 
+        #fails should never make it here anyways thougg
+        replace_fail = re.compile(re.escape("fail"), re.IGNORECASE)
+        replace_fail.sub("", output)
+
         if output != "None":
             result = locals()['ret']
             if type(result) is int: result = str(result)

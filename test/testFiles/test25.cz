@@ -1,8 +1,3 @@
-#25
-b = not(7 + 3)
-a = Monday
-c = not(true or false)
-c = not(true or a)
-c = not(b or a)
-c = not(b)
-c = (b)
+#None fail
+every(3+7):
+    print('5')

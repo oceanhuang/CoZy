@@ -29,7 +29,9 @@ NC='\e[0m' # No Color
 while [ $COUNTER -lt $NUMTESTS ]; do
     TESTRESULT="TEST"
     EXT=$COUNTER".cz"
-    #get the return value
+    
+    #get first line of testfile
+    FAIL_INTENT=$(head -n 1 $TESTFILE$EXT | grep "fail" | wc -l)
 
     cat $TESTFILE$EXT | python testCozy.py 1>$RESULTS$COUNTER 2>$ERROR$COUNTER 
     FAILED=false
@@ -40,7 +42,10 @@ while [ $COUNTER -lt $NUMTESTS ]; do
         FAILED=true
     fi
 
-    if [ $FAILED = true ] 
+    if [[ $FAILED = true && $FAIL_INTENT -gt 0 ]]
+    then
+        TESTRESULT=$TESTRESULT$COUNTER${red}" FAILED "${grn}" [ SUPPOSED TO FAIL]"${NC}
+    elif [ $FAILED = true ]
     then
         TESTRESULT=$TESTRESULT$COUNTER${red}" FAILED"${NC}
     else
