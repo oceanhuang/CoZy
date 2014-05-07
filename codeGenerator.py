@@ -420,14 +420,13 @@ class codeGenerator(object):
         everys = everys + 1
         everyFlag = "EVERY"
 
-        s = "\ndef every" + str(everys) + "() :\n"
+        s = "happened" + str(everys) + " = False\n"
+        s += "\ndef every" + str(everys) + "() :\n"
         s += "    print 'executing once every" + str(everys) + "'\n"
 
         lines = self.dispatch(tree.children[1]).splitlines()
         for line in lines:
             s+= "    " + line +"\n"
-
-        s += "    happened" + str(everys) + " = False\n"
         s += "def condition" + str(everys) + "():\n"
         s += "    print 'checking" + str(everys) + "'\n"
         s += "    global happened" + str(everys) + "\n"

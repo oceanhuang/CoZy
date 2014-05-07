@@ -470,8 +470,8 @@ c = not(true or a)
 c = not(b or a)
 c = not(b)
 c = (b)
-every(Wednesday):
-    print("hello")
+once every(Wednesday):
+    log("hello, weds")
 '''
 
 
