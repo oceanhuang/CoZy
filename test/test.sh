@@ -16,6 +16,11 @@ then
     mkdir "errors"
 fi
 
+#remove parsetable and other generated files
+cd ..
+rm -rf *.pyc out.py parsetab.py parser.out
+cd test/
+
 NUMTESTS=$(ls -1 testFiles | wc -l)
 #echo $numTests
 COUNTER=0
