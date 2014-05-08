@@ -412,7 +412,7 @@ def p_log_statement(p):
 
 #need to add foreach/ also confused about the grammar
 def p_for_statement(p):
-    """ for_statement : FOR ID IN or_expression TO or_expression COLON NEWLINE INDENT statement_list DEDENT
+    """ for_statement : FOR ID IN or_expression FORRANGE or_expression COLON NEWLINE INDENT statement_list DEDENT
     """
     p[0] = Node("for_statement", [p[4], p[6], p[10]], p[2])
 
@@ -444,42 +444,8 @@ if __name__ == '__main__':
     parser = CoZyParser()
     ## Put code to test here
     s = """
-x = Friday to Sunday
-y = January to July
-z = 1:00 AM to 6:30 AM
-b = 12/1/1000 to 1/1/2020
-a = 12/12/2000 10:00 AM to 1/1/2020 11:00 PM
-print(x)
-print(y)
-print(z)
-print(b)
-print(a)
-a = 60 F + 50F + 30F
-d = 35/2/1991 10:00 PM
-c = 10:00 AM
-g = 1 < 3 + 4
-r = 1 + 2 * 3+4
-f = 1:00 PM
-h = 1 < 3 and 4 > 3
-
-z = r + 2
-z = a + z
-bday = 16/07/1991
-every (Monday):
-   print ('5')
-i = 0
-while (i < 7):
-   print ("okay")
-   i = i + 1
-every (January):
-   print ("hello world")
-once every (January during Monday):
-   print ("hello world")
-once every (January during Monday, February during Friday):
-   print ("hello world")
-every ((January during Monday, February during Friday) during Wednesday):
-   print ("hello world")
-   
+for x in 1...100:
+    print(x)
 """
 
 

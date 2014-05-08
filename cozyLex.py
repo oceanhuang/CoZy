@@ -79,6 +79,7 @@ tokens = [
     'NEWLINE',
     'COMMA',
     'STRING',
+    'FORRANGE',
 ] + list(reserved.values())
 
 # Regular expression rules for simple tokens
@@ -99,6 +100,7 @@ t_EQUIV     = r'(==)'
 t_NONEQUIV  = r'(!=)'
 t_RELOP     = r'(<=)|(>=)|(<)|(>)'
 t_COMMA     = r'(,)'
+t_FORRANGE = r'\.\.\.'
 # A regular expression rule with some action code
 
 def t_DATETIME(t):
@@ -329,20 +331,9 @@ if __name__ == '__main__':
     # code
     #this doesnt work RGGGGGG
     data = """
-if(Monday to Friday):
-    x = 2
-if(Saturday to Monday):
-    y = 2
-h = (7 + 3) * 5
+for x in 1...100:
+    print(x)
 """
-#     data = """
-# x=3+3;
-# if x=6:
-#     a=9;
-#     b=7;
-# y = 2 + "every";
-# z = Tuesday;
-#     """
 
     # Give the lexer some input
     lexer.input(data)
