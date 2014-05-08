@@ -100,7 +100,7 @@ t_EQUIV     = r'(==)'
 t_NONEQUIV  = r'(!=)'
 t_RELOP     = r'(<=)|(>=)|(<)|(>)'
 t_COMMA     = r'(,)'
-t_FORRANGE = r'\.\.\.'
+t_FORRANGE = r'\s*\.\.\.\s*'
 # A regular expression rule with some action code
 
 def t_DATETIME(t):

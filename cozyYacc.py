@@ -444,8 +444,6 @@ if __name__ == '__main__':
     parser = CoZyParser()
     ## Put code to test here
     s = """
-for x in 1...100:
-    print(x)
 """
 
 
