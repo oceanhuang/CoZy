@@ -32,6 +32,9 @@ reserved = {
     'and' : 'AND',
     'if' : 'IF',
     'else' : 'ELSE',
+    'add' : 'ADD',
+    'remove' : 'REMOVE',
+    'sort' : 'SORT',
     #'elif' : 'ELSEIF',
     'while' : 'WHILE',
     'for' : 'FOR',
@@ -39,16 +42,21 @@ reserved = {
     'print' : 'PRINT',
     'not' : 'NOT',
     'to' : 'TO',
+    'each' : 'EACH',
     'log' : 'LOG',
     'once' : 'ONCE',
     'during' : 'DURING',
-}
+    'true' : 'TRUE',
+    'false' : 'FALSE'
+    }
 
 tokens = [
     'LPAREN',
     'RPAREN',
     'RBRACK',
     'LBRACK',
+    'RBRACE',
+    'LBRACE',
     'EQUALS',
     'PLUS',
     'MINUS',
@@ -70,7 +78,6 @@ tokens = [
     'WS',
     'NEWLINE',
     'COMMA',
-    'BOOLEAN',
     'STRING',
 ] + list(reserved.values())
 
@@ -79,6 +86,8 @@ t_LPAREN    = r'\('
 t_RPAREN    = r'\)'
 t_LBRACK    = r'\{'
 t_RBRACK    = r'\}'
+t_LBRACE    = r'\['
+t_RBRACE    = r'\]'
 t_EQUALS    = r'='
 t_PLUS      = r'\+'
 t_MINUS     = r'\-'
@@ -90,7 +99,6 @@ t_EQUIV     = r'(==)'
 t_NONEQUIV  = r'(!=)'
 t_RELOP     = r'(<=)|(>=)|(<)|(>)'
 t_COMMA     = r'(,)'
-t_BOOLEAN   = r'true|false'
 # A regular expression rule with some action code
 
 def t_DATETIME(t):
@@ -319,11 +327,13 @@ if __name__ == '__main__':
     # Build the lexer
     lexer = CoZyLexer()
     # code
+    #this doesnt work RGGGGGG
     data = """
 if(Monday to Friday):
     x = 2
 if(Saturday to Monday):
     y = 2
+h = (7 + 3) * 5
 """
 #     data = """
 # x=3+3;
