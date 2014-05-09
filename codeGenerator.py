@@ -196,7 +196,7 @@ class codeGenerator(object):
         return tree.leaf + ".sort()"
 
     def _list_remove_expression(self, tree, flag=None):
-        return tree.leaf + ".remove(" + self.dispatchTuple(tree.children[0]) + ")"
+        return tree.leaf + ".pop(" + self.dispatchTuple(tree.children[0]) + ")"
 
 
     def _list_add_expression_index(self, tree, flag=None):
