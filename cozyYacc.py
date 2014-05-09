@@ -109,11 +109,11 @@ def p_statement(p):
     #maybe add | list_change NEWLINE
     p[0] = Node("statement", [p[1]])
 
-def p_statement_builtin(p):
-    """ statement : GET_TEMP NEWLINE
-                | SET_TEMP LPAREN ID RPAREN
-                | SET_TEMP LPAREN TEMPERATURE RPAREN
+def p_statement_set_temp(p):
+    """ statement : SET_TEMP LPAREN ID RPAREN NEWLINE
+                | SET_TEMP LPAREN TEMPERATURE RPAREN NEWLINE
     """
+    p[0] = Node('set_temp', [p[3]])
 
 def p_list_change(p):
     '''list_change : ADD LPAREN ID COMMA or_expression RPAREN 
@@ -457,19 +457,11 @@ if __name__ == '__main__':
     parser = CoZyParser()
     ## Put code to test here
     s = '''
-ret = -2
-ret = -(2+4)^4
-ret = 5-(2+4)
-ret = 5-(2*4)
-ret = 5+(-(2*4))
-ret = 5*(-(2*4))
-ret = -(2+4)^4
-ret = 5-(-2)
-a = 5
-b = 6
-ret = -a
-ret = -a+4
-ret = -a + b
+a = 40 F
+b = 40 F
+c = a
+SET_TEMP(a)
+
 '''
 
 

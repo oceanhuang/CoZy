@@ -159,6 +159,20 @@ class codeGenerator(object):
     def _statement(self, tree, flag=None):
         return self.dispatch(tree.children) + "\n"
 
+    def _set_temp(self, tree, flag=None):
+        # print tree.children[0]
+        print tree.children[0]
+        print self.symbolTable.get('a')
+        (varType, value) = self.symbolTable.get(tree.children[0])
+        if varType == "F" or varType == "C" or varType == "K":
+            return "MyThermoStat.set_temp(" + str(tree.children[0]) + ".getCelsius())"
+        # arg = self.dispatch(tree.children[0]);
+        # print arg
+        # if operand[0] == "F" or operand[0] == "C" or operand[0] == "K":
+        #     return "MyThermoStat.set_temp(" + str(operand[1]) + ")"
+        # else:
+        #     exit('TypeError, set_temp() has to take a temperature as input')
+
     #whoever wrote this, please have a look at _assignnment_statement_list_index
     def _assignment_statement(self, tree, flag=None):
         arg = self.dispatch(tree.children[0]);

@@ -48,8 +48,7 @@ reserved = {
     'true' : 'TRUE',
     'false' : 'FALSE',
     'power' : 'POWER',
-    'get_temp' : 'GET_TEMP',
-    'set_temp' : 'SET_TEMP'
+    'SET_TEMP': 'SET_TEMP'
     }
 
 tokens = [
@@ -80,7 +79,7 @@ tokens = [
     'WS',
     'NEWLINE',
     'COMMA',
-    'STRING',
+    'STRING'
 ] + list(reserved.values())
 
 # Regular expression rules for simple tokens
@@ -102,7 +101,7 @@ t_NONEQUIV  = r'(!=)'
 t_RELOP     = r'(<=)|(>=)|(<)|(>)'
 t_COMMA     = r'(,)'
 t_POWER     = r'\^'
-t_GET_TEMP  = r'GET_TEMP'
+# t_GET_TEMP  = r'GET_TEMP'
 t_SET_TEMP  = r'SET_TEMP'
 # A regular expression rule with some action code
 
@@ -334,8 +333,9 @@ if __name__ == '__main__':
     # code
     #this doesnt work RGGGGGG
     data = """
-a = GET_TEMP
+a = 40 F
 SET_TEMP(a)
+
 """
 #     data = """
 # x=3+3;
