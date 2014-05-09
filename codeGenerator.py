@@ -112,7 +112,7 @@ class codeGenerator(object):
         return self.dispatchTuple(tree.children[0]) + "[" + self.dispatchTuple(tree.children[1]) + "]"
 
     def _list_index_id(self, tree, flag=None):
-        return tree.leaf + "[" + self.dispatchTuple(tree.children[0]) + "]"
+        return tree.leaf + "[ int(" + self.dispatchTuple(tree.children[0]) + ") ]"
 
     
     """
