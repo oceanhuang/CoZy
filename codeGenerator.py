@@ -1,4 +1,4 @@
-dimport datetime
+import datetime
 import re
 import sys
 everys = 0
@@ -103,56 +103,69 @@ class codeGenerator(object):
 
     def _function_param_number(self, tree, flag=None):
         s = tree.children[1]
-        return "NUM",s
+        self.symbolTable[s] = ["NUM", None]
+        return s
 
     #FIX THIS ONEEEEEE
     def _function_param_temperature(self, tree, flag=None):
         s = tree.children[1]
-        return "TEMPERATURE",s
+        self.symbolTable[s] = ["TEMPERATURE", None]
+        return s
 
     def _function_param_time(self, tree, flag=None):
         s = tree.children[1]
-        return "TIME",s
+        self.symbolTable[s] = ["TIME", None]
+        return s
 
     def _function_param_datetime(self, tree, flag=None):
         s = tree.children[1]
-        return "DATETIME",s
+        self.symbolTable[s] = ["DATETIME", None]
+        return s
 
     def _function_param_boolean(self, tree, flag=None):
         s = tree.children[1]
-        return "BOOLEAN",s
+        self.symbolTable[s] = ["BOOLEAN", None]
+        return s
 
     def _function_param_day(self, tree, flag=None):
         s = tree.children[1]
-        return "DAY",s
+        self.symbolTable[s] = ["DAY", None]
+        return s
 
     def _function_param_month(self, tree, flag=None):
         s = tree.children[1]
-        return "MONTH",s
+        self.symbolTable[s] = ["MONTH", None]
+        return s
 
     def _function_param_date(self, tree, flag=None):
         s = tree.children[1]
-        return "DATE",s
+        self.symbolTable[s] = ["DATE", None]
+        return s
 
     def _function_param_dayrange(self, tree, flag=None):
         s = tree.children[1]
-        return "DAYRANGE",s
+        self.symbolTable[s] = ["DAYRANGE", None]
+        return s
 
     def _function_param_monthrange(self, tree, flag=None):
         s = tree.children[1]
-        return "MONTHRANGE",s
+        self.symbolTable[s] = ["MONTHRANGE", None]
+        return s
 
     def _function_param_timerange(self, tree, flag=None):
         s = tree.children[1]
-        return "TIMERANGE",s
+        self.symbolTable[s] = ["TIMERANGE", None]
+        return s
 
     def _function_param_string(self, tree, flag=None):
         s = tree.children[1]
-        return "STRING",s
+        self.symbolTable[s] = ["STRING", None]
+        return s
 
-    def _function_param_list(self, tree, flag=None):
+    def _function_param_listparam(self, tree, flag=None):
         s = tree.children[1]
-        return "LIST",s
+        self.symbolTable[s] = ["LIST", None]
+        return s
     
     def _list_start(self, tree, flag=None):
         if len(tree.children)==0:
@@ -170,7 +183,7 @@ class codeGenerator(object):
         return self.dispatchTuple(tree.children[0]) + "[" + self.dispatchTuple(tree.children[1]) + "]"
 
     def _list_index_id(self, tree, flag=None):
-        return tree.leaf + "[" + self.dispatchTuple(tree.children[0]) + "]"
+        return tree.leaf + "[ int(" + self.dispatchTuple(tree.children[0]) + ") ]"
 
     
     """

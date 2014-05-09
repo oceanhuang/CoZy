@@ -571,6 +571,15 @@ print(c)
 for i in 1 to 20:
     a = a + i
     print(i)
+
+y = [1, 2, 3]
+y{0} = 0
+
+def foo(number b, list y):
+    add(y,b)
+    y{0} =  b
+    y{b} = "whatever"
+
 '''
 
     result = parser.parse(s)
