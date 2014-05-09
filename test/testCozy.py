@@ -25,10 +25,12 @@ class CoZyTester:
         if output != "None":
             result = locals()['ret']
             if type(result) is int: result = str(result)
+            if type(result) is float: result = str(result)
             if type(result) is list: output = eval(output)
             assert result == output
 
-
+            if type(result) is list: output = eval(output)
+            assert result == output
 
 prog = ''
 arg = ''

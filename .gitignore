@@ -4,3 +4,5 @@ parsetab.py
 out.py
 *~
 cozyLog.txt
+test/errors/*
+test/results/*

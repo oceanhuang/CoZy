@@ -61,7 +61,8 @@ reserved = {
     'once' : 'ONCE',
     'during' : 'DURING',
     'true' : 'TRUE',
-    'false' : 'FALSE'
+    'false' : 'FALSE',
+    'power' : 'POWER'
     }
 
 tokens = [
@@ -113,6 +114,7 @@ t_EQUIV     = r'(==)'
 t_NONEQUIV  = r'(!=)'
 t_RELOP     = r'(<=)|(>=)|(<)|(>)'
 t_COMMA     = r'(,)'
+t_POWER     = r'\^'
 # A regular expression rule with some action code
 
 def t_DATETIME(t):
@@ -343,7 +345,7 @@ if __name__ == '__main__':
     # code
     #this doesnt work RGGGGGG
     data = """
-h = (7 + 3) * 5
+a = 2^4
 """
 #     data = """
 # x=3+3;

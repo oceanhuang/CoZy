@@ -378,14 +378,26 @@ class codeGenerator(object):
                 return type1, str(operand1[1]) + " " + tree.children[2] + " " + str(operand2[1])
                     #return self.dispatch(tree.children[0]) + " " + tree.children[2] + " " + self.dispatch(tree.children[1])
 
+    def _power_expression(self, tree, flag=None):
+
+        if len(tree.children) == 1:
+            return self.dispatch(tree.children[0], flag) 
+        else:
+            (operand1, operand2, type1, type2) = self.get_types(tree.children[0], tree.children[1], flag)
+
+            if type1 != "NUM" or type2 != "NUM":
+                exit("TypeError! Cannot raise " + type1 + " to " + type2 + ". Must both be numbers");
+            else:
+                return type1, str(operand1[1]) + "**" + str(operand2[1])
+
     #this needs to be fixed        
     def _primary_expression(self, tree, flag=None):
         
         if tree.leaf == None:
             arg = self.dispatch(tree.children[0])
             if type(arg) is tuple:
-                arg = str(arg[1])
-            return "(" + arg + ")"
+                arg1 = str(arg[1])
+            return arg[0], "(" + arg1 + ")"
         else:
             """
             This means this is a variable/ID. 
@@ -419,7 +431,7 @@ class codeGenerator(object):
 
 
     def _primary_expression_constant(self, tree, flag=None):
-        return "NUM", int(tree.leaf)    
+        return "NUM", float(tree.leaf)    
     
 
     def _during_or_expression(self, tree, flag=None):
@@ -553,11 +565,12 @@ class codeGenerator(object):
         or_expression1 = self.dispatch(tree.children[0])
         or_expression2 = self.dispatch(tree.children[1])
         the_id = tree.leaf
-
+        self.symbolTable[tree.leaf] = ["NUM", None] #this might be bad because it just holds a dummy variable but we'll deal
+        
         if type(or_expression1) is tuple: or_expression1 = or_expression1[1]
         if type(or_expression2) is tuple: or_expression2 = or_expression2[1]
-        if type(or_expression1) is int: or_expression1 = str(or_expression1)
-        if type(or_expression2) is int: or_expression2 = str(or_expression2)
+        if type(or_expression1) is float: or_expression1 = str(int(or_expression1))
+        if type(or_expression2) is float: or_expression2 = str(int(or_expression2))
         
         s = "for " + the_id + " in range( " + or_expression1 + " , " + or_expression2 + " + 1 ) : \n"
         lines = self.dispatch(tree.children[2]).splitlines()
