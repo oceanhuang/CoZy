@@ -29,9 +29,6 @@ class CoZyTester:
             if type(result) is list: output = eval(output)
             assert result == output
 
-            if type(result) is list: output = eval(output)
-            assert result == output
-
 prog = ''
 arg = ''
 getArg = False
