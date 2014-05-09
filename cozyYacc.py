@@ -109,6 +109,11 @@ def p_statement(p):
     #maybe add | list_change NEWLINE
     p[0] = Node("statement", [p[1]])
 
+def p_statement_builtin(p):
+    """ statement : GET_TEMP NEWLINE
+                | SET_TEMP LPAREN ID RPAREN
+                | SET_TEMP LPAREN TEMPERATURE RPAREN
+    """
 
 def p_list_change(p):
     '''list_change : ADD LPAREN ID COMMA or_expression RPAREN 

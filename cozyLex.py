@@ -47,7 +47,9 @@ reserved = {
     'during' : 'DURING',
     'true' : 'TRUE',
     'false' : 'FALSE',
-    'power' : 'POWER'
+    'power' : 'POWER',
+    'get_temp' : 'GET_TEMP',
+    'set_temp' : 'SET_TEMP'
     }
 
 tokens = [
@@ -100,6 +102,8 @@ t_NONEQUIV  = r'(!=)'
 t_RELOP     = r'(<=)|(>=)|(<)|(>)'
 t_COMMA     = r'(,)'
 t_POWER     = r'\^'
+t_GET_TEMP  = r'GET_TEMP'
+t_SET_TEMP  = r'SET_TEMP'
 # A regular expression rule with some action code
 
 def t_DATETIME(t):
@@ -330,8 +334,8 @@ if __name__ == '__main__':
     # code
     #this doesnt work RGGGGGG
     data = """
-a = -2.4^4
-b = 2-4
+a = GET_TEMP
+SET_TEMP(a)
 """
 #     data = """
 # x=3+3;
