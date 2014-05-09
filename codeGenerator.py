@@ -36,7 +36,7 @@ class codeGenerator(object):
         # Symbols table
         self.symbolTable = {}
         # Variable to store the code
-        self.ret = "import datetime\n" + "every_list = []\n" + "log_file = open('cozyLog.txt', 'a')\n" + temp_def + self.dispatch(tree)
+        self.ret = "import datetime\n" + "every_list = []\n" + "log_file = open('cozyLog.txt', 'a')\n" + temp_def + self.dispatch(tree) + '\n'
         # 
         # Keeps track of the number of every's
 
@@ -109,7 +109,7 @@ class codeGenerator(object):
             return self.dispatchTuple(tree.children[0]) + ", " + self.dispatchTuple(tree.children[1])
         
     def _list_index_double(self, tree, flag=None):
-        return self.dispatchTuple(tree.children[0]) + "[" + self.dispatchTuple(tree.children[1]) + "]"
+        return self.dispatchTuple(tree.children[0]) + "[ int(" + self.dispatchTuple(tree.children[1]) + ") ]"
 
     def _list_index_id(self, tree, flag=None):
         return tree.leaf + "[ int(" + self.dispatchTuple(tree.children[0]) + ") ]"
@@ -139,7 +139,7 @@ class codeGenerator(object):
         return tree.leaf + ".sort()"
 
     def _list_remove_expression(self, tree, flag=None):
-        return tree.leaf + ".pop(" + self.dispatchTuple(tree.children[0]) + ")"
+        return tree.leaf + ".pop( int( " + self.dispatchTuple(tree.children[0]) + "))"
 
 
     def _list_add_expression_index(self, tree, flag=None):
@@ -339,6 +339,8 @@ class codeGenerator(object):
             arg = self.dispatch(tree.children[0])
             if type(arg) is tuple:
                 arg1 = str(arg[1])
+            else:
+                arg1 = arg
             return arg[0], "(" + arg1 + ")"
         else:
             """
@@ -485,7 +487,7 @@ class codeGenerator(object):
         if type(arg) is tuple:
             arg = arg[1]
 
-        if type(arg) is int:
+        if type(arg) is int or type(arg) is float:
             arg = str(arg)
         s = "print " + arg
         return s
@@ -495,7 +497,7 @@ class codeGenerator(object):
         if type(arg) is tuple:
             arg = arg[1]
 
-        if type(arg) is int:
+        if type(arg) is int or type(arg) is float:
             arg = str(arg)
         
             

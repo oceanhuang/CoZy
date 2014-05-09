@@ -432,6 +432,7 @@ class CoZyParser(object):
         self.parser = yacc.yacc()
 
     def parse(self, code):
+        code = code + '\n'
         self.lexer.input(code)
         result = self.parser.parse(lexer = self.lexer)
         # print result
@@ -451,7 +452,6 @@ print(c)
 for i in 1 to 20:
     a = a + i
     print(i)
- 
 '''
 
 
