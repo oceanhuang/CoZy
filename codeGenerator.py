@@ -361,7 +361,7 @@ class codeGenerator(object):
 
 
     def _primary_expression_constant(self, tree, flag=None):
-        return "NUM", int(tree.leaf)    
+        return "NUM", float(tree.leaf)    
     
 
     def _during_or_expression(self, tree, flag=None):
@@ -498,8 +498,8 @@ class codeGenerator(object):
 
         if type(or_expression1) is tuple: or_expression1 = or_expression1[1]
         if type(or_expression2) is tuple: or_expression2 = or_expression2[1]
-        if type(or_expression1) is int: or_expression1 = str(or_expression1)
-        if type(or_expression2) is int: or_expression2 = str(or_expression2)
+        if type(or_expression1) is float: or_expression1 = str(int(or_expression1))
+        if type(or_expression2) is float: or_expression2 = str(int(or_expression2))
         
         s = "for " + the_id + " in range( " + or_expression1 + " , " + or_expression2 + " + 1 ) : \n"
         lines = self.dispatch(tree.children[2]).splitlines()

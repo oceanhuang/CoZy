@@ -463,9 +463,13 @@ if __name__ == '__main__':
 #    
 # """
     s = '''
-b = (7+3)*2
-c = 4 + ((2+3)*7)/80
-d = (true or false) + Tuesday
+a = 3.4
+b = 7
+c = b/a
+print(c)
+for i in 1.7 to 20:
+    print("hello")
+ 
 '''
 
 
