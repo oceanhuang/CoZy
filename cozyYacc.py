@@ -463,14 +463,9 @@ if __name__ == '__main__':
 #    
 # """
     s = '''
-b = not(7 + 3)
-a = Monday
-c = not(true or false)
-c = not(true or a)
-c = not(b or a)
-c = not(b)
-c = (b)
-c = not(b) + 2
+b = (7+3)*2
+c = 4 + ((2+3)*7)/80
+d = (true or false) + Tuesday
 '''
 
 

@@ -326,8 +326,8 @@ class codeGenerator(object):
         if tree.leaf == None:
             arg = self.dispatch(tree.children[0])
             if type(arg) is tuple:
-                arg = str(arg[1])
-            return "(" + arg + ")"
+                arg1 = str(arg[1])
+            return arg[0], "(" + arg1 + ")"
         else:
             """
             This means this is a variable/ID. 
