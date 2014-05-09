@@ -186,7 +186,7 @@ def p_assignment_statement_list_index(p):
 
     
 
-def p_or_expresion(p):
+def p_or_expression(p):
     """ or_expression : and_expression
                         | or_expression OR and_expression
     """
@@ -195,7 +195,7 @@ def p_or_expresion(p):
     else:
         p[0] = Node("or_expression", [p[1], p[3], p[2]])
 
-def p_and_expresion(p):
+def p_and_expression(p):
     """ and_expression : equality_expression
                         | and_expression AND equality_expression
     """
@@ -204,7 +204,7 @@ def p_and_expresion(p):
     else:
         p[0] = Node("and_expression", [p[1], p[3], p[2]])
 
-def p_equality_expresion(p):
+def p_equality_expression(p):
     """ equality_expression : relational_expression
                         | equality_expression EQUIV relational_expression
                         | equality_expression NONEQUIV relational_expression
@@ -214,7 +214,7 @@ def p_equality_expresion(p):
     else:
         p[0] = Node("equality_expression", [p[1], p[3], p[2]])
 
-def p_relational_expresion(p):
+def p_relational_expression(p):
     """ relational_expression : during_or_expression
                         | relational_expression RELOP during_or_expression
     """
@@ -247,7 +247,7 @@ def p_during_and_expression(p):
         p[0] = Node("during_and_expression", [p[1],p[3]])
 
         
-def p_additive_expresion(p):
+def p_additive_expression(p):
     """ additive_expression : multiplicative_expression
                              | additive_expression PLUS multiplicative_expression
                              | additive_expression MINUS multiplicative_expression
@@ -258,15 +258,24 @@ def p_additive_expresion(p):
         p[0] = Node("additive_expression", [p[1], p[3], p[2]])
 
 # Change to continue sequence in grammar i.e. function_expression, etc
-def p_multiplicative_expresion(p):
-    """ multiplicative_expression : primary_expression
-                             | multiplicative_expression MULTIPLY primary_expression
-                             | multiplicative_expression DIVIDE primary_expression
+def p_multiplicative_expression(p):
+    """ multiplicative_expression : power_expression
+                             | multiplicative_expression MULTIPLY power_expression
+                             | multiplicative_expression DIVIDE power_expression
     """
     if len(p) == 2:
         p[0] = Node("multiplicative_expression", [p[1]])
     else:
         p[0] = Node("multiplicative_expression", [p[1], p[3], p[2]])
+
+def p_power_expression(p):
+    """ power_expression : primary_expression
+                        | power_expression POWER primary_expression
+    """
+    if len(p) == 2:
+        p[0] = Node("power_expression", [p[1]])
+    else:
+        p[0] = Node("power_expression", [p[1], p[3], p[2]])
 
 
 def p_primary_expression(p):
@@ -434,42 +443,8 @@ if __name__ == '__main__':
     # Build the parser
     parser = CoZyParser()
     ## Put code to test here
-#    s = """
-#a = 60 F + 50F + 30F
-#d = 35/2/1991 10:00 PM
-#c = 10:00 AM
-#g = 1 < 3 + 4
-#r = 1 + 2 * 3+4
-#f = 1:00 PM
-#h = 1 < 3 and 4 > 3
-#
-#z = r + 2
-#z = a + z
-#bday = 16/07/1991
-#every (Monday):
-#    print ('5')
-#i = 0
-#while (i < 7):
-#    print ("okay")
-#    i = i + 1
-#every (January):
-#    print ("hello world")
-#once every (January during Monday):
-#    print ("hello world")
-#once every (January during Monday, February during Friday):
-#    print ("hello world")
-#every ((January during Monday, February during Friday) during Wednesday):
-#    print ("hello world")
-#    
-# """
     s = '''
-a = 3.4
-b = 7
-c = b/a
-print(c)
-for i in 1.7 to 20:
-    print("hello")
- 
+a = 2^4
 '''
 
 
