@@ -467,8 +467,9 @@ a = 3.4
 b = 7
 c = b/a
 print(c)
-for i in 1.7 to 20:
-    print("hello")
+for i in 1 to 20:
+    a = a + i
+    print(i)
  
 '''
 
