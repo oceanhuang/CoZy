@@ -127,7 +127,7 @@ class codeGenerator(object):
         return self.dispatchTuple(tree.children[0]) + "[" + self.dispatchTuple(tree.children[1]) + "]"
 
     def _list_index_id(self, tree, flag=None):
-        return tree.leaf + "[" + self.dispatchTuple(tree.children[0]) + "]"
+        return tree.leaf + "[ int(" + self.dispatchTuple(tree.children[0]) + ") ]"
 
     
     """
@@ -548,7 +548,8 @@ class codeGenerator(object):
         or_expression1 = self.dispatch(tree.children[0])
         or_expression2 = self.dispatch(tree.children[1])
         the_id = tree.leaf
-
+        self.symbolTable[tree.leaf] = ["NUM", None] #this might be bad because it just holds a dummy variable but we'll deal
+        
         if type(or_expression1) is tuple: or_expression1 = or_expression1[1]
         if type(or_expression2) is tuple: or_expression2 = or_expression2[1]
         if type(or_expression1) is float: or_expression1 = str(int(or_expression1))

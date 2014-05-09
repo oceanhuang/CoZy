@@ -29,6 +29,9 @@ class CoZyTester:
             if type(result) is list: output = eval(output)
             assert result == output
 
+            if type(result) is list: output = eval(output)
+            assert result == output
+
 prog = ''
 arg = ''
 getArg = False
@@ -45,6 +48,3 @@ myTester = CoZyTester()
 
 ret = ret[1:].rstrip('\n')
 myTester.run_code(prog, ret)
-
-
-
