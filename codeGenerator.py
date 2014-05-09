@@ -588,6 +588,12 @@ class codeGenerator(object):
         s = "return " + arg
         return s
 
+    def _function_expression(self, tree, flag=None):
+        if len(tree.children) == 1:
+            return tree.leaf + "(" + self.dispatchTuple(tree.children[0]) + ")"
+        else:
+            return tree.leaf + "()"
+        
     def _for_statement(self, tree, flag=None):
         #for iterator in a range
         or_expression1 = self.dispatch(tree.children[0])

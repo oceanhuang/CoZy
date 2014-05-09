@@ -170,6 +170,7 @@ def p_statement(p):
                   | print_statement NEWLINE
                   | log_statement NEWLINE
                   | return_statement NEWLINE
+                  | function_expression NEWLINE
     """
     #maybe add | list_change NEWLINE
     p[0] = Node("statement", [p[1]])
@@ -491,6 +492,19 @@ def p_return_statement(p):
     """
     p[0] = Node("return_statement", [p[3]])
 
+#fix meeee
+def p_function_expression(p): 
+     ''' 
+     function_expression : ID LPAREN list_expression RPAREN
+                         | ID LPAREN RPAREN 
+     ''' 
+     if len(p) == 5: 
+         p[0] = Node('function_expression',[p[3]], p[1]) 
+     else: 
+         p[0] = Node('function_expression', [], p[1])
+
+ 
+
 # Error rule for syntax errors
 def p_error(p):
     print "Syntax error in input!"
@@ -585,6 +599,10 @@ def foo(number b, list y):
     y{0} =  b
     y{b} = "whatever"
     return(y)
+
+foo(7, y)
+foo2()
+
 
 '''
 
