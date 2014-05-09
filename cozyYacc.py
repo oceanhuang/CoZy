@@ -3,7 +3,8 @@ from compiler import ast, misc
 
 precedence = (
     ('left', 'PLUS', 'MINUS'),
-    ('left', 'MULTIPLY', 'DIVIDE')
+    ('left', 'MULTIPLY', 'DIVIDE'),
+    ('right', 'UMINUS')
 )
 
 # Get the token map from the lexer.  This is required.
@@ -264,7 +265,7 @@ def p_during_and_expression(p):
         
 def p_additive_expression(p):
     """ additive_expression : multiplicative_expression
-                             | MINUS multiplicative_expression
+                             | MINUS multiplicative_expression %prec UMINUS
                              | additive_expression PLUS multiplicative_expression
                              | additive_expression MINUS multiplicative_expression
     """
