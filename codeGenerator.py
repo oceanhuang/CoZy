@@ -37,7 +37,7 @@ def module_exists(module_name):
 if module_exists("RPi.GPIO"):
     thermoStat = '''
 from r_pi import ThermoStat
-myThermoStat = Sim_ThermoStat()
+myThermoStat = ThermoStat.Sim_ThermoStat()
 '''
 else:
     thermoStat = ''
