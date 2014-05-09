@@ -57,9 +57,9 @@ def p_function_definition(p):
                             | DEF ID LPAREN RPAREN COLON NEWLINE INDENT statement_list DEDENT"""
 
     if len(p) == 11:
-        p[0] = Node("function_definition", [p[2], p[4], p[9]]);
+        p[0] = Node("function_definition", [p[4], p[9]], p[2]);
     else:
-        p[0] = Node("function_definition", [p[2], p[8]])
+        p[0] = Node("function_definition", [p[8]], p[2])
 
 #list of parameters or just one        
 def p_function_param_list(p):
@@ -594,13 +594,10 @@ for i in 1 to 20:
 y = [1, 2, 3]
 y{0} = 0
 
-def foo(number b, list y):
-    add(y,b)
-    y{0} =  b
-    y{b} = "whatever"
-    return(y)
+def foo(number b, string k):
+    return(b)
 
-foo(7, y)
+foo(7, "hello")
 foo2()
 
 

@@ -35,6 +35,8 @@ class codeGenerator(object):
         self.scopeDepth = 0
         # Symbols table
         self.symbolTable = {}
+        # Function parameter type lookup
+        self.functionTable = {}
         # Variable to store the code
         self.ret = "import datetime\n" + "every_list = []\n" + "log_file = open('cozyLog.txt', 'a')\n" + temp_def + self.dispatch(tree)
         # 
@@ -75,20 +77,22 @@ class codeGenerator(object):
     def _function_definition(self, tree, flag=None):
         flag = "FUNC"
         #with parameters
-        if len(tree.children) == 3:
-            arg = self.dispatch(tree.children[1])
+        if len(tree.children) == 2:
+            arg = self.dispatch(tree.children[0])
+            self.functionTable[tree.leaf] = arg
+            #
             if type(arg) is tuple:
                 arg = str(arg[1])
                 
-            s = "def " + tree.children[0] + "(" + arg +") :\n"
-            lines = self.dispatch(tree.children[2]).splitlines()
+            s = "def " + tree.leaf + "(" + arg +") :\n"
+            lines = self.dispatch(tree.children[1]).splitlines()
             for line in lines:
                 s+= "    " + line +"\n"
             return s
 
         #no parameters
-        s = "def " + tree.children[0] + "( ) :\n"
-        lines = self.dispatch(tree.children[1]).splitlines()
+        s = "def " + tree.leaf + "( ) :\n"
+        lines = self.dispatch(tree.children[0]).splitlines()
         for line in lines:
             s+= "    " + line +"\n"
         return s
@@ -590,7 +594,11 @@ class codeGenerator(object):
 
     def _function_expression(self, tree, flag=None):
         if len(tree.children) == 1:
+            arg = self.dispatch(tree.children[0])
+            #if self.functionTable[tree.leaf] == arg[0]:
             return tree.leaf + "(" + self.dispatchTuple(tree.children[0]) + ")"
+            #else:
+            #    return "Type error in function params" + str(arg) + str(self.functionTable[tree.leaf])
         else:
             return tree.leaf + "()"
         
