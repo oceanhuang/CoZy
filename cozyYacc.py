@@ -186,7 +186,7 @@ def p_assignment_statement_list_index(p):
 
     
 
-def p_or_expresion(p):
+def p_or_expression(p):
     """ or_expression : and_expression
                         | or_expression OR and_expression
     """
@@ -195,7 +195,7 @@ def p_or_expresion(p):
     else:
         p[0] = Node("or_expression", [p[1], p[3], p[2]])
 
-def p_and_expresion(p):
+def p_and_expression(p):
     """ and_expression : equality_expression
                         | and_expression AND equality_expression
     """
@@ -214,7 +214,7 @@ def p_equality_expression(p):
     else:
         p[0] = Node("equality_expression", [p[1], p[3], p[2]])
 
-def p_relational_expresion(p):
+def p_relational_expression(p):
     """ relational_expression : during_or_expression
                         | relational_expression RELOP during_or_expression
     """
@@ -259,14 +259,23 @@ def p_additive_expression(p):
 
 # Change to continue sequence in grammar i.e. function_expression, etc
 def p_multiplicative_expression(p):
-    """ multiplicative_expression : primary_expression
-                             | multiplicative_expression MULTIPLY primary_expression
-                             | multiplicative_expression DIVIDE primary_expression
+    """ multiplicative_expression : power_expression
+                             | multiplicative_expression MULTIPLY power_expression
+                             | multiplicative_expression DIVIDE power_expression
     """
     if len(p) == 2:
         p[0] = Node("multiplicative_expression", [p[1]])
     else:
         p[0] = Node("multiplicative_expression", [p[1], p[3], p[2]])
+
+def p_power_expression(p):
+    """ power_expression : primary_expression
+                        | power_expression POWER primary_expression
+    """
+    if len(p) == 2:
+        p[0] = Node("power_expression", [p[1]])
+    else:
+        p[0] = Node("power_expression", [p[1], p[3], p[2]])
 
 
 def p_primary_expression(p):
@@ -435,6 +444,7 @@ if __name__ == '__main__':
     parser = CoZyParser()
     ## Put code to test here
     s = '''
+a = 2^4
 '''
 
 

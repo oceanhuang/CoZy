@@ -320,6 +320,18 @@ class codeGenerator(object):
                 return type1, str(operand1[1]) + " " + tree.children[2] + " " + str(operand2[1])
                     #return self.dispatch(tree.children[0]) + " " + tree.children[2] + " " + self.dispatch(tree.children[1])
 
+    def _power_expression(self, tree, flag=None):
+
+        if len(tree.children) == 1:
+            return self.dispatch(tree.children[0], flag) 
+        else:
+            (operand1, operand2, type1, type2) = self.get_types(tree.children[0], tree.children[1], flag)
+
+            if type1 != "NUM" or type2 != "NUM":
+                exit("TypeError! Cannot raise " + type1 + " to " + type2 + ". Must both be numbers");
+            else:
+                return type1, str(operand1[1]) + "**" + str(operand2[1])
+
     #this needs to be fixed        
     def _primary_expression(self, tree, flag=None):
         
