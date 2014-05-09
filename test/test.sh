@@ -40,7 +40,7 @@ while [ $COUNTER -lt $NUMTESTS ]; do
     #get first line of testfile
     FAIL_INTENT=$(head -n 1 $TESTFILE$EXT | grep "fail" | wc -l)
 
-    cat $TESTFILE$EXT | python testCozy.py 1>$RESULTS$COUNTER 2>$ERROR$COUNTER 
+    cat $TESTFILE$EXT | python testCoZy.py 1>$RESULTS$COUNTER 2>$ERROR$COUNTER 
     FAILED=false
 
     #check if size of error file is greater than 0
@@ -64,4 +64,4 @@ while [ $COUNTER -lt $NUMTESTS ]; do
 done
 
 
-#python testCozy.py  > testoutput
+#python testCoZy.py  > testoutput
