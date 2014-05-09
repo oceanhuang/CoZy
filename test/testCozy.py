@@ -48,6 +48,3 @@ myTester = CoZyTester()
 
 ret = ret[1:].rstrip('\n')
 myTester.run_code(prog, ret)
-
-
-
