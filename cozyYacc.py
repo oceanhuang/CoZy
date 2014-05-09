@@ -111,7 +111,7 @@ def p_statement(p):
 
 def p_statement_set_temp(p):
     """ statement : SET_TEMP LPAREN ID RPAREN NEWLINE
-                | SET_TEMP LPAREN TEMPERATURE RPAREN NEWLINE
+                | SET_TEMP LPAREN primary_expression RPAREN NEWLINE
     """
     p[0] = Node('set_temp', [p[3]])
 
@@ -184,8 +184,12 @@ def p_assignment_statement(p):
                              | ID EQUALS assignment_statement or_expression
     """
     
-    p[0] = Node("assignment_statement", [p[3]], p[1])
+    p[0] = Node("assignment_statement", [p[3]], p[1])  
 
+def p_get_temp_expression(p):
+    """ get_temp_expression : GET_TEMP
+    """
+    p[0] = Node("get_temp_expression", [])
 
 def p_assignment_statement_list_index(p):
     """ assignment_statement : list_index EQUALS or_expression
@@ -199,6 +203,7 @@ def p_assignment_statement_list_index(p):
 def p_or_expression(p):
     """ or_expression : and_expression
                         | or_expression OR and_expression
+                        | get_temp_expression
     """
     if len(p) == 2:
         p[0] = Node("or_expression", [p[1]])
@@ -461,6 +466,9 @@ a = 40 F
 b = 40 F
 c = a
 SET_TEMP(a)
+SET_TEMP(40 F)
+d = GET_TEMP
+print(GET_TEMP)
 
 '''
 

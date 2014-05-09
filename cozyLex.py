@@ -48,7 +48,8 @@ reserved = {
     'true' : 'TRUE',
     'false' : 'FALSE',
     'power' : 'POWER',
-    'SET_TEMP': 'SET_TEMP'
+    'SET_TEMP' : 'SET_TEMP',
+    'GET_TEMP' : 'GET_TEMP',
     }
 
 tokens = [
@@ -101,7 +102,7 @@ t_NONEQUIV  = r'(!=)'
 t_RELOP     = r'(<=)|(>=)|(<)|(>)'
 t_COMMA     = r'(,)'
 t_POWER     = r'\^'
-# t_GET_TEMP  = r'GET_TEMP'
+t_GET_TEMP  = r'GET_TEMP'
 t_SET_TEMP  = r'SET_TEMP'
 # A regular expression rule with some action code
 
@@ -335,6 +336,7 @@ if __name__ == '__main__':
     data = """
 a = 40 F
 SET_TEMP(a)
+c = GET_TEMP
 
 """
 #     data = """
