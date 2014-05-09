@@ -555,7 +555,7 @@ if __name__ == '__main__':
 ##"""
     s = '''
 def foo(number b, day m):
-    b = b + 1
+    print("hello")
 '''
 
     result = parser.parse(s)

@@ -1,4 +1,4 @@
-import datetime
+dimport datetime
 import re
 import sys
 everys = 0
@@ -73,6 +73,7 @@ class codeGenerator(object):
    
     #function definition
     def _function_definition(self, tree, flag=None):
+        flag = "FUNC"
         #with parameters
         if len(tree.children) == 3:
             arg = self.dispatch(tree.children[1])
