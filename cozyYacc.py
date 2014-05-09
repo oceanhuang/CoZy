@@ -50,33 +50,103 @@ def p_external_declaration(p):
     """
     p[0] = Node("external_declaration", [p[1]])
 
-# Needs to include parameter_list
+# these are for defining functions, not executing them
 def p_function_definition(p):
 
-    'function_definition : DEF ID LPAREN function_param_list RPAREN COLON NEWLINE INDENT statement_list DEDENT'
+    """function_definition : DEF ID LPAREN function_param_list RPAREN COLON NEWLINE INDENT statement_list DEDENT
+                            | DEF ID LPAREN RPAREN COLON NEWLINE INDENT statement_list DEDENT"""
 
-    p[0] = Node("function_definition", [p[2], p[4], p[9]]);
+    if len(p) == 11:
+        p[0] = Node("function_definition", [p[2], p[4], p[9]]);
+    else:
+        p[0] = Node("function_definition", [p[2], p[8]])
 
+#list of parameters or just one        
 def p_function_param_list(p):
-    'function_param_list : function_param' #need to handle empty string
+    """function_param_list : function_param 
+                    | function_param_list COMMA function_param
+    """
     if len(p)==2:
-        p[0] = Node("function_param_list", [p[1]])
+        p[0] = Node('function_param_list', [p[1]]) 
     else:
-        p[0] = Node("function_param_list", [])
+        p[0] = Node('function_param_list', [p[1], p[3]])
+
+def p_function_param_number(p):
+    """function_param : TNUMBER ID"""
+    p[0] = Node('function_param_number', [p[1], p[2]])
+
+##
+##def p_function_param_number(p):
+##    """function_param : TNUMBER ID"""
+##    p[0] = Node('function_param_number', [p[1], p[2]])
+##
+def p_function_param_temperature(p):
+    """function_param : TTEMPERATURE ID"""
+    p[0] = Node('function_param_temperature', [p[1], p[2]])
+
+def p_function_param_time(p):
+    """function_param : TTIME ID"""
+    p[0] = Node('function_param_time', [p[1], p[2]])
+
+def p_function_param_datetime(p):
+    """function_param : TDATETIME ID"""
+    p[0] = Node('function_param_datetime', [p[1], p[2]])
+
+def p_function_param_boolean(p):
+    """function_param : TBOOLEAN ID"""
+    p[0] = Node('function_param_boolean', [p[1], p[2]])
+    
+def p_function_param_day(p):
+    """function_param : TDAY ID"""
+    p[0] = Node('function_param_day', [p[1], p[2]])
+
+def p_function_param_month(p):
+    """function_param : TMONTH ID"""
+    p[0] = Node('function_param_month', [p[1], p[2]])
+
+def p_function_param_date(p):
+    """function_param : TDATE ID"""
+    p[0] = Node('function_param_date', [p[1], p[2]])
+    
+def p_function_param_dayrange(p):
+    """function_param : TDAYRANGE ID"""
+    p[0] = Node('function_param_dayrange', [p[1], p[2]])
+
+def p_function_param_monthrange(p):
+    """function_param : TMONTHRANGE ID"""
+    p[0] = Node('function_param_monthrange', [p[1], p[2]])
+
+def p_function_param_timerange(p):
+    """function_param : TTIMERANGE ID"""
+    p[0] = Node('function_param_timerange', [p[1], p[2]])
+
+def p_function_param_string(p):
+    """function_param : TSTRING ID"""
+    p[0] = Node('function_param_string', [p[1], p[2]])
+
+def p_function_param_listparam(p):
+    """function_param : TLIST ID"""
+    p[0] = Node('function_param_listparam', [p[1], p[2]])
+##    
+#the parameter's type and the id
 
 
-def p_function_param(p):
-    '''function_param : ID 
-                    | function_param COMMA function_param_end
-    '''
-    if len(p)==2:
-        p[0] = Node('function_param', [], p[1])
-    else:
-        p[0] = Node('function_param', [p[1], p[3]])
-
-def p_function_param_end(p):
-    'function_param_end : ID'
-    p[0] = Node('function_param_end', [], p[1])
+##def p_type_expression(p):
+##    """type_expression : TNUMBER
+##                    | TTEMPERATURE
+##                    | TTIME
+##                    | TDATETIME
+##                    | TBOOLEAN
+##                    | TDAY
+##                    | TMONTH
+##                    | TDATE
+##                    | TDAYRANGE
+##                    | TMONTHRANGE
+##                    | TDATERANGE
+##                    | TTIMERANGE
+##                    | TSTRING
+##                    | TLIST"""
+##    p[0] = Node('type_expression', [], p[1])
 
 def p_statement_list(p):
     """ statement_list : statement
@@ -462,17 +532,31 @@ if __name__ == '__main__':
 #    print ("hello world")
 #    
 # """
-    s = '''
-b = not(7 + 3)
-a = Monday
-c = not(true or false)
-c = not(true or a)
-c = not(b or a)
-c = not(b)
-c = (b)
-c = not(b) + 2
-'''
+##    s = '''
+##b = not(7 + 3)
+##a = Monday
+##c = not(true or false)
+##c = not(true or a)
+##c = not(b or a)
+##c = not(b)
+##c = (b)
+##c = not(b) + 2
+##'''
 
+##    s = """
+##a = 0
+##y[a] = a
+##def foo(number x, list y):
+##    x = 3
+##
+##def foo(number b, list y):
+##    y[b] = b
+##
+##"""
+    s = '''
+def foo(number b, day m):
+    b = b + 1
+'''
 
     result = parser.parse(s)
 

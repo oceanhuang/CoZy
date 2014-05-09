@@ -70,31 +70,88 @@ class codeGenerator(object):
     def _external_declaration(self, tree, flag=None):
         return self.dispatch(tree.children)
 
-    # very basic function definition
+   
+    #function definition
     def _function_definition(self, tree, flag=None):
-        s = "def " + tree.children[0] + "(" + self.dispatch(tree.children[1])+") :\n"
-        lines = self.dispatch(tree.children[2]).splitlines()
+        #with parameters
+        if len(tree.children) == 3:
+            arg = self.dispatch(tree.children[1])
+            if type(arg) is tuple:
+                arg = str(arg[1])
+                
+            s = "def " + tree.children[0] + "(" + arg +") :\n"
+            lines = self.dispatch(tree.children[2]).splitlines()
+            for line in lines:
+                s+= "    " + line +"\n"
+            return s
 
+        #no parameters
+        s = "def " + tree.children[0] + "( ) :\n"
+        lines = self.dispatch(tree.children[1]).splitlines()
         for line in lines:
             s+= "    " + line +"\n"
         return s
 
     def _function_param_list(self, tree, flag=None):
-        if len(tree.children)==0:
-            return ''
+        if len(tree.children) == 1:
+            s = self.dispatch(tree.children[0])
+            return s
         else:
-            return self.dispatch(tree.children[0])
+            s = self.dispatch(tree.children[0]) + ", " + self.dispatch(tree.children[1])
+            return s
 
-    def _function_param(self, tree, flag=None):
-        if tree.leaf==None:
-           return  self.dispatch(tree.children[0]) + "," + self.dispatch(tree.children[1])
-        else:
-           return tree.leaf
+    def _function_param_number(self, tree, flag=None):
+        s = tree.children[1]
+        return "NUM",s
 
-    def _function_param_end(self, tree, flag=None):
-        return tree.leaf
+    #FIX THIS ONEEEEEE
+    def _function_param_temperature(self, tree, flag=None):
+        s = tree.children[1]
+        return "TEMPERATURE",s
 
+    def _function_param_time(self, tree, flag=None):
+        s = tree.children[1]
+        return "TIME",s
 
+    def _function_param_datetime(self, tree, flag=None):
+        s = tree.children[1]
+        return "DATETIME",s
+
+    def _function_param_boolean(self, tree, flag=None):
+        s = tree.children[1]
+        return "BOOLEAN",s
+
+    def _function_param_day(self, tree, flag=None):
+        s = tree.children[1]
+        return "DAY",s
+
+    def _function_param_month(self, tree, flag=None):
+        s = tree.children[1]
+        return "MONTH",s
+
+    def _function_param_date(self, tree, flag=None):
+        s = tree.children[1]
+        return "DATE",s
+
+    def _function_param_dayrange(self, tree, flag=None):
+        s = tree.children[1]
+        return "DAYRANGE",s
+
+    def _function_param_monthrange(self, tree, flag=None):
+        s = tree.children[1]
+        return "MONTHRANGE",s
+
+    def _function_param_timerange(self, tree, flag=None):
+        s = tree.children[1]
+        return "TIMERANGE",s
+
+    def _function_param_string(self, tree, flag=None):
+        s = tree.children[1]
+        return "STRING",s
+
+    def _function_param_list(self, tree, flag=None):
+        s = tree.children[1]
+        return "LIST",s
     
     def _list_start(self, tree, flag=None):
         if len(tree.children)==0:
@@ -175,7 +232,7 @@ class codeGenerator(object):
 #            elif arg[0] == "TIME":
 #                self.symbolTable[tree.leaf] = [arg[0], arg[1]]
 #                arg = "datetime.time(" + str(arg[1].get('hour')) + ", " + str(arg[1].get('minute')) +")"
-            elif arg[0] == "BOOL" or arg[0] == "NUM":
+            elif arg[0] == "BOOLEAN" or arg[0] == "NUM":
                 arg = arg[1]
             elif self.check_if_time(arg):
                 arg = self.convert_time(arg)
@@ -205,7 +262,7 @@ class codeGenerator(object):
 #            elif arg[0] == "TIME":
 #                self.symbolTable[listIndex] = [arg[0], arg[1]]
 #                arg = "datetime.time(" + str(arg[1].get('hour')) + ", " + str(arg[1].get('minute')) +")"
-            elif arg[0] == "BOOL" or arg[0] == "NUM":
+            elif arg[0] == "BOOLEAN" or arg[0] == "NUM":
                 arg = arg[1]
             elif self.check_if_time(arg):
                 arg = self.convert_time(arg)
@@ -249,7 +306,7 @@ class codeGenerator(object):
             if type1 != type2:
                 exit("TypeError! Cannot compare objects of type " + type1 + " and objects of type " + type2)
 
-            return "BOOL", str(operand1[1]) + " " + tree.children[2] + " " + str(operand2[1])
+            return "BOOLEAN", str(operand1[1]) + " " + tree.children[2] + " " + str(operand2[1])
             #return self.dispatch(tree.children[0]) + " " + tree.children[2] + " " + self.dispatch(tree.children[1])  
 
     def _relational_expression(self, tree, flag=None):
