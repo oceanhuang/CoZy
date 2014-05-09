@@ -91,6 +91,7 @@ def p_statement_list(p):
 def p_statement(p):
     """ statement : assignment_statement NEWLINE
                   | every_statement
+                  | list_change NEWLINE
                   | once_every_statement
                   | iteration_statement
                   | selection_statement
@@ -100,15 +101,90 @@ def p_statement(p):
                   | print_statement NEWLINE
                   | log_statement NEWLINE
     """
+    #maybe add | list_change NEWLINE
     p[0] = Node("statement", [p[1]])
 
-# is this correct?? need to fix according to grammar...
+
+def p_list_change(p):
+    '''list_change : ADD LPAREN ID COMMA or_expression RPAREN 
+                    | SORT LPAREN ID RPAREN
+    '''
+    if len(p) == 7:
+        p[0] = Node("list_add_expression", [p[5]], p[3])
+    else:
+        p[0] = Node("list_sort_expression", [], p[3])
+
+
+def p_list_change_index(p):
+    '''list_change : ADD LPAREN list_index COMMA or_expression RPAREN 
+                    | SORT LPAREN list_index RPAREN
+    '''
+    if len(p) == 7:
+        p[0] = Node("list_add_expression_index", [p[3],p[5]])
+    else:
+        p[0] = Node("list_sort_expression_index", [p[3]])
+    
+    
+def p_list_change_remove(p):
+    '''list_change : REMOVE LPAREN ID COMMA or_expression RPAREN
+    '''
+    p[0] = Node("list_remove_expression", [p[5]], p[3])
+
+def p_list_change_remove_index(p):
+    '''list_change : REMOVE LPAREN list_index COMMA or_expression RPAREN
+    '''
+    p[0] = Node("list_remove_expression_index", [p[3], p[5]])
+
+    
+
+def p_list_index_double(p):
+    '''list_index : list_index LBRACK additive_expression RBRACK
+    '''
+    p[0] = Node("list_index_double", [p[1], p[3]])
+
+def p_list_index_id(p):
+    '''list_index : ID LBRACK additive_expression RBRACK
+    '''
+    p[0] = Node("list_index_id", [p[3]], p[1])
+
+
+def p_list_start(p):
+    '''list_start : LBRACE RBRACE
+                     | LBRACE list_expression RBRACE
+    '''
+    if len(p)==3:
+        p[0] = Node("list_start")
+    else:
+        p[0] = Node("list_start", [p[2]])
+
+def p_list_expression(p):
+    
+    '''list_expression : list_expression COMMA or_expression
+                            | or_expression
+    '''
+    if len(p) == 2:
+        p[0] = Node("list_expression", [p[1]])
+    else:
+        p[0] = Node("list_expression", [p[1], p[3]])
+
+
+# is this correct?? need to fix according to grammar... Remember to fix the one below it too!
 def p_assignment_statement(p):
     """ assignment_statement : ID EQUALS or_expression
                              | ID EQUALS assignment_statement or_expression
     """
     
     p[0] = Node("assignment_statement", [p[3]], p[1])
+
+
+def p_assignment_statement_list_index(p):
+    """ assignment_statement : list_index EQUALS or_expression
+                             | list_index EQUALS assignment_statement or_expression
+    """
+    
+    p[0] = Node("assignment_statement_list_index", [p[1],p[3]])
+
+    
 
 def p_or_expresion(p):
     """ or_expression : and_expression
@@ -150,7 +226,7 @@ def p_relational_expresion(p):
 #maybe put during things here.... need to not allow above cases for during in the grammar!!
 def p_during_or_expression(p):
     """during_or_expression : during_and_expression
-                            | during_or_expression COMMA during_and_expression"""
+                            | during_or_expression SEMICOLON during_and_expression"""
 #                            | LPAREN during_or_expression RPAREN DURING during_and_expression"""
     if len(p) == 2:
         p[0] = Node("during_or_expression", [p[1]])
@@ -192,18 +268,46 @@ def p_multiplicative_expresion(p):
     else:
         p[0] = Node("multiplicative_expression", [p[1], p[3], p[2]])
 
-# needs to be fixed (move not)...... also code generator needs to handle not
+
 def p_primary_expression(p):
     """ primary_expression : ID
-                           | LPAREN or_expression RPAREN
-                           | NOT LPAREN or_expression RPAREN
+                            | LPAREN or_expression RPAREN
     """
     if len(p) == 2:
         p[0] = Node('primary_expression', [], p[1])
-    elif len(p) == 4:
-        p[0] = Node('primary_expression', [p[2]])
     else:
-        p[0] = Node('primary_expression', [p[3]]) #has not in it
+        p[0] = Node('primary_expression', [p[2]])
+
+def p_primary_expression_not(p):
+    """ primary_expression : NOT LPAREN or_expression RPAREN
+    """
+    p[0] = Node('primary_expression_not', [p[3]])
+
+def p_primary_expression_boolean(p):
+    """ primary_expression : TRUE
+                            | FALSE"""
+    p[0] = Node('primary_expression_boolean', [], p[1])
+
+def p_primary_expression_list(p):
+    """ primary_expression : list_start
+                            | list_index
+    """
+    p[0] = Node('list_primary_expression', [p[1]])
+
+
+'''
+def p_id_id(p):
+    """ id_improved : ID
+    """
+    p[0] = Node('id_id', [], p[1])
+
+
+def p_id_list(p):
+    """ id_improved : list_index
+    """
+    p[0] = Node('id_list', [p[1]])
+'''
+    
 
 def p_primary_expression_string(p):
     """ primary_expression : STRING
@@ -299,9 +403,9 @@ def p_log_statement(p):
 
 #need to add foreach/ also confused about the grammar
 def p_for_statement(p):
-    """ for_statement : FOR primary_expression IN or_expression TO or_expression COLON NEWLINE INDENT statement_list DEDENT
+    """ for_statement : FOR ID IN or_expression TO or_expression COLON NEWLINE INDENT statement_list DEDENT
     """
-    p[0] = Node("for_statement", [p[2], p[4], p[6], p[10]])
+    p[0] = Node("for_statement", [p[4], p[6], p[10]], p[2])
 
 # Error rule for syntax errors
 def p_error(p):
@@ -359,7 +463,13 @@ if __name__ == '__main__':
 #    
 # """
     s = '''
-log("5")
+a = 3.4
+b = 7
+c = b/a
+print(c)
+for i in 1.7 to 20:
+    print("hello")
+ 
 '''
 
 
