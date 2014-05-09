@@ -444,7 +444,14 @@ if __name__ == '__main__':
     parser = CoZyParser()
     ## Put code to test here
     s = '''
-a = 2^4
+a = 3.4
+b = 7
+c = b/a
+print(c)
+for i in 1 to 20:
+    a = a + i
+    print(i)
+ 
 '''
 
 
