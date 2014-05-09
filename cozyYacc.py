@@ -463,12 +463,11 @@ if __name__ == '__main__':
     ## Put code to test here
     s = '''
 a = 40 F
-b = 40 F
-c = a
 SET_TEMP(a)
 SET_TEMP(40 F)
 d = GET_TEMP
 print(GET_TEMP)
+print(d)
 
 '''
 
