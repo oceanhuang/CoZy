@@ -1,6 +1,11 @@
 import ply.yacc as yacc
 from compiler import ast, misc
 
+precedence = (
+    ('left', 'PLUS', 'MINUS'),
+    ('left', 'MULTIPLY', 'DIVIDE')
+)
+
 # Get the token map from the lexer.  This is required.
 from cozyLex import *
 from codeGenerator import *
@@ -249,11 +254,14 @@ def p_during_and_expression(p):
         
 def p_additive_expression(p):
     """ additive_expression : multiplicative_expression
+                             | MINUS multiplicative_expression
                              | additive_expression PLUS multiplicative_expression
                              | additive_expression MINUS multiplicative_expression
     """
     if len(p) == 2:
         p[0] = Node("additive_expression", [p[1]])
+    elif len(p) == 3:
+        p[0] = Node("additive_expression", [p[2], p[1]])
     else:
         p[0] = Node("additive_expression", [p[1], p[3], p[2]])
 
@@ -277,10 +285,10 @@ def p_power_expression(p):
     else:
         p[0] = Node("power_expression", [p[1], p[3], p[2]])
 
-
 def p_primary_expression(p):
     """ primary_expression : ID
                             | LPAREN or_expression RPAREN
+
     """
     if len(p) == 2:
         p[0] = Node('primary_expression', [], p[1])
@@ -444,7 +452,19 @@ if __name__ == '__main__':
     parser = CoZyParser()
     ## Put code to test here
     s = '''
-a = 2^4
+ret = -2
+ret = -(2+4)^4
+ret = 5-(2+4)
+ret = 5-(2*4)
+ret = 5+(-(2*4))
+ret = 5*(-(2*4))
+ret = -(2+4)^4
+ret = 5-(-2)
+a = 5
+b = 6
+ret = -a
+ret = -a+4
+ret = -a + b
 '''
 
 

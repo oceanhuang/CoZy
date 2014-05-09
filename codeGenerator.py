@@ -276,6 +276,12 @@ class codeGenerator(object):
         
         if len(tree.children) == 1:
             return self.dispatch(tree.children[0], flag)
+        elif len(tree.children) == 2:
+            operand1 = self.dispatch(tree.children[0], flag)
+            if operand1[0] != "NUM":
+                exit("TypeError! Cannot negate " + type1)
+            else:
+                return operand1[0], str("-"+str(operand1[1]))
         else:
             
             (operand1, operand2, type1, type2) = self.get_types(tree.children[0], tree.children[1], flag)

@@ -330,7 +330,8 @@ if __name__ == '__main__':
     # code
     #this doesnt work RGGGGGG
     data = """
-a = 2^4
+a = -2.4^4
+b = 2-4
 """
 #     data = """
 # x=3+3;
