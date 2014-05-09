@@ -1,6 +1,7 @@
 import datetime
 import re
 import sys
+import runtimeError
 everys = 0
 temp_def ='''
 class Temperature:
@@ -30,13 +31,19 @@ class Temperature:
 
 class codeGenerator(object):
     def __init__(self, tree):
+        print "hello!!!!"
         # Keep track of scopes
         self.varScopes = [[]]
         self.scopeDepth = 0
         # Symbols table
         self.symbolTable = {}
         # Variable to store the code
-        self.ret = "import datetime\n" + "every_list = []\n" + "log_file = open('cozyLog.txt', 'a')\n" + temp_def + self.dispatch(tree)
+        self.ret = "import datetime\n" + "import sys\n" + "import inspect\n" + "every_list = []\n" + "log_file = open('cozyLog.txt', 'a')\n" + temp_def
+        self.ret = runtimeError.getLineNumberFunction(self.ret)
+        body = self.dispatch(tree)
+        self.ret += runtimeError.errorBeginning(body)
+        self.ret += runtimeError.errorEnd()
+        print self.ret
         # 
         # Keeps track of the number of every's
 
@@ -45,7 +52,6 @@ class codeGenerator(object):
         print exit_msg
         #sys.exit()
 
-    
     def dispatch(self, tree, flag=None):
         '''Dispatches based on type of node'''
         if isinstance(tree, list):

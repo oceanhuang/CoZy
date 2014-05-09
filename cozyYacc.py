@@ -138,12 +138,12 @@ def p_list_change_remove_index(p):
     
 
 def p_list_index_double(p):
-    '''list_index : list_index LBRACE additive_expression RBRACE
+    '''list_index : list_index LBRACK or_expression RBRACK
     '''
     p[0] = Node("list_index_double", [p[1], p[3]])
 
 def p_list_index_id(p):
-    '''list_index : ID LBRACE additive_expression RBRACE
+    '''list_index : ID LBRACK or_expression RBRACK
     '''
     p[0] = Node("list_index_id", [p[3]], p[1])
 
@@ -184,7 +184,7 @@ def p_assignment_statement_list_index(p):
     
     p[0] = Node("assignment_statement_list_index", [p[1],p[3]])
 
-    
+
 
 def p_or_expresion(p):
     """ or_expression : and_expression
@@ -290,7 +290,8 @@ def p_primary_expression_boolean(p):
 
 def p_primary_expression_list(p):
     """ primary_expression : list_start
-                            | list_index
+                    | list_index
+                            
     """
     p[0] = Node('list_primary_expression', [p[1]])
 
@@ -463,14 +464,8 @@ if __name__ == '__main__':
 #    
 # """
     s = '''
-b = not(7 + 3)
-a = Monday
-c = not(true or false)
-c = not(true or a)
-c = not(b or a)
-c = not(b)
-c = (b)
-c = not(b) + 2
+a = [1,2,3]
+a{1} = 5
 '''
 
 
