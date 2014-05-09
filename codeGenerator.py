@@ -578,6 +578,16 @@ class codeGenerator(object):
         s = "log_file.write( str(" + arg + ") + '\\n'" + ")"
         return s
 
+    def _return_statement(self, tree, flag=None):
+        arg = self.dispatch(tree.children[0])
+        if type(arg) is tuple:
+            arg = arg[1]
+
+        if type(arg) is int:
+            arg = str(arg)
+        s = "return " + arg
+        return s
+
     def _for_statement(self, tree, flag=None):
         #for iterator in a range
         or_expression1 = self.dispatch(tree.children[0])

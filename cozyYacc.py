@@ -592,11 +592,11 @@ def foo(number b, list y):
 
     # ## Prints the AST
     print result
-##    code = codeGenerator(result)
-##    # Prints the actual program
-##    print code.ret
-##
-##    ## Makes the output file
-##    f = open("out.py", 'w')
-##    f.write(code.ret)
-##    print 'Done!\nCheck "out.py"'
+    code = codeGenerator(result)
+    # Prints the actual program
+    print code.ret
+
+    ## Makes the output file
+    f = open("out.py", 'w')
+    f.write(code.ret)
+    print 'Done!\nCheck "out.py"'
