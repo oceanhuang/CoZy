@@ -62,7 +62,8 @@ reserved = {
     'during' : 'DURING',
     'true' : 'TRUE',
     'false' : 'FALSE',
-    'power' : 'POWER'
+    'power' : 'POWER',
+    'return' : 'RETURN'
     }
 
 tokens = [

@@ -75,11 +75,6 @@ def p_function_param_number(p):
     """function_param : TNUMBER ID"""
     p[0] = Node('function_param_number', [p[1], p[2]])
 
-##
-##def p_function_param_number(p):
-##    """function_param : TNUMBER ID"""
-##    p[0] = Node('function_param_number', [p[1], p[2]])
-##
 def p_function_param_temperature(p):
     """function_param : TTEMPERATURE ID"""
     p[0] = Node('function_param_temperature', [p[1], p[2]])
@@ -115,6 +110,10 @@ def p_function_param_dayrange(p):
 def p_function_param_monthrange(p):
     """function_param : TMONTHRANGE ID"""
     p[0] = Node('function_param_monthrange', [p[1], p[2]])
+
+def p_function_param_daterange(p):
+    """function_param : TDATERANGE ID"""
+    p[0] = Node('function_param_daterange', [p[1], p[2]])
 
 def p_function_param_timerange(p):
     """function_param : TTIMERANGE ID"""
@@ -170,6 +169,7 @@ def p_statement(p):
                   | for_statement
                   | print_statement NEWLINE
                   | log_statement NEWLINE
+                  | return_statement NEWLINE
     """
     #maybe add | list_change NEWLINE
     p[0] = Node("statement", [p[1]])
@@ -486,6 +486,11 @@ def p_for_statement(p):
     """
     p[0] = Node("for_statement", [p[4], p[6], p[10]], p[2])
 
+def p_return_statement(p):
+    """ return_statement : RETURN LPAREN or_expression RPAREN
+    """
+    p[0] = Node("return_statement", [p[3]])
+
 # Error rule for syntax errors
 def p_error(p):
     print "Syntax error in input!"
@@ -579,6 +584,7 @@ def foo(number b, list y):
     add(y,b)
     y{0} =  b
     y{b} = "whatever"
+    return(y)
 
 '''
 
@@ -586,11 +592,11 @@ def foo(number b, list y):
 
     # ## Prints the AST
     print result
-    code = codeGenerator(result)
-    # Prints the actual program
-    print code.ret
-
-    ## Makes the output file
-    f = open("out.py", 'w')
-    f.write(code.ret)
-    print 'Done!\nCheck "out.py"'
+##    code = codeGenerator(result)
+##    # Prints the actual program
+##    print code.ret
+##
+##    ## Makes the output file
+##    f = open("out.py", 'w')
+##    f.write(code.ret)
+##    print 'Done!\nCheck "out.py"'

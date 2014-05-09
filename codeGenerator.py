@@ -152,6 +152,11 @@ class codeGenerator(object):
         self.symbolTable[s] = ["MONTHRANGE", None]
         return s
 
+    def _function_param_daterange(self, tree, flag=None):
+        s = tree.children[1]
+        self.symbolTable[s] = ["DATERANGE", None]
+        return s
+
     def _function_param_timerange(self, tree, flag=None):
         s = tree.children[1]
         self.symbolTable[s] = ["TIMERANGE", None]
