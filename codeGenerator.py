@@ -528,7 +528,7 @@ class codeGenerator(object):
         everyFlag = "EVERY"
 
         s = "\ndef every" + str(everys) + "() :\n"
-        s += "    print 'executing every" + str(everys) + "'\n"
+        # s += "    print 'executing every" + str(everys) + "'\n"
         
         lines = self.dispatch(tree.children[1]).splitlines()
         for line in lines:
@@ -549,7 +549,7 @@ class codeGenerator(object):
 
         s = "happened" + str(everys) + " = False\n"
         s += "\ndef every" + str(everys) + "() :\n"
-        s += "    print 'executing once every" + str(everys) + "'\n"
+        # s += "    print 'executing once every" + str(everys) + "'\n"
 
         lines = self.dispatch(tree.children[1]).splitlines()
         for line in lines:
