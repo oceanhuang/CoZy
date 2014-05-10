@@ -79,7 +79,7 @@ class codeGenerator(object):
     def outBlock(self, tree, flag=None):
         for variable in self.scopes[self.scopeDepth]:
             del self.symbolTable[variable]
-        del self.scopes[self.scope_depth]
+        del self.scopes[self.scopeDepth]
         self.scopeDepth -= 1
         
     def _program(self, tree, flag=None):
@@ -180,12 +180,17 @@ class codeGenerator(object):
     #whoever wrote this, please have a look at _assignnment_statement_list_index
     def _assignment_statement(self, tree, flag=None):
         arg = self.dispatch(tree.children[0]);
-        self.symbolTable[tree.leaf] = [arg[0], arg[1]]
-        
+        if tree.leaf + "__" + str(self.scopeDepth) + "__" in self.symbolTable:
+            var_type = self.symbolTable[tree.leaf + "__" + str(self.scopeDepth) + "__"][0]
+            if self.symbolTable[tree.leaf + "__" + str(self.scopeDepth) + "__"][0] != arg[0]:
+                exit(tree.leaf + " is of type " + var_type + ". Cannot assign "  + arg[0] + " to it.")
+
+        self.symbolTable[tree.leaf + "__" + str(self.scopeDepth) + "__"] = [arg[0], arg[1]]
+        self.scopes[self.scopeDepth].append(tree.leaf + "__" + str(self.scopeDepth) + "__")
         if type(arg) is tuple:
             arg = arg[1]
-        #print self.symbolTable #uncomment to check symbol table
-        
+        # print self.symbolTable #uncomment to check symbol table
+        # print self.scopes
         if type(arg) is not str: arg = str(arg)
         return tree.leaf + " = " + arg
 
@@ -394,14 +399,13 @@ class codeGenerator(object):
                 arg1 = arg
             return arg[0], "(" + arg1 + ")"
         else:
-            
             # This means this is a variable/ID. 
             # Check if variable is in symbol table and return the variable and its type
-            # if tree.leaf in self.scopes[self.scopeDepth]:
-            (varType, value) = self.symbolTable.get(tree.leaf)
-            return varType, tree.leaf
-            # else:
-            #     exit("Variable " + tree.leaf + " not declared")
+            if (tree.leaf + "__" +str(self.scopeDepth) + "__") in self.scopes[self.scopeDepth]:
+                (varType, value) = self.symbolTable.get(tree.leaf + "__" +str(self.scopeDepth) + "__")
+                return varType, tree.leaf, True
+            else:
+                exit("Variable " + tree.leaf + " not declared")
 
     def _primary_expression_not(self, tree, flag=None):
         if tree.leaf == None:
@@ -416,7 +420,7 @@ class codeGenerator(object):
             """
             if tree.leaf in self.scopes[self.scopeDepth]:
                 (varType, value) = self.symbolTable.get(tree.leaf)
-                return varType, tree.leaf
+                return varType, tree.leaf, True
             else:
                 exit("Variable " + tree.leaf + " not declared")
               
@@ -437,7 +441,7 @@ class codeGenerator(object):
             return self.dispatch(tree.children[0], flag)
         if len(tree.children) == 2:
             #this is stealing lists
-            return "((" + self.dispatch(tree.children[0], flag) + ") or (" + self.dispatch(tree.children[1], flag) + "))"
+            return "((" + self.dispatchTuple(tree.children[0], flag) + ") or (" + self.dispatchTuple(tree.children[1], flag) + "))"
       
 
     def _during_and_expression(self, tree, flag=None):
