@@ -153,8 +153,8 @@ def t_WS(t):
         return t
 
 
-# # A string containing ignored characters (spaces and tabs)
-# t_ignore  = ' \t'
+# A string containing ignored characters (spaces and tabs)
+t_ignore_COMMENT = r'\#.*'
 
 # Error handling rule
 def t_error(t):
@@ -337,6 +337,7 @@ if __name__ == '__main__':
     # code
     #this doesnt work RGGGGGG
     data = """
+# hihihihi
 a = 40 F
 SET_TEMP(a)
 c = GET_TEMP

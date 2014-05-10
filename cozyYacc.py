@@ -469,6 +469,7 @@ if __name__ == '__main__':
     parser = CoZyParser()
     ## Put code to test here
     s = '''
+# hihihi hihi
 a = 40 F
 SET_TEMP(a)
 SET_TEMP(40 F)
