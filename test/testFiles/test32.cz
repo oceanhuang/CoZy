@@ -1,8 +1,4 @@
 #None
-a = Monday
-print(a)
-b = 70 F
-print(b)
-print(70 F)
-c = 09/05/2014
-print(c)
+a = 40 F
+b = 40 F
+c = a + b
