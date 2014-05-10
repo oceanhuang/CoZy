@@ -47,7 +47,8 @@ reserved = {
     'once' : 'ONCE',
     'during' : 'DURING',
     'true' : 'TRUE',
-    'false' : 'FALSE'
+    'false' : 'FALSE',
+    'power' : 'POWER'
     }
 
 tokens = [
@@ -101,6 +102,7 @@ t_NONEQUIV  = r'(!=)'
 t_RELOP     = r'(<=)|(>=)|(<)|(>)'
 t_COMMA     = r'(,)'
 t_FORRANGE = r'\s*\.\.\.\s*'
+t_POWER     = r'\^'
 # A regular expression rule with some action code
 
 def t_DATETIME(t):
@@ -331,8 +333,6 @@ if __name__ == '__main__':
     # code
     #this doesnt work RGGGGGG
     data = """
-for x in 1...100:
-    print(x)
 """
 
     # Give the lexer some input

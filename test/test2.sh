@@ -15,6 +15,12 @@ if [ ! -d "errors" ]
 then
     mkdir "errors"
 fi
+    
+#remove parsetable and other generated files
+cd ..
+rm -rf *.pyc out.py parsetab.py parser.out
+cd test/
+rm -rf *.pyc out.py parsetab.py parser.out
 
 NUMTESTS=$(ls -1 testFiles | wc -l)
 #echo $numTests
@@ -27,6 +33,7 @@ grn='\e[0;32m'
 NC='\e[0m' # No Color
 
 while [ $COUNTER -lt $NUMTESTS ]; do
+    
     TESTRESULT="TEST"
     EXT=$COUNTER".cz"
     

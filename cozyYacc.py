@@ -138,12 +138,12 @@ def p_list_change_remove_index(p):
     
 
 def p_list_index_double(p):
-    '''list_index : list_index LBRACE additive_expression RBRACE
+    '''list_index : list_index LBRACK additive_expression RBRACK
     '''
     p[0] = Node("list_index_double", [p[1], p[3]])
 
 def p_list_index_id(p):
-    '''list_index : ID LBRACE additive_expression RBRACE
+    '''list_index : ID LBRACK additive_expression RBRACK
     '''
     p[0] = Node("list_index_id", [p[3]], p[1])
 
@@ -186,7 +186,7 @@ def p_assignment_statement_list_index(p):
 
     
 
-def p_or_expresion(p):
+def p_or_expression(p):
     """ or_expression : and_expression
                         | or_expression OR and_expression
     """
@@ -195,7 +195,7 @@ def p_or_expresion(p):
     else:
         p[0] = Node("or_expression", [p[1], p[3], p[2]])
 
-def p_and_expresion(p):
+def p_and_expression(p):
     """ and_expression : equality_expression
                         | and_expression AND equality_expression
     """
@@ -204,7 +204,7 @@ def p_and_expresion(p):
     else:
         p[0] = Node("and_expression", [p[1], p[3], p[2]])
 
-def p_equality_expresion(p):
+def p_equality_expression(p):
     """ equality_expression : relational_expression
                         | equality_expression EQUIV relational_expression
                         | equality_expression NONEQUIV relational_expression
@@ -214,7 +214,7 @@ def p_equality_expresion(p):
     else:
         p[0] = Node("equality_expression", [p[1], p[3], p[2]])
 
-def p_relational_expresion(p):
+def p_relational_expression(p):
     """ relational_expression : during_or_expression
                         | relational_expression RELOP during_or_expression
     """
@@ -247,7 +247,7 @@ def p_during_and_expression(p):
         p[0] = Node("during_and_expression", [p[1],p[3]])
 
         
-def p_additive_expresion(p):
+def p_additive_expression(p):
     """ additive_expression : multiplicative_expression
                              | additive_expression PLUS multiplicative_expression
                              | additive_expression MINUS multiplicative_expression
@@ -258,15 +258,25 @@ def p_additive_expresion(p):
         p[0] = Node("additive_expression", [p[1], p[3], p[2]])
 
 # Change to continue sequence in grammar i.e. function_expression, etc
-def p_multiplicative_expresion(p):
-    """ multiplicative_expression : to_expression
-                             | multiplicative_expression MULTIPLY primary_expression
-                             | multiplicative_expression DIVIDE primary_expression
+def p_multiplicative_expression(p):
+    """ multiplicative_expression : power_expression
+                             | multiplicative_expression MULTIPLY power_expression
+                             | multiplicative_expression DIVIDE power_expression
     """
     if len(p) == 2:
         p[0] = Node("multiplicative_expression", [p[1]])
     else:
         p[0] = Node("multiplicative_expression", [p[1], p[3], p[2]])
+
+def p_power_expression(p):
+    """ power_expression : to_expression
+                        | power_expression POWER primary_expression
+    """
+    if len(p) == 2:
+        p[0] = Node("power_expression", [p[1]])
+    else:
+        p[0] = Node("power_expression", [p[1], p[3], p[2]])
+
 
 def p_to_expression(p):
     """ to_expression : primary_expression
@@ -277,7 +287,6 @@ def p_to_expression(p):
     else:
         p[0] = Node("to_expression", [p[1], p[3]])
  
-# needs to be fixed (move not)...... also code generator needs to handle not
 def p_primary_expression(p):
     """ primary_expression : ID
                             | LPAREN or_expression RPAREN
@@ -432,6 +441,7 @@ class CoZyParser(object):
         self.parser = yacc.yacc()
 
     def parse(self, code):
+        code = code + '\n'
         self.lexer.input(code)
         result = self.parser.parse(lexer = self.lexer)
         # print result
