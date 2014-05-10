@@ -48,7 +48,10 @@ from r_pi import ThermoStat
 myThermoStat = ThermoStat.Sim_ThermoStat()
 '''
 else:
-    thermoStat = ''
+    thermoStat = '''
+from r_pi import Fake_ThermoStat
+myThermoStat = Fake_ThermoStat.Fake_ThermoStat()   
+'''
 
 loop_def = '''
 while 1:
