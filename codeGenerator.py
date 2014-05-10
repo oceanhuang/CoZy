@@ -639,7 +639,7 @@ class codeGenerator(object):
         return s
 
     def _date_time_expression(self, tree, flag=None):
-        p = re.compile(r'([0-3]?[0-9])/([01]?[0-9])/([0-9][0-9][0-9][0-9])[ ]([01]?[0-9]):([0-5][0-9][ ])((AM)|(PM))')
+        p = re.compile(r'([0-3]?[0-9])/([01]?[0-9])/([0-9]+)[ ]([01]?[0-9]):([0-5][0-9][ ])((AM)|(PM))')
         match = p.search(tree.leaf)
         day = int(match.group(1))
         month = int(match.group(2))
@@ -694,7 +694,7 @@ class codeGenerator(object):
         #return "datetime.time(" + str(hour) + ", " + minute +")" 
 
     def _date_expression(self, tree, flag=None):
-        p = re.compile(r'([0-3]?[0-9])/([01]?[0-9])/([0-9][0-9][0-9][0-9])')
+        p = re.compile(r'([0-3]?[0-9])/([01]?[0-9])/([0-9]+)')
         match = p.search(tree.leaf)
         day = int(match.group(1))
         month = int(match.group(2))
