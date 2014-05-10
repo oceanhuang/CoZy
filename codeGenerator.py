@@ -174,16 +174,17 @@ class codeGenerator(object):
     def _statement(self, tree, flag=None):
         return self.dispatch(tree.children) + "\n"
 
-    def _set_temp(self, tree, flag=None):
-        try:
-            arg = self.dispatch(tree.children[0])
-            if arg[0] == "F" or arg[0] == "C" or arg[0] == "K":
+    def _set_temp_statement(self, tree, flag=None):
+        # print tree.children[0]
+        arg = self.dispatch(tree.children[0])
+        if arg[0] == "F" or arg[0] == "C" or arg[0] == "K":
+            # print self.symbolTable.get(arg[1])
+            if (self.symbolTable.get(arg[1])):
+                return "myThermoStat.set_temp(" + str(arg[1]) + ".getCelsius())\n"
+            else: 
                 t = "Temperature(" + str(arg[1]) + ", '" + arg[0] + "')"
                 return "myThermoStat.set_temp(" + t + ".getCelsius())\n"
-        except AttributeError:
-            (varType, value) = self.symbolTable.get(tree.children[0])
-            if varType == "F" or varType == "C" or varType == "K":
-                return "myThermoStat.set_temp(" + str(tree.children[0]) + ".getCelsius())\n"
+                
         # arg = self.dispatch(tree.children[0]);
         # print arg
         # if operand[0] == "F" or operand[0] == "C" or operand[0] == "K":
@@ -311,12 +312,6 @@ class codeGenerator(object):
         
         if len(tree.children) == 1:
             return self.dispatch(tree.children[0], flag)
-        elif len(tree.children) == 2:
-            operand1 = self.dispatch(tree.children[0], flag)
-            if operand1[0] != "NUM":
-                exit("TypeError! Cannot negate " + type1)
-            else:
-                return operand1[0], str("-"+str(operand1[1]))
         else:
             
             (operand1, operand2, type1, type2) = self.get_types(tree.children[0], tree.children[1], flag)

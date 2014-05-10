@@ -105,15 +105,15 @@ def p_statement(p):
                   | for_statement
                   | print_statement NEWLINE
                   | log_statement NEWLINE
+                  | set_temp_statement NEWLINE
     """
     #maybe add | list_change NEWLINE
     p[0] = Node("statement", [p[1]])
 
-def p_statement_set_temp(p):
-    """ statement : SET_TEMP LPAREN ID RPAREN NEWLINE
-                | SET_TEMP LPAREN primary_expression RPAREN NEWLINE
+def p_set_temp_statement(p):
+    """ set_temp_statement : SET_TEMP LPAREN or_expression RPAREN
     """
-    p[0] = Node('set_temp', [p[3]])
+    p[0] = Node('set_temp_statement', [p[3]])
 
 def p_list_change(p):
     '''list_change : ADD LPAREN ID COMMA or_expression RPAREN 
@@ -264,14 +264,11 @@ def p_during_and_expression(p):
         
 def p_additive_expression(p):
     """ additive_expression : multiplicative_expression
-                             | MINUS multiplicative_expression
                              | additive_expression PLUS multiplicative_expression
                              | additive_expression MINUS multiplicative_expression
     """
     if len(p) == 2:
         p[0] = Node("additive_expression", [p[1]])
-    elif len(p) == 3:
-        p[0] = Node("additive_expression", [p[2], p[1]])
     else:
         p[0] = Node("additive_expression", [p[1], p[3], p[2]])
 
