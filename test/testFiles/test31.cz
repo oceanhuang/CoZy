@@ -1,0 +1,10 @@
+#None
+day = Monday to Sunday
+month = January to December
+date = 1/1/1 to 31/12/9999
+dateTime = 1/1/1 12:00 AM to 31/12/9999 11:59 PM
+time = 12:00 AM to 11:59 PM
+print(day)
+print(month)
+print(dateTime)
+print(time)

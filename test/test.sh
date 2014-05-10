@@ -15,6 +15,12 @@ if [ ! -d "errors" ]
 then
     mkdir "errors"
 fi
+    
+#remove parsetable and other generated files
+cd ..
+rm -rf *.pyc out.py parsetab.py parser.out
+cd test/
+rm -rf *.pyc out.py parsetab.py parser.out
 
 NUMTESTS=$(ls -1 testFiles | wc -l)
 #echo $numTests
@@ -27,13 +33,21 @@ grn='\e[0;32m'
 NC='\e[0m' # No Color
 
 while [ $COUNTER -lt $NUMTESTS ]; do
+    
     TESTRESULT="TEST"
     EXT=$COUNTER".cz"
     
     #get first line of testfile
     FAIL_INTENT=$(head -n 1 $TESTFILE$EXT | grep "fail" | wc -l)
 
-    cat $TESTFILE$EXT | python testCozy.py 1>$RESULTS$COUNTER 2>$ERROR$COUNTER 
+    cat $TESTFILE$EXT | python testCozy.py 1>$RESULTS$COUNTER 2>$ERROR$COUNTER & 
+    PID=$(ps -ef | grep testCozy | awk {'print$2'})
+    PID=$(echo $PID | awk {'print $1'})
+    sleep 0.9
+
+    kill $PID 2>/dev/null 
+    wait $PID 2>/dev/null
+
     FAILED=false
 
     #check if size of error file is greater than 0
