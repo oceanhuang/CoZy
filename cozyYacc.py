@@ -138,12 +138,12 @@ def p_list_change_remove_index(p):
     
 
 def p_list_index_double(p):
-    '''list_index : list_index LBRACK additive_expression RBRACK
+    '''list_index : list_index LBRACK or_expression RBRACK
     '''
     p[0] = Node("list_index_double", [p[1], p[3]])
 
 def p_list_index_id(p):
-    '''list_index : ID LBRACK additive_expression RBRACK
+    '''list_index : ID LBRACK or_expression RBRACK
     '''
     p[0] = Node("list_index_id", [p[3]], p[1])
 
