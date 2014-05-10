@@ -535,7 +535,7 @@ class codeGenerator(object):
             s+= "    " + line +"\n"
 
         s += "def condition" + str(everys) + "():\n"
-        s += "    print 'checking" + str(everys) + "'\n"
+        # s += "    print 'checking" + str(everys) + "'\n"
         s += "    if " + self.dispatch(tree.children[0], everyFlag) + ": return True\n"
         s += "every_list.append({'func' : 'every" + str(everys)
         s += "', 'condition' : 'condition" + str(everys) + "'})"
@@ -555,7 +555,7 @@ class codeGenerator(object):
         for line in lines:
             s+= "    " + line +"\n"
         s += "def condition" + str(everys) + "():\n"
-        s += "    print 'checking" + str(everys) + "'\n"
+        # s += "    print 'checking" + str(everys) + "'\n"
         s += "    global happened" + str(everys) + "\n"
         s += "    if " + self.dispatchTuple(tree.children[0], everyFlag) + " and happened" + str(everys) + " == False"+ ":\n"
         s += "        happened" + str(everys) + " = True\n"
