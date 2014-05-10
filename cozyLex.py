@@ -1,4 +1,5 @@
 import ply.lex as lex
+import sys
 import re
 
 # List of token names.   This is always required
@@ -48,7 +49,9 @@ reserved = {
     'during' : 'DURING',
     'true' : 'TRUE',
     'false' : 'FALSE',
-    'power' : 'POWER'
+    'power' : 'POWER',
+    'SET_TEMP' : 'SET_TEMP',
+    'GET_TEMP' : 'GET_TEMP',
     }
 
 tokens = [
@@ -103,6 +106,8 @@ t_RELOP     = r'(<=)|(>=)|(<)|(>)'
 t_COMMA     = r'(,)'
 t_FORRANGE = r'\s*\.\.\.\s*'
 t_POWER     = r'\^'
+t_GET_TEMP  = r'GET_TEMP'
+t_SET_TEMP  = r'SET_TEMP'
 # A regular expression rule with some action code
 
 def t_DATETIME(t):
@@ -149,8 +154,8 @@ def t_WS(t):
         return t
 
 
-# # A string containing ignored characters (spaces and tabs)
-# t_ignore  = ' \t'
+# A string containing ignored characters (spaces and tabs)
+t_ignore_COMMENT = r'\#.*'
 
 # Error handling rule
 def t_error(t):
@@ -300,8 +305,11 @@ def filter(lexer, add_endmarker = False):
     token = None
     tokens = iter(lexer.token, None)
     tokens = track_tokens_filter(lexer, tokens)
-    for token in indentation_filter(tokens):
-        yield token
+    try:
+        for token in indentation_filter(tokens):
+            yield token
+    except IndentationError:
+        sys.exit("There is an indentation error in the code!")
 
     if add_endmarker:
         lineno = 1
@@ -333,6 +341,10 @@ if __name__ == '__main__':
     # code
     #this doesnt work RGGGGGG
     data = """
+# hihihihi
+a = 40 F
+SET_TEMP(a)
+c = GET_TEMP
 """
 
     # Give the lexer some input

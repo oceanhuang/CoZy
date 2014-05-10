@@ -2,6 +2,7 @@ import traceback
 import datetime
 import re
 import sys
+import runtimeError
 everys = 0
 temp_def ='''
 class Temperature:
@@ -34,7 +35,32 @@ class Temperature:
             return str(self.FTemp) + ' F'
 '''
 
+def module_exists(module_name):
+    try:
+        __import__(module_name)
+    except ImportError:
+        return False
+    else:
+        return True
 
+if module_exists("RPi.GPIO"):
+    thermoStat = '''
+from r_pi import ThermoStat
+myThermoStat = ThermoStat.Sim_ThermoStat()
+'''
+else:
+    thermoStat = '''
+from r_pi import Fake_ThermoStat
+myThermoStat = Fake_ThermoStat.Fake_ThermoStat()   
+'''
+
+loop_def = '''
+while 1:
+    for e in every_list:
+        if eval(e['condition'] + "()"):
+            eval(e['func']+ "()")
+    
+'''
 
 class codeGenerator(object):
     def __init__(self, tree):
@@ -44,7 +70,12 @@ class codeGenerator(object):
         # Symbols table "id" => {type, value}
         self.symbolTable = {}
         # Variable to store the code
-        self.ret = "import datetime\n" + "every_list = []\n" + "log_file = open('cozyLog.txt', 'a')\n" + temp_def + self.dispatch(tree) + '\n'
+        self.ret = "import datetime\n" + "import sys\n" + "every_list = []\n" + "log_file = open('cozyLog.txt', 'a')\n" + temp_def + thermoStat
+        self.ret += "print \"Welcome to CoZy \\n==================== \""
+        body = self.dispatch(tree)
+        body += loop_def
+        self.ret += runtimeError.errorBeginning(body)
+        self.ret += runtimeError.errorEnd()
         # 
         # Keeps track of the number of every's
 
@@ -90,7 +121,7 @@ class codeGenerator(object):
 
     # very basic function definition
     def _function_definition(self, tree, flag=None):
-        s = "def " + tree.children[0] + "(" + self.dispatch(tree.children[1])+") :\n"
+        s = "def " + tree.children[0] + "(" + self.dispatchTuple(tree.children[1])+") :\n"
         lines = self.dispatch(tree.children[2]).splitlines()
 
         for line in lines:
@@ -105,7 +136,7 @@ class codeGenerator(object):
 
     def _function_param(self, tree, flag=None):
         if tree.leaf==None:
-           return  self.dispatch(tree.children[0]) + "," + self.dispatch(tree.children[1])
+           return  self.dispatchTuple(tree.children[0]) + "," + self.dispatchTuple(tree.children[1])
         else:
            return tree.leaf
 
@@ -118,7 +149,7 @@ class codeGenerator(object):
         if len(tree.children)==0:
             return "[]"
         else:
-            return "[" + self.dispatch(tree.children[0]) + "]"
+            return "[" + self.dispatchTuple(tree.children[0]) + "]"
     
     def _list_expression(self, tree, flag=None):
         if len(tree.children) == 1:
@@ -177,6 +208,24 @@ class codeGenerator(object):
     def _statement(self, tree, flag=None):
         return self.dispatch(tree.children) + "\n"
 
+    def _set_temp_statement(self, tree, flag=None):
+        # print tree.children[0]
+        arg = self.dispatch(tree.children[0])
+        if arg[0] == "F" or arg[0] == "C" or arg[0] == "K":
+            # print self.symbolTable.get(arg[1])
+            if (self.symbolTable.get(arg[1])):
+                return "myThermoStat.set_temp(" + str(arg[1]) + ".getCelsius())\n"
+            else: 
+                t = "Temperature(" + str(arg[1]) + ", '" + arg[0] + "')"
+                return "myThermoStat.set_temp(" + t + ".getCelsius())\n"
+                
+        # arg = self.dispatch(tree.children[0]);
+        # print arg
+        # if operand[0] == "F" or operand[0] == "C" or operand[0] == "K":
+        #     return "MyThermoStat.set_temp(" + str(operand[1]) + ")"
+        # else:
+        #     exit('TypeError, set_temp() has to take a temperature as input')
+
     #whoever wrote this, please have a look at _assignnment_statement_list_index
     def _assignment_statement(self, tree, flag=None):
         arg = self.dispatch(tree.children[0]);
@@ -193,6 +242,9 @@ class codeGenerator(object):
         # print self.scopes
         if type(arg) is not str: arg = str(arg)
         return tree.leaf + " = " + arg
+
+    def _get_temp_expression(self, tree, flag=None):
+        return "myThermoStat.get_temp()"
 
     #not sure whether this actually works with the symbol table and everything
     def _assignment_statement_list_index(self, tree, flag=None):
@@ -467,15 +519,15 @@ class codeGenerator(object):
         everyFlag = "EVERY"
 
         s = "\ndef every" + str(everys) + "() :\n"
-        s += "    print 'executing every" + str(everys) + "'\n"
+        # s += "    print 'executing every" + str(everys) + "'\n"
         
         lines = self.dispatch(tree.children[1]).splitlines()
         for line in lines:
             s+= "    " + line +"\n"
 
         s += "def condition" + str(everys) + "():\n"
-        s += "    print 'checking" + str(everys) + "'\n"
-        s += "    if " + self.dispatch(tree.children[0], everyFlag) + ": return True\n"
+        # s += "    print 'checking" + str(everys) + "'\n"
+        s += "    if " + self.dispatchTuple(tree.children[0], everyFlag) + ": return True\n"
         s += "every_list.append({'func' : 'every" + str(everys)
         s += "', 'condition' : 'condition" + str(everys) + "'})"
         return s
@@ -486,21 +538,20 @@ class codeGenerator(object):
         everys = everys + 1
         everyFlag = "EVERY"
 
-        s = "\ndef every" + str(everys) + "() :\n"
-        s += "    print 'executing once every" + str(everys) + "'\n"
+        s = "happened" + str(everys) + " = False\n"
+        s += "\ndef every" + str(everys) + "() :\n"
+        # s += "    print 'executing once every" + str(everys) + "'\n"
 
         lines = self.dispatch(tree.children[1]).splitlines()
         for line in lines:
             s+= "    " + line +"\n"
-
-        s += "    happened" + str(everys) + " = False\n"
         s += "def condition" + str(everys) + "():\n"
-        s += "    print 'checking" + str(everys) + "'\n"
+        # s += "    print 'checking" + str(everys) + "'\n"
         s += "    global happened" + str(everys) + "\n"
-        s += "    if " + self.dispatch(tree.children[0], everyFlag) + " and happened" + str(everys) + " == False"+ ":\n"
+        s += "    if " + self.dispatchTuple(tree.children[0], everyFlag) + " and happened" + str(everys) + " == False"+ ":\n"
         s += "        happened" + str(everys) + " = True\n"
         s += "        return True\n"
-        s += "    if not(" + self.dispatch(tree.children[0], everyFlag) + "):\n"
+        s += "    if not(" + self.dispatchTuple(tree.children[0], everyFlag) + "):\n"
         s += "        happened" + str(everys) + " = False\n"
         s += "every_list.append({'func' : 'every" + str(everys)
         s += "', 'condition' : 'condition" + str(everys) + "'})"
@@ -766,7 +817,7 @@ class codeGenerator(object):
         elif arg[0] == "DAY" : 
             arg = "datetime.datetime.now().weekday() == " + arg[1]
         elif arg[0] == "MONTH":
-            arg = "datetime.datetime.now().month() == " + arg[1]
+            arg = "datetime.datetime.now().month == " + arg[1]
         else:
             return None
 

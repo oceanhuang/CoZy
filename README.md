@@ -3,6 +3,9 @@ CoZy
 
 Language for PLT
 
+To run a cozy program:
+python runCozy.py -i \<input file\>
+
 Done:
 -----
 - Lexer and parser work for "every" statement, addition and assignment
