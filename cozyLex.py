@@ -48,7 +48,9 @@ reserved = {
     'during' : 'DURING',
     'true' : 'TRUE',
     'false' : 'FALSE',
-    'power' : 'POWER'
+    'power' : 'POWER',
+    'SET_TEMP' : 'SET_TEMP',
+    'GET_TEMP' : 'GET_TEMP',
     }
 
 tokens = [
@@ -103,6 +105,8 @@ t_RELOP     = r'(<=)|(>=)|(<)|(>)'
 t_COMMA     = r'(,)'
 t_FORRANGE = r'\s*\.\.\.\s*'
 t_POWER     = r'\^'
+t_GET_TEMP  = r'GET_TEMP'
+t_SET_TEMP  = r'SET_TEMP'
 # A regular expression rule with some action code
 
 def t_DATETIME(t):
@@ -333,6 +337,9 @@ if __name__ == '__main__':
     # code
     #this doesnt work RGGGGGG
     data = """
+a = 40 F
+SET_TEMP(a)
+c = GET_TEMP
 """
 
     # Give the lexer some input

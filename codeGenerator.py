@@ -34,6 +34,22 @@ class Temperature:
             return str(self.FTemp) + ' F'
 '''
 
+def module_exists(module_name):
+    try:
+        __import__(module_name)
+    except ImportError:
+        return False
+    else:
+        return True
+
+if module_exists("RPi.GPIO"):
+    thermoStat = '''
+from r_pi import ThermoStat
+myThermoStat = ThermoStat.Sim_ThermoStat()
+'''
+else:
+    thermoStat = ''
+
 loop_def = '''
 while 1:
     for e in every_list:
@@ -50,12 +66,12 @@ class codeGenerator(object):
         # Symbols table
         self.symbolTable = {}
         # Variable to store the code
-        self.ret = "import datetime\n" + "import sys\n" + "every_list = []\n" + "log_file = open('cozyLog.txt', 'a')\n" + temp_def
+        self.ret = "import datetime\n" + "every_list = []\n" + "log_file = open('cozyLog.txt', 'a')\n" + temp_def + thermoStat + self.dispatch(tree)
+        self.ret = "import datetime\n" + "import sys\n" + "every_list = []\n" + "log_file = open('cozyLog.txt', 'a')\n" + temp_def + thermoStat
         body = self.dispatch(tree)
         body += loop_def
         self.ret += runtimeError.errorBeginning(body)
         self.ret += runtimeError.errorEnd()
-       
         # 
         # Keeps track of the number of every's
 
@@ -178,6 +194,24 @@ class codeGenerator(object):
     def _statement(self, tree, flag=None):
         return self.dispatch(tree.children) + "\n"
 
+    def _set_temp_statement(self, tree, flag=None):
+        # print tree.children[0]
+        arg = self.dispatch(tree.children[0])
+        if arg[0] == "F" or arg[0] == "C" or arg[0] == "K":
+            # print self.symbolTable.get(arg[1])
+            if (self.symbolTable.get(arg[1])):
+                return "myThermoStat.set_temp(" + str(arg[1]) + ".getCelsius())\n"
+            else: 
+                t = "Temperature(" + str(arg[1]) + ", '" + arg[0] + "')"
+                return "myThermoStat.set_temp(" + t + ".getCelsius())\n"
+                
+        # arg = self.dispatch(tree.children[0]);
+        # print arg
+        # if operand[0] == "F" or operand[0] == "C" or operand[0] == "K":
+        #     return "MyThermoStat.set_temp(" + str(operand[1]) + ")"
+        # else:
+        #     exit('TypeError, set_temp() has to take a temperature as input')
+
     #whoever wrote this, please have a look at _assignnment_statement_list_index
     def _assignment_statement(self, tree, flag=None):
         arg = self.dispatch(tree.children[0]);
@@ -205,6 +239,9 @@ class codeGenerator(object):
         #print self.symbolTable #uncomment to check symbol table
         if type(arg) is not str: arg = str(arg)
         return tree.leaf + " = " + arg
+
+    def _get_temp_expression(self, tree, flag=None):
+        return "myThermoStat.get_temp()"
 
     #not sure whether this actually works with the symbol table and everything
     def _assignment_statement_list_index(self, tree, flag=None):
