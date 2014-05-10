@@ -15,13 +15,10 @@ class Fake_ThermoStat(object):
         self.on = 0
 
     def get_temp(self):
-        tfile = open("/sys/log/") 
+        tfile = open("/Users/Ocean/code/CoZy/r_pi/fake_temp") 
         text = tfile.read() 
         tfile.close() 
-        secondline = text.split("\n")[1] 
-        temperaturedata = secondline.split(" ")[9] 
-        temperature = float(temperaturedata[2:]) 
-        temperature = temperature / 1000 
+        temperature = float(text) 
         return temperature
 
     def set_temp(self, target_temp):
