@@ -476,6 +476,15 @@ d = GET_TEMP
 print(GET_TEMP)
 print(d)
 
+b = not(7 + 3)
+a = Monday
+c = not(true or false)
+c = not(true or a)
+c = not(b or a)
+c = not(b)
+c = (b)
+once every(Wednesday):
+    log("hello, weds")
 '''
     result = parser.parse(s)
 

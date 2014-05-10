@@ -50,6 +50,13 @@ myThermoStat = ThermoStat.Sim_ThermoStat()
 else:
     thermoStat = ''
 
+loop_def = '''
+while 1:
+    for e in every_list:
+        if eval(e['condition'] + "()"):
+            eval(e['func']+ "()")
+    
+'''
 
 class codeGenerator(object):
     def __init__(self, tree):
@@ -62,6 +69,7 @@ class codeGenerator(object):
         self.ret = "import datetime\n" + "every_list = []\n" + "log_file = open('cozyLog.txt', 'a')\n" + temp_def + thermoStat + self.dispatch(tree)
         self.ret = "import datetime\n" + "import sys\n" + "every_list = []\n" + "log_file = open('cozyLog.txt', 'a')\n" + temp_def + thermoStat
         body = self.dispatch(tree)
+        body += loop_def
         self.ret += runtimeError.errorBeginning(body)
         self.ret += runtimeError.errorEnd()
         # 
@@ -536,14 +544,13 @@ class codeGenerator(object):
         everys = everys + 1
         everyFlag = "EVERY"
 
-        s = "\ndef every" + str(everys) + "() :\n"
+        s = "happened" + str(everys) + " = False\n"
+        s += "\ndef every" + str(everys) + "() :\n"
         s += "    print 'executing once every" + str(everys) + "'\n"
 
         lines = self.dispatch(tree.children[1]).splitlines()
         for line in lines:
             s+= "    " + line +"\n"
-
-        s += "    happened" + str(everys) + " = False\n"
         s += "def condition" + str(everys) + "():\n"
         s += "    print 'checking" + str(everys) + "'\n"
         s += "    global happened" + str(everys) + "\n"
@@ -810,7 +817,7 @@ class codeGenerator(object):
         elif arg[0] == "DAY" : 
             arg = "datetime.datetime.now().weekday() == " + arg[1]
         elif arg[0] == "MONTH":
-            arg = "datetime.datetime.now().month() == " + arg[1]
+            arg = "datetime.datetime.now().month == " + arg[1]
         else:
             return None
 
