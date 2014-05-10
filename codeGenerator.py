@@ -323,38 +323,44 @@ class codeGenerator(object):
                 retStr += "(" + str(start_month) + " <= datetime.datetime.now().month <= " + str(end_month) + ")"
                 return "MONTH_RANGE", retStr
             elif type1 == "DATE":
-                start_day = operand1[1].get("day")
-                end_day = operand2[1].get("day")
-                start_month = operand1[1].get("month")
-                end_month = operand2[1].get("month")
-                start_year = operand1[1].get("year")
-                end_year = operand2[1].get("year")
+                dateTable1 = self.get_date_value(tree.children[0].leaf)
+                dateTable2 = self.get_date_value(tree.children[1].leaf)
+                start_day = dateTable1.get("day")
+                end_day = dateTable2.get("day")
+                start_month = dateTable1.get("month")
+                end_month = dateTable2.get("month")
+                start_year = dateTable1.get("year")
+                end_year = dateTable2.get("year")
                 #Day
                 retStr += "(" + str(start_year*10000 + start_month*100 + start_day)
                 retStr += " <= datetime.datetime.now().year*10000 + datetime.datetime.now().month*100 + datetime.datetime.now().day <= " 
                 retStr += str(end_year*10000 + end_month*100 + end_day) + ")"
                 return "DATE_RANGE", retStr
             elif type1 == "DATETIME":
-                start_day = operand1[1].get("day")
-                end_day = operand2[1].get("day")
-                start_month = operand1[1].get("month")
-                end_month = operand2[1].get("month")
-                start_year = operand1[1].get("year")
-                end_year = operand2[1].get("year")
-                start_hour = operand1[1].get("hour")
-                end_hour = operand2[1].get("hour")
-                start_minute = operand1[1].get("minute")
-                end_minute = operand2[1].get("minute")
+                dateTimeTable1 = self.get_date_time_values(tree.children[0].leaf)
+                dateTimeTable2 = self.get_date_time_values(tree.children[1].leaf)
+                start_day = dateTimeTable1.get("day")
+                end_day = dateTimeTable2.get("day")
+                start_month = dateTimeTable1.get("month")
+                end_month = dateTimeTable2.get("month")
+                start_year = dateTimeTable1.get("year")
+                end_year = dateTimeTable2.get("year")
+                start_hour = dateTimeTable1.get("hour")
+                end_hour = dateTimeTable2.get("hour")
+                start_minute = dateTimeTable1.get("minute")
+                end_minute = dateTimeTable2.get("minute")
                 retStr += "(" + str(start_year*100000000 + start_month*1000000 + start_day*10000 + start_hour*100 + start_minute)
                 retStr += " <= datetime.datetime.now().year*100000000 + datetime.datetime.now().month*1000000 + datetime.datetime.now().day*10000 + datetime.datetime.now().hour*100 + datetime.datetime.now().minute <= " 
                 retStr += str(end_year*100000000 + end_month*1000000 + end_day*10000 + end_hour*100 + end_minute) + ")"
 
                 return "DATETIME_RANGE", retStr
             elif type1 == "TIME":
-                start_hour = operand1[1].get("hour")
-                end_hour = operand2[1].get("hour")
-                start_minute = operand1[1].get("minute")
-                end_minute = operand2[1].get("minute")
+                time1 = self.get_time_value(tree.children[0].leaf)
+                time2 = self.get_time_value(tree.children[1].leaf)
+                start_hour = time1.get("hour")
+                end_hour = time2.get("hour")
+                start_minute = time1.get("minute")
+                end_minute = time2.get("minute")
                 retStr += "("
                 #time
                 retStr += str(start_hour*100 + start_minute) + " <= datetime.datetime.now().hour*100 + datetime.datetime.now().minute <= " + str(end_hour*100 + end_minute)
@@ -436,8 +442,6 @@ class codeGenerator(object):
 
     def _during_and_expression(self, tree, flag=None):
         if len(tree.children) == 1:
-            print "TEEEEEST\n\n"
-            print self.dispatch(tree.children[0], flag)
             arg = self.dispatch(tree.children[0], flag)
             if self.check_if_time(arg) and flag=="EVERY": 
                 arg = arg[1]
@@ -689,6 +693,8 @@ class codeGenerator(object):
         return "DATE", string
 
     def get_date_value(self, date_str):
+        # print "type" + str(type(date_str))
+        # print date_str
         p = re.compile(r'([0-3]?[0-9])/([01]?[0-9])/([0-9]+)')
         match = p.search(date_str)
         day = int(match.group(1))
