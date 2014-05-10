@@ -594,10 +594,10 @@ for i in 1 to 20:
 y = [1, 2, 3]
 y{0} = 0
 
-def foo(number b, string k):
+def foo(number b, string k, day m):
     return(b)
 
-foo(7, "hello")
+foo(7, "hello", Monday)
 foo2()
 
 

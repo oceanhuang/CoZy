@@ -589,16 +589,23 @@ class codeGenerator(object):
 
         if type(arg) is int:
             arg = str(arg)
-        s = "return " + arg
+        s = "return " + arg ## add return type
         return s
 
     def _function_expression(self, tree, flag=None):
         if len(tree.children) == 1:
             arg = self.dispatch(tree.children[0])
-            #if self.functionTable[tree.leaf] == arg[0]:
-            return tree.leaf + "(" + self.dispatchTuple(tree.children[0]) + ")"
-            #else:
-            #    return "Type error in function params" + str(arg) + str(self.functionTable[tree.leaf])
+            informal = tree.children[0]
+            #getting the function types
+            formal = self.functionTable[tree.leaf].split(", ")
+            formallist = list()
+            for f in formal:
+                formallist.append(self.symbolTable[f][0])
+                
+            if formallist == arg[0]:
+                return tree.leaf + "(" + self.dispatchTuple(tree.children[0]) + ")"
+            else:
+                return "Type error in function params" + arg + str(formallist)
         else:
             return tree.leaf + "()"
         
