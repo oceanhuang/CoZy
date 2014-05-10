@@ -148,12 +148,12 @@ def p_list_change_remove_index(p):
     
 
 def p_list_index_double(p):
-    '''list_index : list_index LBRACK additive_expression RBRACK
+    '''list_index : list_index LBRACK or_expression RBRACK
     '''
     p[0] = Node("list_index_double", [p[1], p[3]])
 
 def p_list_index_id(p):
-    '''list_index : ID LBRACK additive_expression RBRACK
+    '''list_index : ID LBRACK or_expression RBRACK
     '''
     p[0] = Node("list_index_id", [p[3]], p[1])
 
@@ -284,7 +284,7 @@ def p_multiplicative_expression(p):
         p[0] = Node("multiplicative_expression", [p[1], p[3], p[2]])
 
 def p_power_expression(p):
-    """ power_expression : primary_expression
+    """ power_expression : to_expression
                         | power_expression POWER primary_expression
     """
     if len(p) == 2:
@@ -292,6 +292,15 @@ def p_power_expression(p):
     else:
         p[0] = Node("power_expression", [p[1], p[3], p[2]])
 
+def p_to_expression(p):
+    """ to_expression : primary_expression
+                      | primary_expression TO primary_expression
+    """
+    if len(p) == 2:
+        p[0] = Node("to_expression", [p[1]])
+    else:
+        p[0] = Node("to_expression", [p[1], p[3]])
+ 
 def p_primary_expression(p):
     """ primary_expression : ID
                             | LPAREN or_expression RPAREN
@@ -427,7 +436,7 @@ def p_log_statement(p):
 
 #need to add foreach/ also confused about the grammar
 def p_for_statement(p):
-    """ for_statement : FOR ID IN or_expression TO or_expression COLON NEWLINE INDENT statement_list DEDENT
+    """ for_statement : FOR ID IN or_expression FORRANGE or_expression COLON NEWLINE INDENT statement_list DEDENT
     """
     p[0] = Node("for_statement", [p[4], p[6], p[10]], p[2])
 
@@ -447,6 +456,7 @@ class CoZyParser(object):
         self.parser = yacc.yacc()
 
     def parse(self, code):
+        code = code + '\n'
         self.lexer.input(code)
         result = self.parser.parse(lexer = self.lexer)
         # print result
@@ -467,8 +477,6 @@ print(GET_TEMP)
 print(d)
 
 '''
-
-
     result = parser.parse(s)
 
     # ## Prints the AST

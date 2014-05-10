@@ -1,14 +1,10 @@
-#1.0
-ret = -2
-ret = -(2+4)^4
-ret = 5-(2+4)
-ret = 5-(2*4)
-ret = 5+(-(2*4))
-ret = 5*(-(2*4))
-ret = -(2+4)^4
-ret = 5-(-2)
-a = 5
-b = 6
-ret = -a
-ret = -a+4
-ret = -a + b
+#None
+day = Monday to Sunday
+month = January to December
+date = 1/1/1 to 31/12/9999
+dateTime = 1/1/1 12:00 AM to 31/12/9999 11:59 PM
+time = 12:00 AM to 11:59 PM
+print(day)
+print(month)
+print(dateTime)
+print(time)
