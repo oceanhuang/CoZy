@@ -1,6 +1,7 @@
 import datetime
 import re
 import sys
+import runtimeError
 everys = 0
 temp_def ='''
 class Temperature:
@@ -43,7 +44,11 @@ class codeGenerator(object):
         # Symbols table
         self.symbolTable = {}
         # Variable to store the code
-        self.ret = "import datetime\n" + "every_list = []\n" + "log_file = open('cozyLog.txt', 'a')\n" + temp_def + self.dispatch(tree) + '\n'
+        self.ret = "import datetime\n" + "import sys\n" + "every_list = []\n" + "log_file = open('cozyLog.txt', 'a')\n" + temp_def
+        body = self.dispatch(tree)
+        self.ret += runtimeError.errorBeginning(body)
+        self.ret += runtimeError.errorEnd()
+       
         # 
         # Keeps track of the number of every's
 
