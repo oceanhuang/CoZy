@@ -441,11 +441,11 @@ def p_for_statement(p):
     p[0] = Node("for_statement", [p[4], p[6], p[10]], p[2])
 
 # Error rule for syntax errors
-def p_error(p):
-    print "Syntax error in input!"
-    if not hasattr(p, 'line') and not hasattr(p, 'lexpos'):
-        print p.type
-    else: print p
+def p_error(p):    
+    # if hasattr(p, 'line'):
+    #     sys.exit("Syntax error in input! at line: "+ p.line)
+    # else:
+    sys.exit("Syntax error in input!")
 
 # wrap default parser into CoZy parser
 class CoZyParser(object):
