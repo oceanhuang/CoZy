@@ -36,6 +36,9 @@ except IndexError:
 except TypeError:
     print "ERROR: You seem to be using the wrong type for something."
     sys.exit()
+except KeyboardInterrupt:
+    print "\\nThank you for using CoZy!"
+    sys.exit()
 except:
     print "ERROR: Hmmm...that's odd. I don't quite know what went wrong."
     sys.exit()
