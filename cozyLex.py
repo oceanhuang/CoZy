@@ -1,4 +1,5 @@
 import ply.lex as lex
+import sys
 import re
 
 # List of token names.   This is always required
@@ -304,8 +305,11 @@ def filter(lexer, add_endmarker = False):
     token = None
     tokens = iter(lexer.token, None)
     tokens = track_tokens_filter(lexer, tokens)
-    for token in indentation_filter(tokens):
-        yield token
+    try:
+        for token in indentation_filter(tokens):
+            yield token
+    except IndentationError:
+        sys.exit("There is an indentation error in the code!")
 
     if add_endmarker:
         lineno = 1
