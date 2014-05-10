@@ -23,7 +23,7 @@ class Fake_ThermoStat(object):
 
     def set_temp(self, target_temp):
         # sets the global temp for this thermostat
-        print 'Thermostat set to ' + str(target_temp)
+        print 'Thermostat set to ' + str(target_temp) + ' C'
         self.target = int(target_temp)
         self.check()
 
