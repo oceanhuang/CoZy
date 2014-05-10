@@ -34,10 +34,10 @@ except IndexError:
     print "ERROR: Nothing lives at that index."
     sys.exit()
 except TypeError:
-    print "ERROR: Y u uses wrong type?"
+    print "ERROR: You seem to be using the wrong type for something."
     sys.exit()
 except:
-    print "ERROR: Hmmm...that's odd. You done fucked up, but I have no idea how."
+    print "ERROR: Hmmm...that's odd. I don't quite know what went wrong."
     sys.exit()
 """
     return toAddEnd
