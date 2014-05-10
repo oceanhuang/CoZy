@@ -5,6 +5,7 @@ everys = 0
 temp_def ='''
 class Temperature:
     def __init__(self, number, tempType):
+        self.startType = tempType
         if tempType == 'K':
             self.KTemp = number
             self.CTemp = number + 273.15
@@ -23,7 +24,13 @@ class Temperature:
         return self.FTemp
     def getKelvin(self):
         return self.KTemp
-
+    def __str__(self):
+        if self.startType == ' K':
+            return str(self.KTemp) + ' K'
+        elif self.startType == 'C':
+            return str(self.CTemp) + ' C'
+        elif self.startType == 'F':
+            return str(self.FTemp) + ' F'
 '''
 
 
