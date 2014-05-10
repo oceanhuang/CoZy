@@ -15,7 +15,7 @@ class Fake_ThermoStat(object):
         self.on = 0
 
     def get_temp(self):
-        tfile = open("/Users/Ocean/code/CoZy/r_pi/fake_temp") 
+        tfile = open("r_pi/fake_temp") 
         text = tfile.read() 
         tfile.close() 
         temperature = float(text) 
