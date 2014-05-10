@@ -269,7 +269,7 @@ def p_multiplicative_expression(p):
         p[0] = Node("multiplicative_expression", [p[1], p[3], p[2]])
 
 def p_power_expression(p):
-    """ power_expression : primary_expression
+    """ power_expression : to_expression
                         | power_expression POWER primary_expression
     """
     if len(p) == 2:
@@ -278,6 +278,15 @@ def p_power_expression(p):
         p[0] = Node("power_expression", [p[1], p[3], p[2]])
 
 
+def p_to_expression(p):
+    """ to_expression : primary_expression
+                      | primary_expression TO primary_expression
+    """
+    if len(p) == 2:
+        p[0] = Node("to_expression", [p[1]])
+    else:
+        p[0] = Node("to_expression", [p[1], p[3]])
+ 
 def p_primary_expression(p):
     """ primary_expression : ID
                             | LPAREN or_expression RPAREN
@@ -412,7 +421,7 @@ def p_log_statement(p):
 
 #need to add foreach/ also confused about the grammar
 def p_for_statement(p):
-    """ for_statement : FOR ID IN or_expression TO or_expression COLON NEWLINE INDENT statement_list DEDENT
+    """ for_statement : FOR ID IN or_expression FORRANGE or_expression COLON NEWLINE INDENT statement_list DEDENT
     """
     p[0] = Node("for_statement", [p[4], p[6], p[10]], p[2])
 
@@ -444,15 +453,8 @@ if __name__ == '__main__':
     # Build the parser
     parser = CoZyParser()
     ## Put code to test here
-    s = '''
-a = 3.4
-b = 7
-c = b/a
-print(c)
-for i in 1 to 20:
-    a = a + i
-    print(i)
-'''
+    s = """
+"""
 
 
     result = parser.parse(s)

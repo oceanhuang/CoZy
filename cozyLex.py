@@ -41,6 +41,7 @@ reserved = {
     'in' : 'IN', 
     'print' : 'PRINT',
     'not' : 'NOT',
+    'to' : 'TO',
     'each' : 'EACH',
     'log' : 'LOG',
     'once' : 'ONCE',
@@ -79,6 +80,7 @@ tokens = [
     'NEWLINE',
     'COMMA',
     'STRING',
+    'FORRANGE',
 ] + list(reserved.values())
 
 # Regular expression rules for simple tokens
@@ -99,15 +101,16 @@ t_EQUIV     = r'(==)'
 t_NONEQUIV  = r'(!=)'
 t_RELOP     = r'(<=)|(>=)|(<)|(>)'
 t_COMMA     = r'(,)'
+t_FORRANGE = r'\s*\.\.\.\s*'
 t_POWER     = r'\^'
 # A regular expression rule with some action code
 
 def t_DATETIME(t):
-    r'[0-3]?[0-9]/[01]?[0-9]/[0-9][0-9][0-9][0-9][ ][01]?[0-9]:[0-5][0-9][ ]((AM)|(PM))'
+    r'[0-3]?[0-9]/[01]?[0-9]/[0-9]+[ ][01]?[0-9]:[0-5][0-9][ ]((AM)|(PM))'
     return t
 
 def t_DATE(t):
-    r'[0-3]?[0-9]/[01]?[0-9]/[0-9][0-9][0-9][0-9]'
+    r'[0-3]?[0-9]/[01]?[0-9]/[0-9]+'
     return t
 def t_TEMPERATURE(t):
     r'[0-9]+[ ]*[CFK]'
@@ -330,16 +333,7 @@ if __name__ == '__main__':
     # code
     #this doesnt work RGGGGGG
     data = """
-a = 2^4
 """
-#     data = """
-# x=3+3;
-# if x=6:
-#     a=9;
-#     b=7;
-# y = 2 + "every";
-# z = Tuesday;
-#     """
 
     # Give the lexer some input
     lexer.input(data)
