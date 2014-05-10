@@ -70,6 +70,7 @@ class codeGenerator(object):
         self.symbolTable = {}
         # Variable to store the code
         self.ret = "import datetime\n" + "import sys\n" + "every_list = []\n" + "log_file = open('cozyLog.txt', 'a')\n" + temp_def + thermoStat
+        self.ret += "print \"Welcome to CoZy \\n==================== \""
         body = self.dispatch(tree)
         body += loop_def
         self.ret += runtimeError.errorBeginning(body)
