@@ -180,13 +180,13 @@ class codeGenerator(object):
         if len(tree.children)==0:
             return "[]"
         else:
-            return "[" + self.dispatch(tree.children[0]) + "]"
+            return "[" + self.dispatchTuple(tree.children[0]) + "]"
     
     def _list_expression(self, tree, flag=None):
         if len(tree.children) == 1:
-            return self.dispatchTuple(tree.children[0])
+            return self.dispatch(tree.children[0], flag)[0], self.dispatchTuple(tree.children[0])
         else:
-            return self.dispatchTuple(tree.children[0]) + ", " + self.dispatchTuple(tree.children[1])
+            return self.dispatch(tree.children[0], flag)[0]+ ", " + self.dispatch(tree.children[1], flag)[0], self.dispatchTuple(tree.children[0]) + ", " + self.dispatchTuple(tree.children[1])
         
     def _list_index_double(self, tree, flag=None):
         return self.dispatchTuple(tree.children[0]) + "[" + self.dispatchTuple(tree.children[1]) + "]"
@@ -595,17 +595,17 @@ class codeGenerator(object):
     def _function_expression(self, tree, flag=None):
         if len(tree.children) == 1:
             arg = self.dispatch(tree.children[0])
-            informal = tree.children[0]
             #getting the function types
+            informallist = arg[0].split(", ")
             formal = self.functionTable[tree.leaf].split(", ")
             formallist = list()
             for f in formal:
                 formallist.append(self.symbolTable[f][0])
                 
-            if formallist == arg[0]:
-                return tree.leaf + "(" + self.dispatchTuple(tree.children[0]) + ")"
+            if formallist == informallist:
+                return tree.leaf + "(" + str(arg[1]) + ")"
             else:
-                return "Type error in function params" + arg + str(formallist)
+                exit( "Type error in function params: \nInput " + str(informallist) + " does not match definition " + str(formallist))
         else:
             return tree.leaf + "()"
         

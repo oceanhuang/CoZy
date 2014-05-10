@@ -597,7 +597,7 @@ y{0} = 0
 def foo(number b, string k, day m):
     return(b)
 
-foo(7, "hello", Monday)
+foo(7, "hello")
 foo2()
 
 
