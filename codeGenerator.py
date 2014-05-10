@@ -69,7 +69,6 @@ class codeGenerator(object):
         # Symbols table
         self.symbolTable = {}
         # Variable to store the code
-        self.ret = "import datetime\n" + "every_list = []\n" + "log_file = open('cozyLog.txt', 'a')\n" + temp_def + thermoStat + self.dispatch(tree)
         self.ret = "import datetime\n" + "import sys\n" + "every_list = []\n" + "log_file = open('cozyLog.txt', 'a')\n" + temp_def + thermoStat
         body = self.dispatch(tree)
         body += loop_def
@@ -110,7 +109,7 @@ class codeGenerator(object):
 
     # very basic function definition
     def _function_definition(self, tree, flag=None):
-        s = "def " + tree.children[0] + "(" + self.dispatch(tree.children[1])+") :\n"
+        s = "def " + tree.children[0] + "(" + self.dispatchTuple(tree.children[1])+") :\n"
         lines = self.dispatch(tree.children[2]).splitlines()
 
         for line in lines:
@@ -125,7 +124,7 @@ class codeGenerator(object):
 
     def _function_param(self, tree, flag=None):
         if tree.leaf==None:
-           return  self.dispatch(tree.children[0]) + "," + self.dispatch(tree.children[1])
+           return  self.dispatchTuple(tree.children[0]) + "," + self.dispatchTuple(tree.children[1])
         else:
            return tree.leaf
 
@@ -138,7 +137,7 @@ class codeGenerator(object):
         if len(tree.children)==0:
             return "[]"
         else:
-            return "[" + self.dispatch(tree.children[0]) + "]"
+            return "[" + self.dispatchTuple(tree.children[0]) + "]"
     
     def _list_expression(self, tree, flag=None):
         if len(tree.children) == 1:
@@ -503,7 +502,7 @@ class codeGenerator(object):
             return self.dispatch(tree.children[0], flag)
         if len(tree.children) == 2:
             #this is stealing lists
-            return "((" + self.dispatch(tree.children[0], flag) + ") or (" + self.dispatch(tree.children[1], flag) + "))"
+            return "((" + self.dispatchTuple(tree.children[0], flag) + ") or (" + self.dispatchTuple(tree.children[1], flag) + "))"
       
 
     def _during_and_expression(self, tree, flag=None):
@@ -557,10 +556,10 @@ class codeGenerator(object):
         s += "def condition" + str(everys) + "():\n"
         s += "    print 'checking" + str(everys) + "'\n"
         s += "    global happened" + str(everys) + "\n"
-        s += "    if " + self.dispatch(tree.children[0], everyFlag) + " and happened" + str(everys) + " == False"+ ":\n"
+        s += "    if " + self.dispatchTuple(tree.children[0], everyFlag) + " and happened" + str(everys) + " == False"+ ":\n"
         s += "        happened" + str(everys) + " = True\n"
         s += "        return True\n"
-        s += "    if not(" + self.dispatch(tree.children[0], everyFlag) + "):\n"
+        s += "    if not(" + self.dispatchTuple(tree.children[0], everyFlag) + "):\n"
         s += "        happened" + str(everys) + " = False\n"
         s += "every_list.append({'func' : 'every" + str(everys)
         s += "', 'condition' : 'condition" + str(everys) + "'})"
