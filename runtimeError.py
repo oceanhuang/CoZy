@@ -32,7 +32,12 @@ def errorEnd():
     toAddEnd = """
 except IndexError:
     print "ERROR: Nothing lives at that index."
-    print "at line ", lineno()
+    sys.exit()
+except TypeError:
+    print "ERROR: Y u uses wrong type?"
+    sys.exit()
+except:
+    print "ERROR: Hmmm...that's odd. You done fucked up, but I have no idea how."
     sys.exit()
 """
     return toAddEnd
