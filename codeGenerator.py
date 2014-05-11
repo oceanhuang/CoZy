@@ -5,12 +5,12 @@ import sys
 import runtimeError
 everys = 0
 temp_def ='''
-class Temperature:
+class Temperature(object):
     def __init__(self, number, tempType):
         self.startType = tempType
         if tempType == 'K':
             self.KTemp = number
-            self.CTemp = number + 273.15
+            self.CTemp = number - 273.15
             self.FTemp = 5.0/9.0*(number - 32.0) + 273.15
         elif tempType == 'C':
             self.KTemp = number + 273.15
@@ -30,6 +30,9 @@ class Temperature:
     def getKelvin(self):
         return self.KTemp
 
+    def __class__(self):
+        return "Temperature"
+
     def __str__(self):
         if self.startType == ' K':
             return str(self.KTemp) + ' K'
@@ -39,32 +42,18 @@ class Temperature:
             return str(self.FTemp) + ' F'
 
     def __add__(self, other):
-        if str(type(other)) == "Temperature"
-            return Temperature(self.KTemp + other.getKelvin(), self.startType)
-        if str(type(other)) != "float":
-            if self.startType == 'K':
-                return Temperature(self.KTemp + other, self.startType)
-            elif self.startType == 'C':
-                return Temperature(self.CTemp + other, self.startType)
-            elif self.startType == 'F':
-                return Temperature(self.FTemp + other, self.startType)
-            else:
-                return NotImplemented
+        if other.__class__() == "Temperature":
+            temp = Temperature(self.CTemp + other.getCelsius(), 'C')
+            temp.startType = self.startType
+            return temp
         else:
             return NotImplemented
 
     def __sub__(self, other):
-        if str(type(other)) == "Temperature"
-            return Temperature(self.KTemp - other.getKelvin(), self.startType)
-        if str(type(other)) != "float":
-            if self.startType == 'K':
-                return Temperature(self.KTemp - other, self.startType)
-            elif self.startType == 'C':
-                return Temperature(self.CTemp - other, self.startType)
-            elif self.startType == 'F':
-                return Temperature(self.FTemp - other, self.startType)
-            else:
-                return NotImplemented
+        if other.__class__() == "Temperature":
+            temp = Temperature(self.CTemp - other.getCelsius(), 'C')
+            temp.startType = self.startType
+            return temp
         else:
             return NotImplemented
 
@@ -108,7 +97,7 @@ class codeGenerator(object):
         self.ret = "import datetime\n" 
         self.ret += "import sys\n"
         self.ret += "every_list = []\n" + "log_file = open('cozyLog.txt', 'a')\n" + temp_def + thermoStat
-        self.ret += "print \"Welcome to CoZy \\n==================== \""
+        self.ret += "print \"Welcome to CoZy \\n==================== \"\n"
         body = self.dispatch(tree)
         body += loop_def
         self.ret += runtimeError.errorBeginning(body)
@@ -365,7 +354,7 @@ class codeGenerator(object):
             #type1 = operand1[0]
             #type2 = operand2[0]
 
-            if type1 != type2:
+            if type1 != type2 and ((type1 != 'F' and type1 != 'C' and type1 != 'K') or (type1 != 'F' and type1 != 'C' and type1 != 'K')):
                 exit("TypeError! " + type1 + " is not of type " +type2)
             else:
                 if type1=="DAY" or type1=="MONTH" or type1=="DATE" or type1=="TIME" or type1=="DATETIME":
