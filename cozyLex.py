@@ -26,7 +26,9 @@ reserved = {
     'December': 'DECEMBER',
     #types
     'number' : 'TNUMBER',
-    'temperature' : 'TTEMPERATURE',
+    'temp_F' : 'TF',
+    'temp_C' : 'TC',
+    'temp_K' : 'TK',
     'time' : 'TTIME',
     'datetime' : 'TDATETIME',
     'boolean' : 'TBOOLEAN',

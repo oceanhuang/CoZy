@@ -121,12 +121,21 @@ class codeGenerator(object):
         self.symbolTable[s] = ["NUM", None]
         return s
 
-    #FIX THIS ONEEEEEE
-    def _function_param_temperature(self, tree, flag=None):
+    def _function_param_temperatureF(self, tree, flag=None):
         s = tree.children[1]
-        self.symbolTable[s] = ["TEMPERATURE", None]
+        self.symbolTable[s] = ["F", None]
         return s
 
+    def _function_param_temperatureC(self, tree, flag=None):
+        s = tree.children[1]
+        self.symbolTable[s] = ["C", None]
+        return s
+
+    def _function_param_temperatureK(self, tree, flag=None):
+        s = tree.children[1]
+        self.symbolTable[s] = ["K", None]
+        return s
+    
     def _function_param_time(self, tree, flag=None):
         s = tree.children[1]
         self.symbolTable[s] = ["TIME", None]
@@ -159,22 +168,22 @@ class codeGenerator(object):
 
     def _function_param_dayrange(self, tree, flag=None):
         s = tree.children[1]
-        self.symbolTable[s] = ["DAYRANGE", None]
+        self.symbolTable[s] = ["DAY_RANGE", None]
         return s
 
     def _function_param_monthrange(self, tree, flag=None):
         s = tree.children[1]
-        self.symbolTable[s] = ["MONTHRANGE", None]
+        self.symbolTable[s] = ["MONTH_RANGE", None]
         return s
 
     def _function_param_daterange(self, tree, flag=None):
         s = tree.children[1]
-        self.symbolTable[s] = ["DATERANGE", None]
+        self.symbolTable[s] = ["DATE_RANGE", None]
         return s
 
     def _function_param_timerange(self, tree, flag=None):
         s = tree.children[1]
-        self.symbolTable[s] = ["TIMERANGE", None]
+        self.symbolTable[s] = ["TIME_RANGE", None]
         return s
 
     def _function_param_string(self, tree, flag=None):

@@ -76,9 +76,17 @@ def p_function_param_number(p):
     """function_param : TNUMBER ID"""
     p[0] = Node('function_param_number', [p[1], p[2]])
 
-def p_function_param_temperature(p):
-    """function_param : TTEMPERATURE ID"""
-    p[0] = Node('function_param_temperature', [p[1], p[2]])
+def p_function_param_temperatureF(p):
+    """function_param : TF ID"""
+    p[0] = Node('function_param_temperatureF', [p[1], p[2]])
+
+def p_function_param_temperatureC(p):
+    """function_param : TC ID"""
+    p[0] = Node('function_param_temperatureC', [p[1], p[2]])
+
+def p_function_param_temperatureK(p):
+    """function_param : TK ID"""
+    p[0] = Node('function_param_temperatureK', [p[1], p[2]])
 
 def p_function_param_time(p):
     """function_param : TTIME ID"""
@@ -603,13 +611,14 @@ y{0} = 0
 
 
 def foo(number b, string k, day m):
-    return(b)
+    z = 60 C
+    return(z)
 
 def foo2():
     print("hello")
 foo2()
 u = foo(12, "hi", Monday)
-gio = foo2() + Monday
+g = u + 70 F
 '''
 
     result = parser.parse(s)
