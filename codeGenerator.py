@@ -89,7 +89,10 @@ class codeGenerator(object):
         if isinstance(tree, list):
             temp = ""
             for t in tree:
-                temp += self.dispatch(t)
+                try:
+                    temp += self.dispatch(t)
+                except BaseException:
+                    sys.exit("Syntax error in input!")
             return temp
 
         method = getattr(self, "_"+tree.type)
@@ -669,31 +672,31 @@ class codeGenerator(object):
     def get_month_value(self, month):
         s = ''
         if month == "January":
-            s = "0"
-        elif month == 'February':
             s = "1"
-        elif month == 'March':
+        elif month == 'February':
             s = "2"
-        elif month == 'April':
+        elif month == 'March':
             s = "3"
-        elif month == 'May':
+        elif month == 'April':
             s = "4"
-        elif month == 'June':
+        elif month == 'May':
             s = "5"
-        elif month == 'July':
+        elif month == 'June':
             s = "6"
-        elif month == 'August':
+        elif month == 'July':
             s = "7"
-        elif month == 'September':
+        elif month == 'August':
             s = "8"
-        elif month == 'October':
+        elif month == 'September':
             s = "9"
-        elif month == 'November':
+        elif month == 'October':
             s = "10"
-        elif month == 'December':
+        elif month == 'November':
             s = "11"
-        else:
+        elif month == 'December':
             s = "12"
+        else:
+            s = "13"
         return s
 
     def _date_time_expression(self, tree, flag=None):
