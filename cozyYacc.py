@@ -610,15 +610,18 @@ y{0} = 0
 
 
 
-def foo(number b, string k, day m):
-    z = 60 C
+def foo(number b, number c):
+    z = b + c
     return(z)
 
-def foo2():
-    print("hello")
-foo2()
-u = foo(12, "hi", Monday)
-g = u + 70 F
+u = foo(12, 7)
+print (u)
+
+def hello():
+    print("hello!")
+
+hello()
+
 '''
 
     result = parser.parse(s)

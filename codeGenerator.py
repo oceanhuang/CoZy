@@ -91,7 +91,7 @@ class codeGenerator(object):
             for line in lines:
                 if "return" in line:
                     functiontype = self.returnTable[line[0:7]]
-                    line = line[0:6] + line[8:len(line)]
+                    line = line[0:6] + " "+ line[8:len(line)]
                 s+= "    " + line +"\n"
             self.functionTable[tree.leaf] = (arg,functiontype)
             return s 
@@ -103,7 +103,7 @@ class codeGenerator(object):
         for line in lines:
             if "return" in line:
                 functiontype = self.returnTable[line[0:7]]
-                line = line[0:6] + line[8:len(line)]
+                line = line[0:6] + " " + line[8:len(line)]
             s+= "    " + line +"\n"
         self.functionTable[tree.leaf] = ("",functiontype)
         return s
