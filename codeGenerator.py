@@ -5,12 +5,12 @@ import sys
 import runtimeError
 everys = 0
 temp_def ='''
-class Temperature:
+class Temperature(object):
     def __init__(self, number, tempType):
         self.startType = tempType
         if tempType == 'K':
             self.KTemp = number
-            self.CTemp = number + 273.15
+            self.CTemp = number - 273.15
             self.FTemp = 5.0/9.0*(number - 32.0) + 273.15
         elif tempType == 'C':
             self.KTemp = number + 273.15
@@ -20,12 +20,19 @@ class Temperature:
             self.KTemp = 5.0/9.0*(number - 32.0) + 273.15
             self.CTemp = 5.0/9.0*(number -32.0)
             self.FTemp = number
+
     def getCelsius(self):
         return self.CTemp
+
     def getFarenheit(self):
         return self.FTemp
+
     def getKelvin(self):
         return self.KTemp
+
+    def __class__(self):
+        return "Temperature"
+
     def __str__(self):
         if self.startType == ' K':
             return str(self.KTemp) + ' K'
@@ -33,6 +40,23 @@ class Temperature:
             return str(self.CTemp) + ' C'
         elif self.startType == 'F':
             return str(self.FTemp) + ' F'
+
+    def __add__(self, other):
+        if other.__class__() == "Temperature":
+            temp = Temperature(self.CTemp + other.getCelsius(), 'C')
+            temp.startType = self.startType
+            return temp
+        else:
+            return NotImplemented
+
+    def __sub__(self, other):
+        if other.__class__() == "Temperature":
+            temp = Temperature(self.CTemp - other.getCelsius(), 'C')
+            temp.startType = self.startType
+            return temp
+        else:
+            return NotImplemented
+
 '''
 
 def module_exists(module_name):
@@ -73,7 +97,7 @@ class codeGenerator(object):
         self.ret = "import datetime\n" 
         self.ret += "import sys\n"
         self.ret += "every_list = []\n" + "log_file = open('cozyLog.txt', 'a')\n" + temp_def + thermoStat
-        self.ret += "print \"Welcome to CoZy \\n==================== \""
+        self.ret += "print \"Welcome to CoZy \\n==================== \"\n"
         body = self.dispatch(tree)
         body += loop_def
         self.ret += runtimeError.errorBeginning(body)
