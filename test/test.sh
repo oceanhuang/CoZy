@@ -21,7 +21,9 @@ cd ..
 rm -rf *.pyc out.py parsetab.py parser.out
 cd test/
 rm -rf *.pyc out.py parsetab.py parser.out
-
+cd testFiles/
+rm *~
+cd ..
 NUMTESTS=$(ls -1 testFiles | wc -l)
 #echo $numTests
 COUNTER=0
@@ -40,7 +42,14 @@ while [ $COUNTER -lt $NUMTESTS ]; do
     #get first line of testfile
     FAIL_INTENT=$(head -n 1 $TESTFILE$EXT | grep "fail" | wc -l)
 
-    cat $TESTFILE$EXT | python testCozy.py 1>$RESULTS$COUNTER 2>$ERROR$COUNTER 
+    cat $TESTFILE$EXT | python -W ignore testCozy.py 1>$RESULTS$COUNTER 2>$ERROR$COUNTER & 
+    PID=$(ps -ef | grep testCozy | awk {'print$2'})
+    PID=$(echo $PID | awk {'print $1'})
+    sleep 0.9
+
+    kill $PID 2>/dev/null 
+    wait $PID 2>/dev/null
+
     FAILED=false
 
     #check if size of error file is greater than 0

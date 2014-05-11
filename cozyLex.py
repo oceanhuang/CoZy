@@ -1,4 +1,5 @@
 import ply.lex as lex
+import sys
 import re
 
 # List of token names.   This is always required
@@ -58,6 +59,7 @@ reserved = {
     'in' : 'IN', 
     'print' : 'PRINT',
     'not' : 'NOT',
+    'to' : 'TO',
     'each' : 'EACH',
     'log' : 'LOG',
     'once' : 'ONCE',
@@ -65,7 +67,9 @@ reserved = {
     'true' : 'TRUE',
     'false' : 'FALSE',
     'power' : 'POWER',
-    'return' : 'RETURN'
+    'return' : 'RETURN',
+    'SET_TEMP' : 'SET_TEMP',
+    'GET_TEMP' : 'GET_TEMP',
     }
 
 tokens = [
@@ -85,6 +89,11 @@ tokens = [
     'DATE',
     'TIME',
     'DATETIME',
+    'DAYS',
+    'MONTHS',
+    'YEARS',
+    'HOURS',
+    'MINUTES',
     'TEMPERATURE',
     'MULTIPLY',
     'DIVIDE',
@@ -97,6 +106,7 @@ tokens = [
     'NEWLINE',
     'COMMA',
     'STRING',
+    'FORRANGE',
 ] + list(reserved.values())
 
 # Regular expression rules for simple tokens
@@ -117,15 +127,18 @@ t_EQUIV     = r'(==)'
 t_NONEQUIV  = r'(!=)'
 t_RELOP     = r'(<=)|(>=)|(<)|(>)'
 t_COMMA     = r'(,)'
+t_FORRANGE = r'\s*\.\.\.\s*'
 t_POWER     = r'\^'
+t_GET_TEMP  = r'GET_TEMP'
+t_SET_TEMP  = r'SET_TEMP'
 # A regular expression rule with some action code
 
 def t_DATETIME(t):
-    r'[0-3]?[0-9]/[01]?[0-9]/[0-9][0-9][0-9][0-9][ ][01]?[0-9]:[0-5][0-9][ ]((AM)|(PM))'
+    r'[0-3]?[0-9]/[01]?[0-9]/[0-9]+[ ][01]?[0-9]:[0-5][0-9][ ]((AM)|(PM))'
     return t
 
 def t_DATE(t):
-    r'[0-3]?[0-9]/[01]?[0-9]/[0-9][0-9][0-9][0-9]'
+    r'[0-3]?[0-9]/[01]?[0-9]/[0-9]+'
     return t
 def t_TEMPERATURE(t):
     r'[0-9]+[ ]*[CFK]'
@@ -133,6 +146,21 @@ def t_TEMPERATURE(t):
 
 def t_TIME(t):
     r'[01]?[0-9]:[0-5][0-9][ ]((AM)|(PM))'
+    return t
+def t_DAYS(t):
+    r'[0-9]+[ ]Days'
+    return t
+def t_MONTHS(t):
+    r'[0-9]+[ ]Months'
+    return t
+def t_YEARS(t):
+    r'[0-9]+[ ]Years'
+    return t
+def t_HOURS(t):
+    r'[0-9]+[ ]Hours'
+    return t
+def t_MINUTES(t):
+    r'[0-9]+[ ]Minutes'
     return t
 
 def t_STRING(t):
@@ -164,8 +192,8 @@ def t_WS(t):
         return t
 
 
-# # A string containing ignored characters (spaces and tabs)
-# t_ignore  = ' \t'
+# A string containing ignored characters (spaces and tabs)
+t_ignore_COMMENT = r'\#.*'
 
 # Error handling rule
 def t_error(t):
@@ -315,8 +343,11 @@ def filter(lexer, add_endmarker = False):
     token = None
     tokens = iter(lexer.token, None)
     tokens = track_tokens_filter(lexer, tokens)
-    for token in indentation_filter(tokens):
-        yield token
+    try:
+        for token in indentation_filter(tokens):
+            yield token
+    except IndentationError:
+        sys.exit("There is an indentation error in the code!")
 
     if add_endmarker:
         lineno = 1
@@ -348,16 +379,13 @@ if __name__ == '__main__':
     # code
     #this doesnt work RGGGGGG
     data = """
-a = 2^4
+x = 1/1/1 + 20 Days
+y = 1 Hours
+z = 3 Minutes
+a = 10:00 AM + 1 Hours
+b = 2 Years
+c = 3 Months
 """
-#     data = """
-# x=3+3;
-# if x=6:
-#     a=9;
-#     b=7;
-# y = 2 + "every";
-# z = Tuesday;
-#     """
 
     # Give the lexer some input
     lexer.input(data)

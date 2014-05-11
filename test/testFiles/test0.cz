@@ -1,2 +1,8 @@
-#6
+#6.0
 ret=3+3
+print(GET_TEMP)
+t = 40 C
+print(t)
+t = GET_TEMP
+SET_TEMP(40 F)
+SET_TEMP(GET_TEMP)

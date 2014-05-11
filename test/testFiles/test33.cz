@@ -1,0 +1,7 @@
+#None
+a = 40 F
+SET_TEMP(a)
+SET_TEMP(40 F)
+d = GET_TEMP
+print(GET_TEMP)
+print(d)
