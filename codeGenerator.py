@@ -210,7 +210,7 @@ class codeGenerator(object):
                 return "myThermoStat.set_temp(" + arg + ".getCelsius())\n"
         if arg[0] == "F" or arg[0] == "C" or arg[0] == "K":
             # case for 40 F or a = 40 F
-            print self.symbolTable.get(arg[1])
+            # print self.symbolTable.get(arg[1])
             if (self.symbolTable.get(arg[1])):
                 return "myThermoStat.set_temp(" + str(arg[1]) + ".getCelsius())\n"
             else: 
@@ -218,7 +218,7 @@ class codeGenerator(object):
                 return "myThermoStat.set_temp(" + t + ".getCelsius())\n"
         elif arg[0] == 'GET_TEMP':
             # case for a = GET_TEMP then SET_TEMP(a)
-            print self.symbolTable.get(arg[1])
+            # print self.symbolTable.get(arg[1])
             return "myThermoStat.set_temp(" + str(arg[1]) + ".getCelsius())\n"
         # arg = self.dispatch(tree.children[0]);
         # print arg
@@ -618,7 +618,7 @@ class codeGenerator(object):
 
     def _print_statement(self, tree, flag=None):
         arg = self.dispatch(tree.children[0])
-        print arg
+        # print arg
         if type(arg) is tuple:
             arg = arg[1]
 

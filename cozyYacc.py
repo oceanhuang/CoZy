@@ -472,9 +472,10 @@ if __name__ == '__main__':
     ## Put code to test here
     s = '''
 # hihihi hihi
-a = GET_TEMP
-print('hi' + 'hi')
-print(GET_TEMP)
+SET_TEMP(40 F)
+SET_TEMP(GET_TEMP)
+
+
 '''
     result = parser.parse(s)
 
