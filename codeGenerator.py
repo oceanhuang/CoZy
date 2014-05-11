@@ -19,12 +19,16 @@ class Temperature:
             self.KTemp = 5.0/9.0*(number - 32.0) + 273.15
             self.CTemp = 5.0/9.0*(number -32.0)
             self.FTemp = number
+
     def getCelsius(self):
         return self.CTemp
+
     def getFarenheit(self):
         return self.FTemp
+
     def getKelvin(self):
         return self.KTemp
+
     def __str__(self):
         if self.startType == ' K':
             return str(self.KTemp) + ' K'
@@ -32,6 +36,37 @@ class Temperature:
             return str(self.CTemp) + ' C'
         elif self.startType == 'F':
             return str(self.FTemp) + ' F'
+
+    def __add__(self, other):
+        if str(type(other)) == "Temperature"
+            return Temperature(self.KTemp + other.getKelvin(), self.startType)
+        if str(type(other)) != "float":
+            if self.startType == 'K':
+                return Temperature(self.KTemp + other, self.startType)
+            elif self.startType == 'C':
+                return Temperature(self.CTemp + other, self.startType)
+            elif self.startType == 'F':
+                return Temperature(self.FTemp + other, self.startType)
+            else:
+                return NotImplemented
+        else:
+            return NotImplemented
+
+    def __sub__(self, other):
+        if str(type(other)) == "Temperature"
+            return Temperature(self.KTemp - other.getKelvin(), self.startType)
+        if str(type(other)) != "float":
+            if self.startType == 'K':
+                return Temperature(self.KTemp - other, self.startType)
+            elif self.startType == 'C':
+                return Temperature(self.CTemp - other, self.startType)
+            elif self.startType == 'F':
+                return Temperature(self.FTemp - other, self.startType)
+            else:
+                return NotImplemented
+        else:
+            return NotImplemented
+
 '''
 
 def module_exists(module_name):
