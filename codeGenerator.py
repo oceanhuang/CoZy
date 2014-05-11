@@ -652,7 +652,7 @@ class codeGenerator(object):
 
     def _month_expression(self, tree, flag=None):
         month = self.get_month_value(tree.leaf)
-        string = "datetime.datetime.now().month() == " + month
+        string = "datetime.datetime.now().month == " + month
         return "MONTH", string
 
     def get_month_value(self, month):
