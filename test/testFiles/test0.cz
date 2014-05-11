@@ -1,2 +1,4 @@
 #6.0
 ret=3+3
+a = GET_TEMP
+SET_TEMP(a)
