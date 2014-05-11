@@ -37,6 +37,8 @@ class codeGenerator(object):
         self.symbolTable = {}
         # Function parameter type lookup
         self.functionTable = {}
+        self.returnTable = {}
+        self.returnNumber = 0
         # Variable to store the code
         self.ret = "import datetime\n" + "every_list = []\n" + "log_file = open('cozyLog.txt', 'a')\n" + temp_def + self.dispatch(tree)
         # 
@@ -75,26 +77,35 @@ class codeGenerator(object):
    
     #function definition
     def _function_definition(self, tree, flag=None):
-        flag = "FUNC"
+        functiontype = "VOID"
         #with parameters
         if len(tree.children) == 2:
             arg = self.dispatch(tree.children[0])
-            self.functionTable[tree.leaf] = arg
+##            self.functionTable[tree.leaf] = arg
             #
-            if type(arg) is tuple:
-                arg = str(arg[1])
+##            if type(arg) is tuple:
+##                arg = str(arg[1])
                 
-            s = "def " + tree.leaf + "(" + arg +") :\n"
+            s = "def " + tree.leaf + "(" + str(arg[1]) +") :\n"
             lines = self.dispatch(tree.children[1]).splitlines()
             for line in lines:
+                if "return" in line:
+                    functiontype = self.returnTable[line[0:7]]
+                    line = line[0:6] + line[8:len(line)]
                 s+= "    " + line +"\n"
-            return s
+            self.functionTable[tree.leaf] = (arg,functiontype)
+            return s 
 
         #no parameters
+##        self.functionTable[tree.leaf] = ""
         s = "def " + tree.leaf + "( ) :\n"
         lines = self.dispatch(tree.children[0]).splitlines()
         for line in lines:
+            if "return" in line:
+                functiontype = self.returnTable[line[0:7]]
+                line = line[0:6] + line[8:len(line)]
             s+= "    " + line +"\n"
+        self.functionTable[tree.leaf] = ("",functiontype)
         return s
 
     def _function_param_list(self, tree, flag=None):
@@ -583,21 +594,32 @@ class codeGenerator(object):
         return s
 
     def _return_statement(self, tree, flag=None):
+        self.returnNumber +=1
         arg = self.dispatch(tree.children[0])
+        self.returnTable["return"+ str(self.returnNumber)] = arg[0]
         if type(arg) is tuple:
             arg = arg[1]
 
         if type(arg) is int:
             arg = str(arg)
-        s = "return " + arg ## add return type
+        s = "return" + str(self.returnNumber) + " " + arg ## add return type
         return s
 
+    def _primary_expression_funct(self, tree, flag= None):
+        arg = self.dispatch(tree.children[0])
+        funcname = arg.split("(")[0]
+        return self.functionTable[funcname][1], arg
+
     def _function_expression(self, tree, flag=None):
+        functiontype = self.functionTable[tree.leaf][1]
+        self.symbolTable[tree.leaf] = (functiontype, None)
         if len(tree.children) == 1:
             arg = self.dispatch(tree.children[0])
             #getting the function types
             informallist = arg[0].split(", ")
-            formal = self.functionTable[tree.leaf].split(", ")
+            if self.functionTable[tree.leaf][0] == "":
+                exit("Parameters given but function definition has no parameters")
+            formal = self.functionTable[tree.leaf][0].split(", ")
             formallist = list()
             for f in formal:
                 formallist.append(self.symbolTable[f][0])
@@ -607,6 +629,8 @@ class codeGenerator(object):
             else:
                 exit( "Type error in function params: \nInput " + str(informallist) + " does not match definition " + str(formallist))
         else:
+            if self.functionTable[tree.leaf][0] != "":
+                exit("No parameters given in function but parameters needed")
             return tree.leaf + "()"
         
     def _for_statement(self, tree, flag=None):

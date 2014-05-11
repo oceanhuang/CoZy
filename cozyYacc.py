@@ -61,6 +61,7 @@ def p_function_definition(p):
     else:
         p[0] = Node("function_definition", [p[8]], p[2])
 
+
 #list of parameters or just one        
 def p_function_param_list(p):
     """function_param_list : function_param 
@@ -358,6 +359,11 @@ def p_primary_expression(p):
     else:
         p[0] = Node('primary_expression', [p[2]])
 
+def p_primary_expression_funct(p):
+    """ primary_expression : function_expression """
+    p[0] = Node('primary_expression_funct', [p[1]])
+
+
 def p_primary_expression_not(p):
     """ primary_expression : NOT LPAREN or_expression RPAREN
     """
@@ -594,13 +600,16 @@ for i in 1 to 20:
 y = [1, 2, 3]
 y{0} = 0
 
+
+
 def foo(number b, string k, day m):
     return(b)
 
-foo(7, "hello")
+def foo2():
+    print("hello")
 foo2()
-
-
+u = foo(12, "hi", Monday)
+gio = foo2() + Monday
 '''
 
     result = parser.parse(s)
