@@ -250,7 +250,6 @@ class codeGenerator(object):
         arg = self.dispatch(tree.children[0]);
         scpDepth = 0
         for scpDepth in range(0, self.scopeDepth + 1):
-            print "DEPTH " + str(scpDepth)
             if tree.leaf + "__" + str(scpDepth) + "__" in self.symbolTable:
                 var_type = self.symbolTable[tree.leaf + "__" + str(scpDepth) + "__"][0]
                 if self.symbolTable[tree.leaf + "__" + str(scpDepth) + "__"][0] != arg[0]:
@@ -779,8 +778,6 @@ class codeGenerator(object):
         
 
     def _time_expression(self, tree, flag=None):
-        print "TEEEEEEST"
-        print tree.leaf
         timeTable = self.get_time_value(tree.leaf)
         string = "datetime.datetime(100,1,1," + str(timeTable.get('hour')) + ", " + str(timeTable.get('minute')) +")"
         return "TIME", string
