@@ -31,16 +31,16 @@ try:
 def errorEnd():
     toAddEnd = """
 except IndexError:
-    print "ERROR: Nothing lives at that index."
+    sys.stderr.write("ERROR: Nothing lives at that index.")
     sys.exit()
 except TypeError:
-    print "ERROR: You seem to be using the wrong type for something."
+    sys.stderr.write("ERROR: You seem to be using the wrong type for something.")
     sys.exit()
 except KeyboardInterrupt:
-    print "\\nThank you for using CoZy!"
+    sys.stderr.write("\\nThank you for using CoZy!")
     sys.exit()
 except:
-    print "ERROR: Hmmm...that's odd. I don't quite know what went wrong."
+    sys.stderr.write("ERROR: Hmmm...that's odd. I don't quite know what went wrong.")
     sys.exit()
 """
     return toAddEnd
