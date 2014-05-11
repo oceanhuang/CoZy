@@ -70,7 +70,9 @@ class codeGenerator(object):
         # Symbols table "id" => {type, value}
         self.symbolTable = {}
         # Variable to store the code
-        self.ret = "import datetime\n" + "import sys\n" + "every_list = []\n" + "log_file = open('cozyLog.txt', 'a')\n" + temp_def + thermoStat
+        self.ret = "import datetime\n" 
+        self.ret += "import sys\n"
+        self.ret += "every_list = []\n" + "log_file = open('cozyLog.txt', 'a')\n" + temp_def + thermoStat
         self.ret += "print \"Welcome to CoZy \\n==================== \""
         body = self.dispatch(tree)
         body += loop_def
@@ -103,11 +105,11 @@ class codeGenerator(object):
             arg = arg[1]
         return str(arg)
 
-    def inBlock(self, tree, flag=None):
+    def inBlock(self):
         self.scopeDepth += 1
         self.scopes.append([])
 
-    def outBlock(self, tree, flag=None):
+    def outBlock(self):
         for variable in self.scopes[self.scopeDepth]:
             del self.symbolTable[variable]
         del self.scopes[self.scopeDepth]
@@ -122,10 +124,12 @@ class codeGenerator(object):
     # very basic function definition
     def _function_definition(self, tree, flag=None):
         s = "def " + tree.children[0] + "(" + self.dispatchTuple(tree.children[1])+") :\n"
+        self.inBlock()
         lines = self.dispatch(tree.children[2]).splitlines()
 
         for line in lines:
             s+= "    " + line +"\n"
+        self.outBlock()
         return s
 
     def _function_param_list(self, tree, flag=None):
@@ -223,19 +227,27 @@ class codeGenerator(object):
     #whoever wrote this, please have a look at _assignnment_statement_list_index
     def _assignment_statement(self, tree, flag=None):
         arg = self.dispatch(tree.children[0]);
-        if tree.leaf + "__" + str(self.scopeDepth) + "__" in self.symbolTable:
-            var_type = self.symbolTable[tree.leaf + "__" + str(self.scopeDepth) + "__"][0]
-            if self.symbolTable[tree.leaf + "__" + str(self.scopeDepth) + "__"][0] != arg[0]:
-                exit(tree.leaf + " is of type " + var_type + ". Cannot assign "  + arg[0] + " to it.")
-
-        self.symbolTable[tree.leaf + "__" + str(self.scopeDepth) + "__"] = [arg[0], arg[1]]
-        self.scopes[self.scopeDepth].append(tree.leaf + "__" + str(self.scopeDepth) + "__")
+        scpDepth = 0
+        for scpDepth in range(0, self.scopeDepth + 1):
+            print "DEPTH " + str(scpDepth)
+            if tree.leaf + "__" + str(scpDepth) + "__" in self.symbolTable:
+                var_type = self.symbolTable[tree.leaf + "__" + str(scpDepth) + "__"][0]
+                if self.symbolTable[tree.leaf + "__" + str(scpDepth) + "__"][0] != arg[0]:
+                    exit(tree.leaf + " is of type " + var_type + ". Cannot assign "  + arg[0] + " to it.")
+                break
+        self.symbolTable[tree.leaf + "__" + str(scpDepth) + "__"] = [arg[0], arg[1]]
+        if scpDepth == self.scopeDepth:
+            self.scopes[self.scopeDepth].append(tree.leaf + "__" + str(self.scopeDepth) + "__")
         if type(arg) is tuple:
             arg = arg[1]
         # print self.symbolTable #uncomment to check symbol table
         # print self.scopes
         if type(arg) is not str: arg = str(arg)
-        return tree.leaf + " = " + arg
+        string = ""
+        if scpDepth != self.scopeDepth:
+            string += "global " + tree.leaf + "\n"
+        string += tree.leaf + " = " + arg
+        return string
 
     def _get_temp_expression(self, tree, flag=None):
         return "myThermoStat.get_temp()"
@@ -447,11 +459,11 @@ class codeGenerator(object):
         else:
             # This means this is a variable/ID. 
             # Check if variable is in symbol table and return the variable and its type
-            if (tree.leaf + "__" +str(self.scopeDepth) + "__") in self.scopes[self.scopeDepth]:
-                (varType, value) = self.symbolTable.get(tree.leaf + "__" +str(self.scopeDepth) + "__")
-                return varType, tree.leaf, True
-            else:
-                exit("Variable " + tree.leaf + " not declared")
+            for scpDepth in range(0, self.scopeDepth + 1):
+                if (tree.leaf + "__" +str(scpDepth) + "__") in self.scopes[scpDepth]:
+                    (varType, value) = self.symbolTable.get(tree.leaf + "__" +str(scpDepth) + "__")
+                    return varType, tree.leaf, True
+            exit("Variable " + tree.leaf + " not declared")
 
     def _primary_expression_not(self, tree, flag=None):
         if tree.leaf == None:
@@ -514,16 +526,20 @@ class codeGenerator(object):
 
         s = "\ndef every" + str(everys) + "() :\n"
         # s += "    print 'executing every" + str(everys) + "'\n"
-        
+        self.inBlock()
+                
         lines = self.dispatch(tree.children[1]).splitlines()
         for line in lines:
             s+= "    " + line +"\n"
 
         s += "def condition" + str(everys) + "():\n"
         # s += "    print 'checking" + str(everys) + "'\n"
+        self.inBlock()
         s += "    if " + self.dispatchTuple(tree.children[0], everyFlag) + ": return True\n"
         s += "every_list.append({'func' : 'every" + str(everys)
         s += "', 'condition' : 'condition" + str(everys) + "'})"
+        self.outBlock()
+        self.outBlock()
         return s
 
     def _once_every_statement(self, tree, flag=None):
@@ -534,6 +550,7 @@ class codeGenerator(object):
 
         s = "happened" + str(everys) + " = False\n"
         s += "\ndef every" + str(everys) + "() :\n"
+        self.inBlock()
         # s += "    print 'executing once every" + str(everys) + "'\n"
 
         lines = self.dispatch(tree.children[1]).splitlines()
@@ -541,6 +558,7 @@ class codeGenerator(object):
             s+= "    " + line +"\n"
         s += "def condition" + str(everys) + "():\n"
         # s += "    print 'checking" + str(everys) + "'\n"
+        self.inBlock()
         s += "    global happened" + str(everys) + "\n"
         s += "    if " + self.dispatchTuple(tree.children[0], everyFlag) + " and happened" + str(everys) + " == False"+ ":\n"
         s += "        happened" + str(everys) + " = True\n"
@@ -549,6 +567,8 @@ class codeGenerator(object):
         s += "        happened" + str(everys) + " = False\n"
         s += "every_list.append({'func' : 'every" + str(everys)
         s += "', 'condition' : 'condition" + str(everys) + "'})"
+        self.outBlock()
+        self.outBlock()
         return s
 
     def _iteration_statement(self, tree, flag=None):
@@ -558,10 +578,12 @@ class codeGenerator(object):
         
         #s = "while(" + self.dispatch(tree.children[0]) + "):\n"
         s = "while(" + condition + "):\n"
+        self.inBlock()
         lines = self.dispatch(tree.children[1]).splitlines()
 
         for line in lines:
             s+= "    " + line +"\n"
+        self.outBlock()
         return s
 
     def _selection_statement(self, tree, flag=None):
@@ -570,20 +592,25 @@ class codeGenerator(object):
             condition = condition[1]
         if len(tree.children) == 2:
             s = "if(" + condition + "):\n"
+            self.inBlock()
             lines = self.dispatch(tree.children[1]).splitlines()
             for line in lines:
                 s+= "    " + line +"\n"
+            self.outBlock()
             return s
         else:
             s = "if(" + condition + "):\n"
+            self.inBlock()
             lines = self.dispatch(tree.children[1]).splitlines()
             for line in lines:
                 s+= "    " + line +"\n"
+            self.outBlock()
             s += "else:\n"
+            self.inBlock()
             lines = self.dispatch(tree.children[2]).splitlines()
-
             for line in lines:
                 s+= "    " + line +"\n"
+            self.outBlock()
             return s
 
     def _print_statement(self, tree, flag=None):
@@ -621,10 +648,12 @@ class codeGenerator(object):
         if type(or_expression2) is float: or_expression2 = str(int(or_expression2))
         
         s = "for " + the_id + " in range( " + or_expression1 + " , " + or_expression2 + " + 1 ) : \n"
+        self.inBlock()
         lines = self.dispatch(tree.children[2]).splitlines()
 
         for line in lines:
             s+= "    " + line +"\n"
+        self.outBlock()
         return s
     
     def _day_expression(self, tree, flag=None):
