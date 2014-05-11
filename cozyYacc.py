@@ -563,11 +563,11 @@ def p_function_expression(p):
 
 # Error rule for syntax errors
 def p_error(p):    
-    # if hasattr(p, 'line'):
-    #     sys.exit("Syntax error in input! at line: "+ p.line)
-    # else:
-    sys.exit("Syntax error in input!")
-
+    if hasattr(p, 'lineno'):
+        sys.exit("Syntax error in input! at line: "+ p.lineno)
+    else:
+        sys.exit("Syntax error in input!")
+    
 # wrap default parser into CoZy parser
 class CoZyParser(object):
     def __init__(self, lexer = None):
