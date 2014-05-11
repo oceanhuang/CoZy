@@ -1,6 +1,11 @@
 import ply.yacc as yacc
 from compiler import ast, misc
 
+precedence = (
+    ('left', 'PLUS', 'MINUS'),
+    ('left', 'MULTIPLY', 'DIVIDE')
+)
+
 # Get the token map from the lexer.  This is required.
 from cozyLex import *
 from codeGenerator import *
@@ -178,12 +183,20 @@ def p_statement(p):
                   | for_statement
                   | print_statement NEWLINE
                   | log_statement NEWLINE
+<<<<<<< HEAD
                   | return_statement NEWLINE
                   | function_expression NEWLINE
+=======
+                  | set_temp_statement NEWLINE
+>>>>>>> fb69d6612ea7cf19c77b7265a30d4cb2a2baceaa
     """
     #maybe add | list_change NEWLINE
     p[0] = Node("statement", [p[1]])
 
+def p_set_temp_statement(p):
+    """ set_temp_statement : SET_TEMP LPAREN or_expression RPAREN
+    """
+    p[0] = Node('set_temp_statement', [p[3]])
 
 def p_list_change(p):
     '''list_change : ADD LPAREN ID COMMA or_expression RPAREN 
@@ -218,12 +231,12 @@ def p_list_change_remove_index(p):
     
 
 def p_list_index_double(p):
-    '''list_index : list_index LBRACK additive_expression RBRACK
+    '''list_index : list_index LBRACK or_expression RBRACK
     '''
     p[0] = Node("list_index_double", [p[1], p[3]])
 
 def p_list_index_id(p):
-    '''list_index : ID LBRACK additive_expression RBRACK
+    '''list_index : ID LBRACK or_expression RBRACK
     '''
     p[0] = Node("list_index_id", [p[3]], p[1])
 
@@ -254,8 +267,12 @@ def p_assignment_statement(p):
                              | ID EQUALS assignment_statement or_expression
     """
     
-    p[0] = Node("assignment_statement", [p[3]], p[1])
+    p[0] = Node("assignment_statement", [p[3]], p[1])  
 
+def p_get_temp_expression(p):
+    """ get_temp_expression : GET_TEMP
+    """
+    p[0] = Node("get_temp_expression", [])
 
 def p_assignment_statement_list_index(p):
     """ assignment_statement : list_index EQUALS or_expression
@@ -269,6 +286,7 @@ def p_assignment_statement_list_index(p):
 def p_or_expression(p):
     """ or_expression : and_expression
                         | or_expression OR and_expression
+                        | get_temp_expression
     """
     if len(p) == 2:
         p[0] = Node("or_expression", [p[1]])
@@ -349,7 +367,7 @@ def p_multiplicative_expression(p):
         p[0] = Node("multiplicative_expression", [p[1], p[3], p[2]])
 
 def p_power_expression(p):
-    """ power_expression : primary_expression
+    """ power_expression : to_expression
                         | power_expression POWER primary_expression
     """
     if len(p) == 2:
@@ -357,10 +375,19 @@ def p_power_expression(p):
     else:
         p[0] = Node("power_expression", [p[1], p[3], p[2]])
 
-
+def p_to_expression(p):
+    """ to_expression : primary_expression
+                      | primary_expression TO primary_expression
+    """
+    if len(p) == 2:
+        p[0] = Node("to_expression", [p[1]])
+    else:
+        p[0] = Node("to_expression", [p[1], p[3]])
+ 
 def p_primary_expression(p):
     """ primary_expression : ID
                             | LPAREN or_expression RPAREN
+
     """
     if len(p) == 2:
         p[0] = Node('primary_expression', [], p[1])
@@ -497,7 +524,7 @@ def p_log_statement(p):
 
 #need to add foreach/ also confused about the grammar
 def p_for_statement(p):
-    """ for_statement : FOR ID IN or_expression TO or_expression COLON NEWLINE INDENT statement_list DEDENT
+    """ for_statement : FOR ID IN or_expression FORRANGE or_expression COLON NEWLINE INDENT statement_list DEDENT
     """
     p[0] = Node("for_statement", [p[4], p[6], p[10]], p[2])
 
@@ -520,11 +547,11 @@ def p_function_expression(p):
  
 
 # Error rule for syntax errors
-def p_error(p):
-    print "Syntax error in input!"
-    if not hasattr(p, 'line') and not hasattr(p, 'lexpos'):
-        print p.type
-    else: print p
+def p_error(p):    
+    # if hasattr(p, 'line'):
+    #     sys.exit("Syntax error in input! at line: "+ p.line)
+    # else:
+    sys.exit("Syntax error in input!")
 
 # wrap default parser into CoZy parser
 class CoZyParser(object):
@@ -535,6 +562,7 @@ class CoZyParser(object):
         self.parser = yacc.yacc()
 
     def parse(self, code):
+        code = code + '\n'
         self.lexer.input(code)
         result = self.parser.parse(lexer = self.lexer)
         # print result

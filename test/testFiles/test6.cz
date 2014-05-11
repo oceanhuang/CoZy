@@ -1,7 +1,7 @@
-#31
+#31.0
 x = 0
 i = 0
-for i in 1 to 30:
+for i in 1...30:
     x = i
     x = i + 1
 ret = x
