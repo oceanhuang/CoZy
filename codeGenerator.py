@@ -203,14 +203,23 @@ class codeGenerator(object):
     def _set_temp_statement(self, tree, flag=None):
         # print tree.children[0]
         arg = self.dispatch(tree.children[0])
+        # print arg
+        if type(arg) is str:
+            # case for SET_TEMP(GET_TEMP)
+            if arg.startswith('myThermoStat'):
+                return "myThermoStat.set_temp(" + arg + ".getCelsius())\n"
         if arg[0] == "F" or arg[0] == "C" or arg[0] == "K":
-            # print self.symbolTable.get(arg[1])
+            # case for 40 F or a = 40 F
+            print self.symbolTable.get(arg[1])
             if (self.symbolTable.get(arg[1])):
                 return "myThermoStat.set_temp(" + str(arg[1]) + ".getCelsius())\n"
             else: 
                 t = "Temperature(" + str(arg[1]) + ", '" + arg[0] + "')"
                 return "myThermoStat.set_temp(" + t + ".getCelsius())\n"
-                
+        elif arg[0] == 'GET_TEMP':
+            # case for a = GET_TEMP then SET_TEMP(a)
+            print self.symbolTable.get(arg[1])
+            return "myThermoStat.set_temp(" + str(arg[1]) + ".getCelsius())\n"
         # arg = self.dispatch(tree.children[0]);
         # print arg
         # if operand[0] == "F" or operand[0] == "C" or operand[0] == "K":
@@ -220,8 +229,11 @@ class codeGenerator(object):
 
     #whoever wrote this, please have a look at _assignnment_statement_list_index
     def _assignment_statement(self, tree, flag=None):
-        arg = self.dispatch(tree.children[0]);
+        arg = self.dispatch(tree.children[0])
         self.symbolTable[tree.leaf] = [arg[0], arg[1]]
+        if type(arg) is str:
+            if arg.startswith('myThermoStat'):
+                self.symbolTable[tree.leaf] = ['GET_TEMP', '']
         if type(arg) is tuple:
             if arg[0] == "F" or arg[0] == "C" or arg[0] == "K":
                 arg = "Temperature(" + str(arg[1]) + ", '" + arg[0] + "')"
@@ -242,7 +254,7 @@ class codeGenerator(object):
                 arg = arg[1]
 
         
-        #print self.symbolTable #uncomment to check symbol table
+        # print self.symbolTable #uncomment to check symbol table
         if type(arg) is not str: arg = str(arg)
         return tree.leaf + " = " + arg
 
@@ -606,6 +618,7 @@ class codeGenerator(object):
 
     def _print_statement(self, tree, flag=None):
         arg = self.dispatch(tree.children[0])
+        print arg
         if type(arg) is tuple:
             arg = arg[1]
 

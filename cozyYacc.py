@@ -203,7 +203,6 @@ def p_assignment_statement_list_index(p):
 def p_or_expression(p):
     """ or_expression : and_expression
                         | or_expression OR and_expression
-                        | get_temp_expression
     """
     if len(p) == 2:
         p[0] = Node("or_expression", [p[1]])
@@ -304,7 +303,6 @@ def p_to_expression(p):
 def p_primary_expression(p):
     """ primary_expression : ID
                             | LPAREN or_expression RPAREN
-
     """
     if len(p) == 2:
         p[0] = Node('primary_expression', [], p[1])
@@ -347,6 +345,10 @@ def p_primary_expression_string(p):
     """
     p[0] = Node('primary_expression_string', [], p[1])
 
+def p_primary_expression_getTemp(p):
+    """ primary_expression : get_temp_expression
+    """
+    p[0] = Node('get_temp_expression', [])
 
 def p_primary_expression_constant(p):
     """ primary_expression : CONSTANT
@@ -470,22 +472,9 @@ if __name__ == '__main__':
     ## Put code to test here
     s = '''
 # hihihi hihi
-a = 40 F
-SET_TEMP(a)
-SET_TEMP(40 F)
-d = GET_TEMP
+a = GET_TEMP
+print('hi' + 'hi')
 print(GET_TEMP)
-print(d)
-
-b = not(7 + 3)
-a = Monday
-c = not(true or false)
-c = not(true or a)
-c = not(b or a)
-c = not(b)
-c = (b)
-once every(Wednesday):
-    log("hello, weds")
 '''
     result = parser.parse(s)
 

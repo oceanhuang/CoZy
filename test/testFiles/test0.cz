@@ -1,2 +1,6 @@
 #6.0
 ret=3+3
+a = GET_TEMP
+print(GET_TEMP)
+SET_TEMP(a)
+SET_TEMP(GET_TEMP)
