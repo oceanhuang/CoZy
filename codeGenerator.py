@@ -210,14 +210,8 @@ class codeGenerator(object):
 
     def _set_temp_statement(self, tree, flag=None):
         # print tree.children[0]
-        arg = self.dispatch(tree.children[0])
-        if arg[0] == "F" or arg[0] == "C" or arg[0] == "K":
-            # print self.symbolTable.get(arg[1])
-            if (self.symbolTable.get(arg[1])):
-                return "myThermoStat.set_temp(" + str(arg[1]) + ".getCelsius())\n"
-            else: 
-                t = "Temperature(" + str(arg[1]) + ", '" + arg[0] + "')"
-                return "myThermoStat.set_temp(" + t + ".getCelsius())\n"
+        arg = self.dispatchTuple(tree.children[0])
+        return "myThermoStat.set_temp(" + str(arg) + ".getCelsius())\n"
                 
         # arg = self.dispatch(tree.children[0]);
         # print arg
@@ -769,7 +763,8 @@ class codeGenerator(object):
         match = p.search(tree.leaf)
         number = str(int(match.group(1)))
         temp_type = match.group(2)
-        return temp_type, number 
+        string = "Temperature(" + number + ", '" + temp_type + "')"
+        return temp_type, string
    
     """
     Used to check if a day, month, year, hour, etc. is valid
