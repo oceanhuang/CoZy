@@ -485,9 +485,6 @@ if __name__ == '__main__':
     parser = CoZyParser()
     ## Put code to test here
     s = '''
-print(1/1/1)
-print(1 Days)
-print(10:00 AM + 2 Hours)
 '''
     result = parser.parse(s)
 
