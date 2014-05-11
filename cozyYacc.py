@@ -353,7 +353,7 @@ def p_primary_expression_constant(p):
     """
     p[0] = Node('primary_expression_constant', [], p[1])
 
-def p_primary_expression_days(p):
+def p_primary_expression_day(p):
     """ primary_expression : MONDAY
                            | TUESDAY
                            | WEDNESDAY
@@ -364,7 +364,7 @@ def p_primary_expression_days(p):
     """
     p[0] = Node('day_expression', [], p[1])
 
-def p_primary_expression_months(p):
+def p_primary_expression_month(p):
     """ primary_expression : JANUARY
                            | FEBRUARY
                            | MARCH
@@ -398,7 +398,7 @@ def p_primary_expression_time(p):
 
 def p_primary_expression_days(p):
     """ primary_expression : DAYS """
-    p[0] = Node('time_expression', [], p[1])
+    p[0] = Node('days_expression', [], p[1])
 def p_primary_expression_months(p):
     """ primary_expression : MONTHS """
     p[0] = Node('months_expression', [], p[1])
@@ -408,7 +408,7 @@ def p_primary_expression_years(p):
 def p_primary_expression_hours(p):
     """ primary_expression : HOURS """
     p[0] = Node('hours_expression', [], p[1])
-def p_primary_expression_days(p):
+def p_primary_expression_minutes(p):
     """ primary_expression : MINUTES """
     p[0] = Node('minutes_expression', [], p[1])
     
@@ -485,23 +485,9 @@ if __name__ == '__main__':
     parser = CoZyParser()
     ## Put code to test here
     s = '''
-# hihihi hihi
-a = 40 F
-SET_TEMP(a)
-SET_TEMP(40 F)
-d = GET_TEMP
-print(GET_TEMP)
-print(d)
-
-b = not(7 + 3)
-a = Monday
-c = not(true or false)
-c = not(true or a)
-c = not(b or a)
-c = not(b)
-c = (b)
-once every(Wednesday):
-    log("hello, weds")
+print(1/1/1)
+print(1 Days)
+print(10:00 AM + 2 Hours)
 '''
     result = parser.parse(s)
 
