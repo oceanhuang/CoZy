@@ -396,6 +396,22 @@ def p_primary_expression_time(p):
     """ primary_expression : TIME """
     p[0] = Node('time_expression', [], p[1])
 
+def p_primary_expression_days(p):
+    """ primary_expression : DAYS """
+    p[0] = Node('time_expression', [], p[1])
+def p_primary_expression_months(p):
+    """ primary_expression : MONTHS """
+    p[0] = Node('months_expression', [], p[1])
+def p_primary_expression_years(p):
+    """ primary_expression : YEARS """
+    p[0] = Node('years_expression', [], p[1])
+def p_primary_expression_hours(p):
+    """ primary_expression : HOURS """
+    p[0] = Node('hours_expression', [], p[1])
+def p_primary_expression_days(p):
+    """ primary_expression : MINUTES """
+    p[0] = Node('minutes_expression', [], p[1])
+    
 def p_every_statement(p):
 #    """ every_statement : EVERY LPAREN primary_expression RPAREN COLON NEWLINE INDENT statement_list DEDENT """
     """ every_statement : EVERY LPAREN during_or_expression RPAREN COLON NEWLINE INDENT statement_list DEDENT """

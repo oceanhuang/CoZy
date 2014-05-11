@@ -773,6 +773,12 @@ class codeGenerator(object):
         temp_type = match.group(2)
         return temp_type, number 
         #return "Temperature(" + number + ", '" + temp_type + "')"
+    def _days_expression(self, tree, flag=None):
+        p = re.compile(r'([0-9]+)[ ]Days')
+        match = p.search(tree.leaf)
+        number = str(int(match.group(1)))
+        return "DAYS", number 
+        #return "Temperature(" + number + ", '" + temp_type + "')"
    
     """
     Used to check if a day, month, year, hour, etc. is valid
