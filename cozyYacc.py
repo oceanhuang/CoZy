@@ -597,31 +597,6 @@ if __name__ == '__main__':
 ##"""
 
     s = '''
-a = 3.4
-b = 7
-c = b/a
-print(c)
-for i in 1 to 20:
-    a = a + i
-    print(i)
-
-y = [1, 2, 3]
-y{0} = 0
-
-
-
-def foo(number b, number c):
-    z = b + c
-    return(z)
-
-u = foo(12, 7)
-print (u)
-
-def hello():
-    print("hello!")
-
-hello()
-
 '''
 
     result = parser.parse(s)

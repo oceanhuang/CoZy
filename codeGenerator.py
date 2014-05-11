@@ -81,12 +81,12 @@ class codeGenerator(object):
         #with parameters
         if len(tree.children) == 2:
             arg = self.dispatch(tree.children[0])
-##            self.functionTable[tree.leaf] = arg
-            #
-##            if type(arg) is tuple:
-##                arg = str(arg[1])
+            if type(arg) is tuple:
+               arg1 = str(arg[1])
+            else:
+                arg1 = arg
                 
-            s = "def " + tree.leaf + "(" + str(arg[1]) +") :\n"
+            s = "def " + tree.leaf + "(" + str(arg1) +") :\n"
             lines = self.dispatch(tree.children[1]).splitlines()
             for line in lines:
                 if "return" in line:
@@ -96,8 +96,6 @@ class codeGenerator(object):
             self.functionTable[tree.leaf] = (arg,functiontype)
             return s 
 
-        #no parameters
-##        self.functionTable[tree.leaf] = ""
         s = "def " + tree.leaf + "( ) :\n"
         lines = self.dispatch(tree.children[0]).splitlines()
         for line in lines:
