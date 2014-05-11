@@ -461,7 +461,7 @@ def p_for_statement(p):
 # Error rule for syntax errors
 def p_error(p):    
     if hasattr(p, 'lineno'):
-        sys.exit("Syntax error in input! at line: "+ p.lineno)
+        sys.exit("Syntax error in input! at line: "+ str(p.lineno))
     else:
         sys.exit("Syntax error in input!")
     
