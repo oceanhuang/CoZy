@@ -116,7 +116,10 @@ class codeGenerator(object):
         if isinstance(tree, list):
             temp = ""
             for t in tree:
-                temp += self.dispatch(t)
+                try:
+                    temp += self.dispatch(t)
+                except BaseException:
+                    sys.exit("Syntax error in input!")
             return temp
 
         method = getattr(self, "_"+tree.type)
@@ -238,15 +241,9 @@ class codeGenerator(object):
 
     def _set_temp_statement(self, tree, flag=None):
         # print tree.children[0]
-        arg = self.dispatchTuple(tree.children[0])
-        return "myThermoStat.set_temp(" + str(arg) + ".getCelsius())\n"
+        arg = self.dispatch(tree.children[0])
+        return "myThermoStat.set_temp(" + arg[1] + ".getCelsius())\n"
                 
-        # arg = self.dispatch(tree.children[0]);
-        # print arg
-        # if operand[0] == "F" or operand[0] == "C" or operand[0] == "K":
-        #     return "MyThermoStat.set_temp(" + str(operand[1]) + ")"
-        # else:
-        #     exit('TypeError, set_temp() has to take a temperature as input')
 
     #whoever wrote this, please have a look at _assignnment_statement_list_index
     def _assignment_statement(self, tree, flag=None):
@@ -264,6 +261,9 @@ class codeGenerator(object):
             self.scopes[self.scopeDepth].append(tree.leaf + "__" + str(self.scopeDepth) + "__")
         if type(arg) is tuple:
             arg = arg[1]
+        if type(arg) is str:
+            if arg.startswith('myThermoStat'):
+                self.symbolTable[tree.leaf] = ['GET_TEMP', '']
         # print self.symbolTable #uncomment to check symbol table
         # print self.scopes
         if type(arg) is not str: arg = str(arg)
@@ -274,7 +274,7 @@ class codeGenerator(object):
         return string
 
     def _get_temp_expression(self, tree, flag=None):
-        return "myThermoStat.get_temp()"
+        return "C", "myThermoStat.get_temp()"
 
     #not sure whether this actually works with the symbol table and everything
     def _assignment_statement_list_index(self, tree, flag=None):
@@ -645,6 +645,7 @@ class codeGenerator(object):
 
     def _print_statement(self, tree, flag=None):
         arg = self.dispatch(tree.children[0])
+        # print arg
         if type(arg) is tuple:
             if arg[0] == "TIME":
                 arg = "(" + arg[1] + ").time()"
@@ -720,31 +721,31 @@ class codeGenerator(object):
     def get_month_value(self, month):
         s = ''
         if month == "January":
-            s = "0"
-        elif month == 'February':
             s = "1"
-        elif month == 'March':
+        elif month == 'February':
             s = "2"
-        elif month == 'April':
+        elif month == 'March':
             s = "3"
-        elif month == 'May':
+        elif month == 'April':
             s = "4"
-        elif month == 'June':
+        elif month == 'May':
             s = "5"
-        elif month == 'July':
+        elif month == 'June':
             s = "6"
-        elif month == 'August':
+        elif month == 'July':
             s = "7"
-        elif month == 'September':
+        elif month == 'August':
             s = "8"
-        elif month == 'October':
+        elif month == 'September':
             s = "9"
-        elif month == 'November':
+        elif month == 'October':
             s = "10"
-        elif month == 'December':
+        elif month == 'November':
             s = "11"
-        else:
+        elif month == 'December':
             s = "12"
+        else:
+            s = "13"
         return s
 
     def _date_time_expression(self, tree, flag=None):
