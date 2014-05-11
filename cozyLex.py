@@ -71,6 +71,11 @@ tokens = [
     'DATE',
     'TIME',
     'DATETIME',
+    'DAYS',
+    'MONTHS',
+    'YEARS',
+    'HOURS',
+    'MINUTES',
     'TEMPERATURE',
     'MULTIPLY',
     'DIVIDE',
@@ -123,6 +128,21 @@ def t_TEMPERATURE(t):
 
 def t_TIME(t):
     r'[01]?[0-9]:[0-5][0-9][ ]((AM)|(PM))'
+    return t
+def t_DAYS(t):
+    r'[0-9]+[ ]Days'
+    return t
+def t_MONTHS(t):
+    r'[0-9]+[ ]Months'
+    return t
+def t_YEARS(t):
+    r'[0-9]+[ ]Years'
+    return t
+def t_HOURS(t):
+    r'[0-9]+[ ]Hours'
+    return t
+def t_MINUTES(t):
+    r'[0-9]+[ ]Minutes'
     return t
 
 def t_STRING(t):
@@ -341,10 +361,12 @@ if __name__ == '__main__':
     # code
     #this doesnt work RGGGGGG
     data = """
-# hihihihi
-a = 40 F
-SET_TEMP(a)
-c = GET_TEMP
+x = 1/1/1 + 20 Days
+y = 1 Hours
+z = 3 Minutes
+a = 10:00 AM + 1 Hours
+b = 2 Years
+c = 3 Months
 """
 
     # Give the lexer some input

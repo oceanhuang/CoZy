@@ -355,7 +355,7 @@ def p_primary_expression_constant(p):
     """
     p[0] = Node('primary_expression_constant', [], p[1])
 
-def p_primary_expression_days(p):
+def p_primary_expression_day(p):
     """ primary_expression : MONDAY
                            | TUESDAY
                            | WEDNESDAY
@@ -366,7 +366,7 @@ def p_primary_expression_days(p):
     """
     p[0] = Node('day_expression', [], p[1])
 
-def p_primary_expression_months(p):
+def p_primary_expression_month(p):
     """ primary_expression : JANUARY
                            | FEBRUARY
                            | MARCH
@@ -398,6 +398,22 @@ def p_primary_expression_time(p):
     """ primary_expression : TIME """
     p[0] = Node('time_expression', [], p[1])
 
+def p_primary_expression_days(p):
+    """ primary_expression : DAYS """
+    p[0] = Node('days_expression', [], p[1])
+def p_primary_expression_months(p):
+    """ primary_expression : MONTHS """
+    p[0] = Node('months_expression', [], p[1])
+def p_primary_expression_years(p):
+    """ primary_expression : YEARS """
+    p[0] = Node('years_expression', [], p[1])
+def p_primary_expression_hours(p):
+    """ primary_expression : HOURS """
+    p[0] = Node('hours_expression', [], p[1])
+def p_primary_expression_minutes(p):
+    """ primary_expression : MINUTES """
+    p[0] = Node('minutes_expression', [], p[1])
+    
 def p_every_statement(p):
 #    """ every_statement : EVERY LPAREN primary_expression RPAREN COLON NEWLINE INDENT statement_list DEDENT """
     """ every_statement : EVERY LPAREN during_or_expression RPAREN COLON NEWLINE INDENT statement_list DEDENT """
@@ -471,11 +487,8 @@ if __name__ == '__main__':
     parser = CoZyParser()
     ## Put code to test here
     s = '''
-# hihihi hihi
 SET_TEMP(40 F)
 SET_TEMP(GET_TEMP)
-
-
 '''
     result = parser.parse(s)
 

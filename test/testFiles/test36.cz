@@ -1,0 +1,6 @@
+#200.0
+x = 20
+every(Tuesday):
+    x = 1000
+every(Sunday):
+    x = 200
