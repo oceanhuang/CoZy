@@ -116,10 +116,7 @@ class codeGenerator(object):
         if isinstance(tree, list):
             temp = ""
             for t in tree:
-                try:
-                    temp += self.dispatch(t)
-                except BaseException:
-                    sys.exit("Syntax error in input!")
+                temp += self.dispatch(t)
             return temp
 
         method = getattr(self, "_"+tree.type)
