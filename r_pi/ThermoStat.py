@@ -1,6 +1,4 @@
 import RPi.GPIO as GPIO 
-import threading
-import time
 
 class Temperature(object):
     def __init__(self, number, tempType):
@@ -91,22 +89,10 @@ class Sim_ThermoStat(object):
         # sets the global temp for this thermostat
         print 'Thermostat set to ' + str(target_temp) + ' C'
         self.target = int(target_temp)
-
-    def start(self):
-        t = Thread(target=self.check())
-        t.start()
-        return t
-
-    def print_hello_world(n):
-        while True:
-            print('Hello world...')
-            time.sleep(n)
+        self.check()
 
     def check(self):
-        while True:
-            if self.target is not None:
-                if self.get_temp_value() > self.target and self.on == 1:
-                    self.turn_off()
-                elif self.get_temp_value() < self.target and self.on == 0:
-                    self.turn_on()
-            time.sleep(0.5)
+        if self.get_temp_value() > self.target and self.on == 1:
+            self.turn_off()
+        elif self.get_temp_value() < self.target and self.on == 0:
+            self.turn_on()

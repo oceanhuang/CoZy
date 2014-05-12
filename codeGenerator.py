@@ -71,7 +71,6 @@ if module_exists("RPi.GPIO"):
     thermoStat = '''
 from r_pi import ThermoStat
 myThermoStat = ThermoStat.Sim_ThermoStat()
-myCheck = myThermoStat.start()
 '''
 else:
     thermoStat = '''
