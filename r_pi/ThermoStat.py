@@ -83,7 +83,7 @@ class Sim_ThermoStat(object):
         return temperature
 
     def get_temp(self):
-        return Temperature(get_temp_value(), 'C')
+        return Temperature(self.get_temp_value(), 'C')
 
     def set_temp(self, target_temp):
         # sets the global temp for this thermostat
