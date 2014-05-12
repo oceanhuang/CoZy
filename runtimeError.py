@@ -42,6 +42,8 @@ except KeyboardInterrupt:
 except:
     sys.stderr.write("ERROR: Hmmm...that's odd. I don't quite know what went wrong.\\n")
     sys.exit()
+finally:
+    myCheck.stop()
 """
     return toAddEnd
 
