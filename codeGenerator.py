@@ -80,6 +80,7 @@ myThermoStat = Fake_ThermoStat.Fake_ThermoStat()
 
 loop_def = '''
 while 1:
+    myThermoStat.check()
     for e in every_list:
         if eval(e['condition'] + "()"):
             eval(e['func']+ "()")
