@@ -104,7 +104,7 @@ class Sim_ThermoStat(object):
 
     def check(self):
         while True:
-            if self.target not None:
+            if self.target is not None:
                 if self.get_temp_value() > self.target and self.on == 1:
                     self.turn_off()
                 elif self.get_temp_value() < self.target and self.on == 0:
