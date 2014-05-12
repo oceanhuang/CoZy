@@ -162,22 +162,26 @@ class codeGenerator(object):
                 arg1 = arg
                 
             s = "def " + tree.leaf + "(" + str(arg1) +") :\n"
+            self.inBlock() #added scoping
             lines = self.dispatch(tree.children[1]).splitlines()
             for line in lines:
                 if "return" in line:
                     functiontype = self.returnTable[line[0:7]]
                     line = line[0:6] + " "+ line[8:len(line)]
                 s+= "    " + line +"\n"
+            self.outBlock() #added scoping
             self.functionTable[tree.leaf] = (arg,functiontype)
             return s 
 
         s = "def " + tree.leaf + "( ) :\n"
+        self.inBlock()
         lines = self.dispatch(tree.children[0]).splitlines()
         for line in lines:
             if "return" in line:
                 functiontype = self.returnTable[line[0:7]]
                 line = line[0:6] + " " + line[8:len(line)]
             s+= "    " + line +"\n"
+        self.outBlock
         self.functionTable[tree.leaf] = ("",functiontype)
 
         return s
