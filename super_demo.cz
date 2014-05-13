@@ -1,0 +1,75 @@
+once every(Tuesday):
+    print("Looks like we're starting a little bit early")
+    
+
+once every(Tuesday):
+    print("Hey! My name's CoZy with a capital Z. Nice to meet you guys!")
+
+
+once every(Tuesday):
+    a = GET_TEMP
+
+    if(a > 22 C):
+        print("Weather's great today, not much for me to do!")
+    else:
+        print("This room's a little cold to me don't you think?")
+
+    
+
+once every(Tuesday):
+    a = GET_TEMP
+    print("Current temperature:")
+    print(a)
+
+    if(a < 23 C):
+        print("It's still kinda cold in here. Can we turn up the heat?")
+    
+    if(a>=23 C and a <=26 C):
+        print("The room temp is just right :)")
+    
+    if(a > 26 C):
+        print("It's getting hot in here! So take off all your - ")
+
+once every(Tuesday):
+    print("So how about this weather huh?")
+    
+    a = GET_TEMP
+    print("Current temperature:")
+    print(a)
+
+    if(a < 23 C):
+        print("Wish I was connected to a real heater :(")
+    
+    if(a>=23 C and a <=26 C):
+        print("Nothing ever changes around here.")
+    
+    if(a > 26 C):
+        print("How bout some AC?")
+
+once every(Tuesday):
+    a = GET_TEMP
+    print("The room temp is:")
+    print(a)
+
+once every(Tuesday):
+    print("I can tell you guys aren't the conversational types")
+
+
+once every(Tuesday):
+    print("Is the presentation still going on? I'm hungry")
+
+
+once every(Tuesday):
+    print("So are you guys convinced that I'm awesome yet?")
+    
+once every(Tuesday):
+    print("Would you guys pay money for me?")
+
+once every(Tuesday):
+    print("Just kidding about that last one")
+
+once every(Tuesday):
+    print("You guys have been a great audience!")
+
+once every(1:16 PM to 1:17 PM; 1:17 PM to 1:18 PM):
+    print ("CHUBBO")
