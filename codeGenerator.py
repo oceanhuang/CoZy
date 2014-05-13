@@ -455,12 +455,18 @@ class codeGenerator(object):
             elif type1 == 'DAY':
                 start_day = int(self.get_day_value(tree.children[0].leaf))
                 end_day = int(self.get_day_value(tree.children[1].leaf))
-                retStr += "("+ str(start_day) + " <= datetime.datetime.now().weekday() <= " + str(end_day) + ")"
+                if start_day <= end_day:
+                    retStr += "("+ str(start_day) + " <= datetime.datetime.now().weekday() <= " + str(end_day) + ")"
+                else:
+                    retStr += "(("+ str(start_day) + " <= datetime.datetime.now().weekday()) or (datetime.datetime.now().weekday() <= " + str(end_day) + "))"
                 return "DAY_RANGE", retStr
             elif type1 == 'MONTH':
                 start_month = int(self.get_month_value(tree.children[0].leaf))
                 end_month = int(self.get_month_value(tree.children[1].leaf))
-                retStr += "(" + str(start_month) + " <= datetime.datetime.now().month <= " + str(end_month) + ")"
+                if start_month <= end_month:
+                    retStr += "(" + str(start_month) + " <= datetime.datetime.now().month <= " + str(end_month) + ")"
+                else:
+                    retStr += "(("+ str(start_month) + " <= datetime.datetime.now().month) or (datetime.datetime.now().month <= " + str(end_month) + "))"
                 return "MONTH_RANGE", retStr
             elif type1 == "DATE":
                 dateTable1 = self.get_date_value(tree.children[0].leaf)
@@ -472,9 +478,18 @@ class codeGenerator(object):
                 start_year = dateTable1.get("year")
                 end_year = dateTable2.get("year")
                 #Day
-                retStr += "(" + str(start_year*10000 + start_month*100 + start_day)
-                retStr += " <= datetime.datetime.now().year*10000 + datetime.datetime.now().month*100 + datetime.datetime.now().day <= " 
-                retStr += str(end_year*10000 + end_month*100 + end_day) + ")"
+                sTIME = start_year*10000 + start_month*100 + start_day
+                eTIME = end_year*10000 + end_month*100 + end_day
+                nTIME = datetime.datetime.now().year*10000 + datetime.datetime.now().month*100 + datetime.datetime.now().day
+                if sTIME <= eTIME:
+                    retStr += "(" + str(sTIME) 
+                    retStr += " <= " + str(nTIME) + "<= " 
+                    retStr += str(eTIME) + ")"
+                else:
+                    retStr += "(" + str(sTIME) 
+                    retStr += " <= " + str(nTIME) + " or " + str(nTIME) + " <= " 
+                    retStr += str(eTIME) + ")"
+                    
                 return "DATE_RANGE", retStr
             elif type1 == "DATETIME":
                 dateTimeTable1 = self.get_date_time_values(tree.children[0].leaf)
@@ -489,9 +504,17 @@ class codeGenerator(object):
                 end_hour = dateTimeTable2.get("hour")
                 start_minute = dateTimeTable1.get("minute")
                 end_minute = dateTimeTable2.get("minute")
-                retStr += "(" + str(start_year*100000000 + start_month*1000000 + start_day*10000 + start_hour*100 + start_minute)
-                retStr += " <= datetime.datetime.now().year*100000000 + datetime.datetime.now().month*1000000 + datetime.datetime.now().day*10000 + datetime.datetime.now().hour*100 + datetime.datetime.now().minute <= " 
-                retStr += str(end_year*100000000 + end_month*1000000 + end_day*10000 + end_hour*100 + end_minute) + ")"
+                sTIME = start_year*100000000 + start_month*1000000 + start_day*10000 + start_hour*100 + start_minute
+                nTIME = datetime.datetime.now().year*100000000 + datetime.datetime.now().month*1000000 + datetime.datetime.now().day*10000 + datetime.datetime.now().hour*100 + datetime.datetime.now().minute
+                eTIME = end_year*100000000 + end_month*1000000 + end_day*10000 + end_hour*100 + end_minute
+                if sTIME <= eTIME:
+                    retStr += "(" + str(sTIME)
+                    retStr += " <= " +str(nTIME) + " <= " 
+                    retStr += str(eTIME) + ")"
+                else:
+                    retStr += "(" + str(sTIME)
+                    retStr += " <= " + str(nTIME) + " or " + str(nTIME) + " <= " 
+                    retStr += str(eTIME) + ")"
 
                 return "DATETIME_RANGE", retStr
             elif type1 == "TIME":
@@ -501,10 +524,17 @@ class codeGenerator(object):
                 end_hour = time2.get("hour")
                 start_minute = time1.get("minute")
                 end_minute = time2.get("minute")
-                retStr += "("
-                #time
-                retStr += str(start_hour*100 + start_minute) + " <= datetime.datetime.now().hour*100 + datetime.datetime.now().minute <= " + str(end_hour*100 + end_minute)
-                retStr += ")"
+                sTIME = start_hour*100 + start_minute
+                nTIME = datetime.datetime.now().hour*100 + datetime.datetime.now().minute
+                eTIME = end_hour*100 + end_minute
+                if sTIME <= eTIME:
+                    retStr += "("
+                    retStr += str(sTIME) + " <= " + str(nTIME) + " <= " + str(eTIME)
+                    retStr += ")"
+                else:
+                    retStr += "("
+                    retStr += str(sTIME) + " <= " + str(nTIME) + " or " + str(nTIME) + " <= " + str(eTIME)
+                    retStr += ")"
                 return "TIME_RANGE", retStr
             else:
                 exit("TypeError: Cannot use 'to' for type: " + type1)
