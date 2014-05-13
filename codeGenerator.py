@@ -791,6 +791,8 @@ class codeGenerator(object):
         return self.functionTable[funcname][1], arg
 
     def _function_expression(self, tree, flag=None):
+        if tree.leaf not in self.functionTable:
+            exit("Function " + str(tree.leaf) + " not defined")
         functiontype = self.functionTable[tree.leaf][1]
         self.symbolTable[tree.leaf] = (functiontype, None)
         if len(tree.children) == 1:
