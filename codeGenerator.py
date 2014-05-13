@@ -640,6 +640,7 @@ class codeGenerator(object):
 
         if len(tree.children) == 2:
             arg = self.dispatch(tree.children[1], flag)
+            print arg
             if not self.check_if_time(arg): exit("OH NO. Must use time type in EVERY statements")
             arg = arg[1]
             poop = self.dispatch(tree.children[0], flag)
@@ -1061,7 +1062,8 @@ class codeGenerator(object):
             myType = arg[0]
         else: 
             myType = arg
-        if myType == "DATETIME" or myType == "DATE" or myType == "TIME" or myType == "DAY" or myType == "MONTH":
+        if myType == "DATETIME" or myType == "DATE" or myType == "TIME" or myType == "DAY" or myType == "MONTH"\
+        or myType == "TIME_RANGE" or myType == "DAY_RANGE" or myType == "MONTH_RANGE" or myType == "DATE_RANGE" or myType == "DATETIME_RANGE": 
             return True
         return False
 
