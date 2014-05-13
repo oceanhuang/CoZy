@@ -49,8 +49,33 @@ class Temperature(object):
             return temp
         else:
             return NotImplemented
-    def __cmp__(self, other):
+    def __lt__(self, other):
         if other.__class__() == "Temperature":
-            return cmp(self.CTemp, other.getCelsius())
+            return self.CTemp < other.getCelsius()
+        else:
+            return NotImplemented
+    def __le__(self, other):
+        if other.__class__() == "Temperature":
+            return self.CTemp <= other.getCelsius()
+        else:
+            return NotImplemented
+    def __eq__(self, other):
+        if other.__class__() == "Temperature":
+            return self.CTemp == other.getCelsius()
+        else:
+            return NotImplemented
+    def __ne__(self, other):
+        if other.__class__() == "Temperature":
+            return self.CTemp != other.getCelsius()
+        else:
+            return NotImplemented
+    def __gt__(self, other):
+        if other.__class__() == "Temperature":
+            return self.CTemp > other.getCelsius()
+        else:
+            return NotImplemented
+    def __ge__(self, other):
+        if other.__class__() == "Temperature":
+            return self.CTemp >= other.getCelsius()
         else:
             return NotImplemented
