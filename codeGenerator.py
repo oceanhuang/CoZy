@@ -5,58 +5,7 @@ import sys
 import runtimeError
 everys = 0
 temp_def ='''
-class Temperature(object):
-    def __init__(self, number, tempType):
-        self.startType = tempType
-        if tempType == 'K':
-            self.KTemp = number
-            self.CTemp = number - 273.15
-            self.FTemp = 5.0/9.0*(number - 32.0) + 273.15
-        elif tempType == 'C':
-            self.KTemp = number + 273.15
-            self.CTemp = number
-            self.FTemp = 9.0/5.0*number + 32.0      
-        elif tempType == 'F':
-            self.KTemp = 5.0/9.0*(number - 32.0) + 273.15
-            self.CTemp = 5.0/9.0*(number -32.0)
-            self.FTemp = number
-
-    def getCelsius(self):
-        return self.CTemp
-
-    def getFarenheit(self):
-        return self.FTemp
-
-    def getKelvin(self):
-        return self.KTemp
-
-    def __class__(self):
-        return "Temperature"
-
-    def __str__(self):
-        if self.startType == ' K':
-            return str(self.KTemp) + ' K'
-        elif self.startType == 'C':
-            return str(self.CTemp) + ' C'
-        elif self.startType == 'F':
-            return str(self.FTemp) + ' F'
-
-    def __add__(self, other):
-        if other.__class__() == "Temperature":
-            temp = Temperature(self.CTemp + other.getCelsius(), 'C')
-            temp.startType = self.startType
-            return temp
-        else:
-            return NotImplemented
-
-    def __sub__(self, other):
-        if other.__class__() == "Temperature":
-            temp = Temperature(self.CTemp - other.getCelsius(), 'C')
-            temp.startType = self.startType
-            return temp
-        else:
-            return NotImplemented
-
+from Temperature import *
 '''
 
 def module_exists(module_name):
@@ -94,6 +43,10 @@ class codeGenerator(object):
         self.scopeDepth = 0
         # Symbols table "id" => {type, value}
         self.symbolTable = {}
+        # Function parameter type lookup
+        self.functionTable = {}
+        self.returnTable = {}
+        self.returnNumber = 0
         # Variable to store the code
         self.ret = "import datetime\n" 
         self.ret += "import sys\n"
@@ -146,33 +99,131 @@ class codeGenerator(object):
     def _external_declaration(self, tree, flag=None):
         return self.dispatch(tree.children)
 
-    # very basic function definition
+   
+    #function definition
     def _function_definition(self, tree, flag=None):
-        s = "def " + tree.children[0] + "(" + self.dispatchTuple(tree.children[1])+") :\n"
-        self.inBlock()
-        lines = self.dispatch(tree.children[2]).splitlines()
+        functiontype = "VOID"
+        #with parameters
+        if len(tree.children) == 2:
+            arg = self.dispatch(tree.children[0])
+            if type(arg) is tuple:
+               arg1 = str(arg[1])
+            else:
+                arg1 = arg
+                
+            s = "def " + tree.leaf + "(" + str(arg1) +") :\n"
+            self.inBlock() #added scoping
+            lines = self.dispatch(tree.children[1]).splitlines()
+            for line in lines:
+                if "return" in line:
+                    functiontype = self.returnTable[line[0:7]]
+                    line = line[0:6] + " "+ line[8:len(line)]
+                s+= "    " + line +"\n"
+            self.outBlock() #added scoping
+            self.functionTable[tree.leaf] = (arg,functiontype)
+            return s 
 
+        s = "def " + tree.leaf + "( ) :\n"
+        self.inBlock()
+        lines = self.dispatch(tree.children[0]).splitlines()
         for line in lines:
+            if "return" in line:
+                functiontype = self.returnTable[line[0:7]]
+                line = line[0:6] + " " + line[8:len(line)]
             s+= "    " + line +"\n"
-        self.outBlock()
+        self.outBlock
+        self.functionTable[tree.leaf] = ("",functiontype)
+
         return s
 
     def _function_param_list(self, tree, flag=None):
-        if len(tree.children)==0:
-            return ''
+        if len(tree.children) == 1:
+            s = self.dispatch(tree.children[0])
+            return s
         else:
-            return self.dispatch(tree.children[0])
-
-    def _function_param(self, tree, flag=None):
-        if tree.leaf==None:
-           return  self.dispatchTuple(tree.children[0]) + "," + self.dispatchTuple(tree.children[1])
-        else:
-           return tree.leaf
-
-    def _function_param_end(self, tree, flag=None):
-        return tree.leaf
+            s = self.dispatch(tree.children[0]) + ", " + self.dispatch(tree.children[1])
+            return s
 
 
+    def _function_param_number(self, tree, flag=None):
+        s = tree.children[1]
+        self.symbolTable[s] = ["NUM", None]
+        return s
+
+    def _function_param_temperatureF(self, tree, flag=None):
+        s = tree.children[1]
+        self.symbolTable[s] = ["F", None]
+        return s
+
+    def _function_param_temperatureC(self, tree, flag=None):
+        s = tree.children[1]
+        self.symbolTable[s] = ["C", None]
+        return s
+
+    def _function_param_temperatureK(self, tree, flag=None):
+        s = tree.children[1]
+        self.symbolTable[s] = ["K", None]
+        return s
+    
+    def _function_param_time(self, tree, flag=None):
+        s = tree.children[1]
+        self.symbolTable[s] = ["TIME", None]
+        return s
+
+    def _function_param_datetime(self, tree, flag=None):
+        s = tree.children[1]
+        self.symbolTable[s] = ["DATETIME", None]
+        return s
+
+    def _function_param_boolean(self, tree, flag=None):
+        s = tree.children[1]
+        self.symbolTable[s] = ["BOOLEAN", None]
+        return s
+
+    def _function_param_day(self, tree, flag=None):
+        s = tree.children[1]
+        self.symbolTable[s] = ["DAY", None]
+        return s
+
+    def _function_param_month(self, tree, flag=None):
+        s = tree.children[1]
+        self.symbolTable[s] = ["MONTH", None]
+        return s
+
+    def _function_param_date(self, tree, flag=None):
+        s = tree.children[1]
+        self.symbolTable[s] = ["DATE", None]
+        return s
+
+    def _function_param_dayrange(self, tree, flag=None):
+        s = tree.children[1]
+        self.symbolTable[s] = ["DAY_RANGE", None]
+        return s
+
+    def _function_param_monthrange(self, tree, flag=None):
+        s = tree.children[1]
+        self.symbolTable[s] = ["MONTH_RANGE", None]
+        return s
+
+    def _function_param_daterange(self, tree, flag=None):
+        s = tree.children[1]
+        self.symbolTable[s] = ["DATE_RANGE", None]
+        return s
+
+    def _function_param_timerange(self, tree, flag=None):
+        s = tree.children[1]
+        self.symbolTable[s] = ["TIME_RANGE", None]
+        return s
+
+    def _function_param_string(self, tree, flag=None):
+        s = tree.children[1]
+        self.symbolTable[s] = ["STRING", None]
+        return s
+
+    def _function_param_listparam(self, tree, flag=None):
+        s = tree.children[1]
+        self.symbolTable[s] = ["LIST", None]
+        return s
     
     def _list_start(self, tree, flag=None):
         if len(tree.children)==0:
@@ -182,9 +233,9 @@ class codeGenerator(object):
     
     def _list_expression(self, tree, flag=None):
         if len(tree.children) == 1:
-            return self.dispatchTuple(tree.children[0])
+            return self.dispatch(tree.children[0], flag)[0], self.dispatchTuple(tree.children[0])
         else:
-            return self.dispatchTuple(tree.children[0]) + ", " + self.dispatchTuple(tree.children[1])
+            return self.dispatch(tree.children[0], flag)[0]+ ", " + self.dispatch(tree.children[1], flag)[0], self.dispatchTuple(tree.children[0]) + ", " + self.dispatchTuple(tree.children[1])
         
     def _list_index_double(self, tree, flag=None):
         return self.dispatchTuple(tree.children[0]) + "[ int(" + self.dispatchTuple(tree.children[1]) + ") ]"
@@ -263,6 +314,7 @@ class codeGenerator(object):
                 self.symbolTable[tree.leaf] = ['GET_TEMP', '']
         # print self.symbolTable #uncomment to check symbol table
         # print self.scopes
+
         if type(arg) is not str: arg = str(arg)
         string = ""
         if scpDepth != self.scopeDepth:
@@ -284,7 +336,6 @@ class codeGenerator(object):
         #print self.symbolTable #uncomment to check symbol table
         if type(arg) is not str: arg = str(arg)
         return listIndex + " = " + arg
-
 
 
     def _or_expression(self, tree, flag=None):
@@ -316,7 +367,7 @@ class codeGenerator(object):
             if type1 != type2:
                 exit("TypeError! Cannot compare objects of type " + type1 + " and objects of type " + type2)
 
-            return "BOOL", str(operand1[1]) + " " + tree.children[2] + " " + str(operand2[1])
+            return "BOOLEAN", str(operand1[1]) + " " + tree.children[2] + " " + str(operand2[1])
             #return self.dispatch(tree.children[0]) + " " + tree.children[2] + " " + self.dispatch(tree.children[1])  
 
     def _relational_expression(self, tree, flag=None):
@@ -333,9 +384,9 @@ class codeGenerator(object):
 
             if type1 != type2:
                 exit("TypeError! Can not use relop between type " + type1 + " and " + type2)
-            else:
-                if type1 != "NUM" and tree.children[2] != "!=":
-                    exit("Error: Cannot use '>' or '<' for non-numbers") 
+            # else:
+            #     if type1 != "NUM" and tree.children[2] != "!=":
+            #         exit("Error: Cannot use '>' or '<' for non-numbers") 
 
             return type1, str(operand1[1]) + " " + tree.children[2] + " " + str(operand2[1])  
 
@@ -539,6 +590,7 @@ class codeGenerator(object):
 
         if len(tree.children) == 2:
             arg = self.dispatch(tree.children[1], flag)
+            print arg
             if not self.check_if_time(arg): exit("OH NO. Must use time type in EVERY statements")
             arg = arg[1]
             poop = self.dispatch(tree.children[0], flag)
@@ -666,6 +718,48 @@ class codeGenerator(object):
         s = "log_file.write( str(" + arg + ") + '\\n'" + ")"
         return s
 
+    def _return_statement(self, tree, flag=None):
+        self.returnNumber +=1
+        arg = self.dispatch(tree.children[0])
+        self.returnTable["return"+ str(self.returnNumber)] = arg[0]
+        if type(arg) is tuple:
+            arg = arg[1]
+
+        if type(arg) is int:
+            arg = str(arg)
+        s = "return" + str(self.returnNumber) + " " + arg ## add return type
+        return s
+
+    def _primary_expression_funct(self, tree, flag= None):
+        arg = self.dispatch(tree.children[0])
+        funcname = arg.split("(")[0]
+        return self.functionTable[funcname][1], arg
+
+    def _function_expression(self, tree, flag=None):
+        if tree.leaf not in self.functionTable:
+            exit("Function " + str(tree.leaf) + " not defined")
+        functiontype = self.functionTable[tree.leaf][1]
+        self.symbolTable[tree.leaf] = (functiontype, None)
+        if len(tree.children) == 1:
+            arg = self.dispatch(tree.children[0])
+            #getting the function types
+            informallist = arg[0].split(", ")
+            if self.functionTable[tree.leaf][0] == "":
+                exit("Parameters given but function definition has no parameters")
+            formal = self.functionTable[tree.leaf][0].split(", ")
+            formallist = list()
+            for f in formal:
+                formallist.append(self.symbolTable[f][0])
+                
+            if formallist == informallist:
+                return tree.leaf + "(" + str(arg[1]) + ")"
+            else:
+                exit( "Type error in function params: \nInput " + str(informallist) + " does not match definition " + str(formallist))
+        else:
+            if self.functionTable[tree.leaf][0] != "":
+                exit("No parameters given in function but parameters needed")
+            return tree.leaf + "()"
+        
     def _for_statement(self, tree, flag=None):
         #for iterator in a range
         or_expression1 = self.dispatch(tree.children[0])
@@ -920,7 +1014,8 @@ class codeGenerator(object):
             myType = arg[0]
         else: 
             myType = arg
-        if myType == "DATETIME" or myType == "DATE" or myType == "TIME" or myType == "DAY" or myType == "MONTH":
+        if myType == "DATETIME" or myType == "DATE" or myType == "TIME" or myType == "DAY" or myType == "MONTH"\
+        or myType == "TIME_RANGE" or myType == "DAY_RANGE" or myType == "MONTH_RANGE" or myType == "DATE_RANGE" or myType == "DATETIME_RANGE": 
             return True
         return False
 

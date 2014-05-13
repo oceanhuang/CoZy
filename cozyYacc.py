@@ -55,33 +55,111 @@ def p_external_declaration(p):
     """
     p[0] = Node("external_declaration", [p[1]])
 
-# Needs to include parameter_list
+# these are for defining functions, not executing them
 def p_function_definition(p):
 
-    'function_definition : DEF ID LPAREN function_param_list RPAREN COLON NEWLINE INDENT statement_list DEDENT'
+    """function_definition : DEF ID LPAREN function_param_list RPAREN COLON NEWLINE INDENT statement_list DEDENT
+                            | DEF ID LPAREN RPAREN COLON NEWLINE INDENT statement_list DEDENT"""
 
-    p[0] = Node("function_definition", [p[2], p[4], p[9]]);
+    if len(p) == 11:
+        p[0] = Node("function_definition", [p[4], p[9]], p[2]);
+    else:
+        p[0] = Node("function_definition", [p[8]], p[2])
 
+
+#list of parameters or just one        
 def p_function_param_list(p):
-    'function_param_list : function_param' #need to handle empty string
+    """function_param_list : function_param 
+                    | function_param_list COMMA function_param
+    """
     if len(p)==2:
-        p[0] = Node("function_param_list", [p[1]])
+        p[0] = Node('function_param_list', [p[1]]) 
     else:
-        p[0] = Node("function_param_list", [])
+        p[0] = Node('function_param_list', [p[1], p[3]])
+
+def p_function_param_number(p):
+    """function_param : TNUMBER ID"""
+    p[0] = Node('function_param_number', [p[1], p[2]])
+
+def p_function_param_temperatureF(p):
+    """function_param : TF ID"""
+    p[0] = Node('function_param_temperatureF', [p[1], p[2]])
+
+def p_function_param_temperatureC(p):
+    """function_param : TC ID"""
+    p[0] = Node('function_param_temperatureC', [p[1], p[2]])
+
+def p_function_param_temperatureK(p):
+    """function_param : TK ID"""
+    p[0] = Node('function_param_temperatureK', [p[1], p[2]])
+
+def p_function_param_time(p):
+    """function_param : TTIME ID"""
+    p[0] = Node('function_param_time', [p[1], p[2]])
+
+def p_function_param_datetime(p):
+    """function_param : TDATETIME ID"""
+    p[0] = Node('function_param_datetime', [p[1], p[2]])
+
+def p_function_param_boolean(p):
+    """function_param : TBOOLEAN ID"""
+    p[0] = Node('function_param_boolean', [p[1], p[2]])
+    
+def p_function_param_day(p):
+    """function_param : TDAY ID"""
+    p[0] = Node('function_param_day', [p[1], p[2]])
+
+def p_function_param_month(p):
+    """function_param : TMONTH ID"""
+    p[0] = Node('function_param_month', [p[1], p[2]])
+
+def p_function_param_date(p):
+    """function_param : TDATE ID"""
+    p[0] = Node('function_param_date', [p[1], p[2]])
+    
+def p_function_param_dayrange(p):
+    """function_param : TDAYRANGE ID"""
+    p[0] = Node('function_param_dayrange', [p[1], p[2]])
+
+def p_function_param_monthrange(p):
+    """function_param : TMONTHRANGE ID"""
+    p[0] = Node('function_param_monthrange', [p[1], p[2]])
+
+def p_function_param_daterange(p):
+    """function_param : TDATERANGE ID"""
+    p[0] = Node('function_param_daterange', [p[1], p[2]])
+
+def p_function_param_timerange(p):
+    """function_param : TTIMERANGE ID"""
+    p[0] = Node('function_param_timerange', [p[1], p[2]])
+
+def p_function_param_string(p):
+    """function_param : TSTRING ID"""
+    p[0] = Node('function_param_string', [p[1], p[2]])
+
+def p_function_param_listparam(p):
+    """function_param : TLIST ID"""
+    p[0] = Node('function_param_listparam', [p[1], p[2]])
+##    
+#the parameter's type and the id
 
 
-def p_function_param(p):
-    '''function_param : ID 
-                    | function_param COMMA function_param_end
-    '''
-    if len(p)==2:
-        p[0] = Node('function_param', [], p[1])
-    else:
-        p[0] = Node('function_param', [p[1], p[3]])
-
-def p_function_param_end(p):
-    'function_param_end : ID'
-    p[0] = Node('function_param_end', [], p[1])
+##def p_type_expression(p):
+##    """type_expression : TNUMBER
+##                    | TTEMPERATURE
+##                    | TTIME
+##                    | TDATETIME
+##                    | TBOOLEAN
+##                    | TDAY
+##                    | TMONTH
+##                    | TDATE
+##                    | TDAYRANGE
+##                    | TMONTHRANGE
+##                    | TDATERANGE
+##                    | TTIMERANGE
+##                    | TSTRING
+##                    | TLIST"""
+##    p[0] = Node('type_expression', [], p[1])
 
 def p_statement_list(p):
     """ statement_list : statement
@@ -105,6 +183,8 @@ def p_statement(p):
                   | for_statement
                   | print_statement NEWLINE
                   | log_statement NEWLINE
+                  | return_statement NEWLINE
+                  | function_expression NEWLINE
                   | set_temp_statement NEWLINE
     """
     #maybe add | list_change NEWLINE
@@ -309,6 +389,11 @@ def p_primary_expression(p):
     else:
         p[0] = Node('primary_expression', [p[2]])
 
+def p_primary_expression_funct(p):
+    """ primary_expression : function_expression """
+    p[0] = Node('primary_expression_funct', [p[1]])
+
+
 def p_primary_expression_not(p):
     """ primary_expression : NOT LPAREN or_expression RPAREN
     """
@@ -458,6 +543,24 @@ def p_for_statement(p):
     """
     p[0] = Node("for_statement", [p[4], p[6], p[10]], p[2])
 
+def p_return_statement(p):
+    """ return_statement : RETURN LPAREN or_expression RPAREN
+    """
+    p[0] = Node("return_statement", [p[3]])
+
+#fix meeee
+def p_function_expression(p): 
+     ''' 
+     function_expression : ID LPAREN list_expression RPAREN
+                         | ID LPAREN RPAREN 
+     ''' 
+     if len(p) == 5: 
+         p[0] = Node('function_expression',[p[3]], p[1]) 
+     else: 
+         p[0] = Node('function_expression', [], p[1])
+
+ 
+
 # Error rule for syntax errors
 def p_error(p):    
     if hasattr(p, 'lineno'):
@@ -486,10 +589,68 @@ if __name__ == '__main__':
     # Build the parser
     parser = CoZyParser()
     ## Put code to test here
+#    s = """
+#a = 60 F + 50F + 30F
+#d = 35/2/1991 10:00 PM
+#c = 10:00 AM
+#g = 1 < 3 + 4
+#r = 1 + 2 * 3+4
+#f = 1:00 PM
+#h = 1 < 3 and 4 > 3
+#
+#z = r + 2
+#z = a + z
+#bday = 16/07/1991
+#every (Monday):
+#    print ('5')
+#i = 0
+#while (i < 7):
+#    print ("okay")
+#    i = i + 1
+#every (January):
+#    print ("hello world")
+#once every (January during Monday):
+#    print ("hello world")
+#once every (January during Monday, February during Friday):
+#    print ("hello world")
+#every ((January during Monday, February during Friday) during Wednesday):
+#    print ("hello world")
+#    
+# """
+##    s = '''
+##b = not(7 + 3)
+##a = Monday
+##c = not(true or false)
+##c = not(true or a)
+##c = not(b or a)
+##c = not(b)
+##c = (b)
+##c = not(b) + 2
+##'''
+
+##    s = """
+##a = 0
+##y[a] = a
+##def foo(number x, list y):
+##    x = 3
+##
+##def foo(number b, list y):
+##    y[b] = b
+##
+##"""
+
     s = '''
+a = 40 F
+SET_TEMP(a)
 SET_TEMP(40 F)
-SET_TEMP(GET_TEMP)
+d = GET_TEMP
+print(GET_TEMP)
+print(d)
+if(50 C < GET_TEMP):
+    print("YAAAY")
 '''
+
+
     result = parser.parse(s)
 
     # ## Prints the AST
