@@ -1,3 +1,6 @@
+import sys
+sys.path.append('..')
+from Temperature import *
 import RPi.GPIO as GPIO 
 
 class Sim_ThermoStat(object):

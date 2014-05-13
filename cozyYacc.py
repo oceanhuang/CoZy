@@ -640,6 +640,14 @@ if __name__ == '__main__':
 ##"""
 
     s = '''
+a = 40 F
+SET_TEMP(a)
+SET_TEMP(40 F)
+d = GET_TEMP
+print(GET_TEMP)
+print(d)
+if(50 C < GET_TEMP):
+    print("YAAAY")
 '''
 
 
