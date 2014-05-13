@@ -619,7 +619,6 @@ class codeGenerator(object):
 
         if len(tree.children) == 2:
             arg = self.dispatch(tree.children[1], flag)
-            print arg
             if not self.check_if_time(arg): exit("OH NO. Must use time type in EVERY statements")
             arg = arg[1]
             poop = self.dispatch(tree.children[0], flag)
