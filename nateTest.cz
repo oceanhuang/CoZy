@@ -1,0 +1,6 @@
+once every (10:00 PM to 10:00 PM; 10:02 PM to 10:05 PM):
+    SET_TEMP(28 C)
+once every (10:01 PM to 10:01 PM during Monday):
+    SET_TEMP(10 C)
+every (Monday):
+    print(GET_TEMP)

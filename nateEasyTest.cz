@@ -1,0 +1,4 @@
+once every(6:49 PM to 6:49 PM; 6:51 PM to 6:51 PM):
+    print("hello!")
+once every(6:50 PM to 6:50 PM during Tuesday):
+    print("goobye!")
