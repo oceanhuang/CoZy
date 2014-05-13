@@ -56,6 +56,11 @@ class Temperature(object):
             return temp
         else:
             return NotImplemented
+    def __cmp__(self, other):
+        if other.__class__() == "Temperature":
+            return cmp(self.CTemp, other.getCelsius())
+        else:
+            return NotImplemented
 
 '''
 
@@ -434,9 +439,9 @@ class codeGenerator(object):
 
             if type1 != type2:
                 exit("TypeError! Can not use relop between type " + type1 + " and " + type2)
-            else:
-                if type1 != "NUM" and tree.children[2] != "!=":
-                    exit("Error: Cannot use '>' or '<' for non-numbers") 
+            # else:
+            #     if type1 != "NUM" and tree.children[2] != "!=":
+            #         exit("Error: Cannot use '>' or '<' for non-numbers") 
 
             return type1, str(operand1[1]) + " " + tree.children[2] + " " + str(operand2[1])  
 
